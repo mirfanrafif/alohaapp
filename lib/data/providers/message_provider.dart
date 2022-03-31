@@ -10,7 +10,7 @@ import '../response/Message.dart';
 class MessageProvider extends ChangeNotifier {
   List<CustomerMessage> _customerMessage = [];
 
-  MessageService _messageService = MessageService();
+  final MessageService _messageService = MessageService();
 
   List<CustomerMessage> get customerMessage =>
       List.unmodifiable(_customerMessage);
