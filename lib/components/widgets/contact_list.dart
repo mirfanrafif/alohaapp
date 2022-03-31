@@ -3,19 +3,8 @@ import 'package:provider/provider.dart';
 import '../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
-class ContactList extends StatefulWidget {
+class ContactList extends StatelessWidget {
   const ContactList({Key? key}) : super(key: key);
-
-  @override
-  State<ContactList> createState() => _ContactListState();
-}
-
-class _ContactListState extends State<ContactList> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
