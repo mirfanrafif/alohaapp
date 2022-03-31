@@ -20,6 +20,8 @@ class ChatItem extends StatelessWidget {
             message.fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Card(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(16))),
             margin: EdgeInsets.zero,
             color: message.fromMe ? Colors.lightGreen : Colors.white,
             child: Padding(

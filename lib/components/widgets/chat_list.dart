@@ -1,5 +1,5 @@
 import 'package:aloha/components/widgets/chat_item.dart';
-import 'package:aloha/data/service/contact_provider.dart';
+import 'package:aloha/data/providers/contact_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,18 +15,24 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   var chatListController = ScrollController();
+  late ContactProvider provider;
 
   @override
   void initState() {
     super.initState();
     chatListController.addListener(_loadMore);
+    provider = Provider.of<ContactProvider>(context, listen: false);
+    if (provider.getIsFirstLoad(widget.customer.id)) {
+      print("first load");
+      provider.setFirstLoadDone(widget.customer.id);
+      provider.getPastMessages(customerId: widget.customer.id);
+    }
   }
 
   void _loadMore() {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
-      Provider.of<ContactProvider>(context, listen: false)
-          .getPastMessages(customerId: widget.customer.id, loadMore: true);
+      provider.getPastMessages(customerId: widget.customer.id, loadMore: true);
     }
   }
 
@@ -42,13 +48,26 @@ class _ChatListState extends State<ChatList> {
       builder: (context, provider, child) {
         var messages = provider.getMessageByCustomerId(widget.customer.id);
         if (messages.isNotEmpty) {
-          return ListView.builder(
-            controller: chatListController,
-            itemBuilder: (context, index) {
-              return ChatItem(message: messages[index]);
-            },
-            reverse: true,
-            itemCount: messages.length,
+          return Column(
+            children: [
+              if (provider.loading)
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              Expanded(
+                child: ListView.builder(
+                  controller: chatListController,
+                  itemBuilder: (context, index) {
+                    return ChatItem(message: messages[index]);
+                  },
+                  reverse: true,
+                  itemCount: messages.length,
+                ),
+              ),
+            ],
           );
         } else {
           return Center(

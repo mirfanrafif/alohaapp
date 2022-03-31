@@ -1,5 +1,5 @@
 import 'package:aloha/components/pages/home_page.dart';
-import 'package:aloha/data/service/contact_provider.dart';
+import 'package:aloha/data/providers/contact_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
