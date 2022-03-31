@@ -5,37 +5,63 @@ import 'dart:convert';
 import '../response/Contact.dart';
 import 'package:http/http.dart';
 
-class MessageService extends ChangeNotifier {
+class MessageProvider extends ChangeNotifier {
   Map<int, CustomerMessage> customerMessage = {};
 
-  MessageService() {
+  MessageProvider() {
     setupSocket();
   }
 
+  mapContactToCustomerMessage(List<Contact> contactList) {
+    contactList.forEach((element) {
+      customerMessage[element.customer.id] = CustomerMessage(
+          customer: element.customer, message: [element.lastMessage]);
+    });
+  }
+
   setupSocket() {
-    try {
-      var socketClient = io(
-        "https://dev.mirfanrafif.me/messages",
-        OptionBuilder().setTransports(['websocket']).build(),
-      );
+    var socketClient =
+        io("https://dev.mirfanrafif.me/messages", <String, dynamic>{
+      'transports': ['websocket'],
+      "autoConnect": false,
+    });
+
+    socketClient.connect();
+
+    socketClient.onConnectError((data) {
+      print("Error : " + data);
+    });
+    socketClient.onConnect((data) {
+      print("Connected");
+
       var data = {'id': 3};
       socketClient.emit("join", jsonEncode(data));
 
       socketClient.on("message", (data) {
+        print(data);
         var incomingMessage = Message.fromJson(jsonDecode(data as String));
         if (customerMessage[incomingMessage.customer.id] == null) {
           CustomerMessage(
               customer: incomingMessage.customer, message: [incomingMessage]);
         }
-        customerMessage[incomingMessage.customer.id]
+        var messageIndex = customerMessage[incomingMessage.customer.id]
             ?.message
-            .add(incomingMessage);
+            .indexWhere((element) => element.id == incomingMessage.id);
+        if (messageIndex != null && messageIndex == -1) {
+          customerMessage[incomingMessage.customer.id]?.message = [
+            incomingMessage,
+            ...customerMessage[incomingMessage.customer.id]?.message ??
+                <Message>[]
+          ];
+        }
         notifyListeners();
         return data;
       });
-    } catch (e) {
-      print(e);
-    }
+    });
+  }
+
+  setFirstLoadDone(int customerId) {
+    customerMessage[customerId]?.firstLoad = false;
   }
 
   addPreviousMessage(int customerId, List<Message> messages) {
@@ -47,19 +73,11 @@ class MessageService extends ChangeNotifier {
         customerMessage[customerId]!.message.add(item);
       }
     }
-
-    var newListMessage = [
-      ...customerMessage[customerId]?.message ?? [],
-      ...messages,
-    ];
-
-    customerMessage[customerId]?.message = newListMessage;
     notifyListeners();
   }
 
   Future<List<Message>> getPastMessages(
       {required int customerId, bool loadMore = false}) async {
-    print(customerMessage[customerId]?.message.last.id.toString());
     var response = await get(
         Uri.https(
             "dev.mirfanrafif.me",
@@ -72,9 +90,8 @@ class MessageService extends ChangeNotifier {
                 : {}),
         headers: {
           'Authorization':
-              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NjQxNDU3LCJleHAiOjE2NDg3Mjc4NTd9.hBNS-iSlih0p5RHDyIQ1KAje4O2IMqgATTvJkAiRL2o'
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzI4MDk5LCJleHAiOjE2NDg4MTQ0OTl9.l5_JOlx3pExOsN7i5gaPTfKX0uLziO8qu91AdyEg6Ew'
         });
-    print(response.body);
     if (response.statusCode == 200) {
       var data = messageResponseFromJson(response.body);
       addPreviousMessage(customerId, data.data);
@@ -89,6 +106,8 @@ class CustomerMessage {
   Customer customer;
 
   List<Message> message;
+
+  bool firstLoad = true;
 
   CustomerMessage({required this.customer, required this.message});
 }

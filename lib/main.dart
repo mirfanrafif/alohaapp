@@ -1,6 +1,6 @@
 import 'package:aloha/components/pages/home_page.dart';
-import 'package:aloha/data/service/contact_service.dart';
-import 'package:aloha/data/service/message_service.dart';
+import 'package:aloha/data/service/contact_provider.dart';
+import 'package:aloha/data/service/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -18,13 +18,13 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Aloha',
         theme: ThemeData(
-          primarySwatch: Colors.orange,
+          primarySwatch: Colors.deepOrange,
         ),
         home: const HomePage(),
       ),
       providers: [
-        ChangeNotifierProvider(create: (context) => ContactService()),
-        ChangeNotifierProvider(create: (context) => MessageService())
+        ChangeNotifierProvider(create: (context) => ContactProvider()),
+        ChangeNotifierProvider(create: (context) => MessageProvider())
       ],
     );
   }

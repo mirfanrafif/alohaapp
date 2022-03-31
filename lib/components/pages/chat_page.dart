@@ -1,6 +1,8 @@
 import 'package:aloha/components/widgets/chat_input.dart';
 import 'package:aloha/components/widgets/chat_list.dart';
-import 'package:aloha/data/service/contact_service.dart';
+import 'package:aloha/data/response/Message.dart';
+import 'package:aloha/data/service/contact_provider.dart';
+import 'package:aloha/data/service/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,13 +54,19 @@ class _ChatContentState extends State<ChatContent> {
         _currentChat = _chatInputController.text;
       });
     });
+    var messageService = Provider.of<MessageProvider>(context, listen: false);
+    if (messageService.customerMessage[widget.customer.id] != null &&
+        messageService.customerMessage[widget.customer.id]!.firstLoad) {
+      print("first load");
+      messageService.setFirstLoadDone(widget.customer.id);
+      messageService.getPastMessages(customerId: widget.customer.id);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration:
-          const BoxDecoration(color: Color.fromARGB(255, 245, 246, 248)),
+      // decoration: const BoxDecoration(color: Colors.white),
       child: Column(
         children: [
           Expanded(
