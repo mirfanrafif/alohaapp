@@ -1,4 +1,4 @@
-import 'package:aloha/data/providers/contact_provider.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +58,7 @@ class _ChatInputState extends State<ChatInput> {
           SizedBox(
             child: IconButton(
               onPressed: () {
-                Provider.of<ContactProvider>(context, listen: false)
+                Provider.of<MessageProvider>(context, listen: false)
                     .sendMessage(
                         customerNumber: widget.customer.phoneNumber,
                         message: _currentChat);

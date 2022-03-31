@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/providers/contact_provider.dart';
+import '../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
 class ContactList extends StatefulWidget {
@@ -19,7 +19,7 @@ class _ContactListState extends State<ContactList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContactProvider>(
+    return Consumer<MessageProvider>(
       builder: (context, provider, child) {
         return ListView.builder(
           itemBuilder: (context, index) => ContactItem(

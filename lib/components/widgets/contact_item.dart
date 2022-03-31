@@ -1,6 +1,6 @@
 import 'package:aloha/components/pages/chat_page.dart';
 import 'package:aloha/data/response/Contact.dart';
-import 'package:aloha/data/providers/contact_provider.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 
 class ContactItem extends StatelessWidget {

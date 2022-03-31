@@ -7,7 +7,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 
 import '../response/Message.dart';
 
-class ContactProvider extends ChangeNotifier {
+class MessageProvider extends ChangeNotifier {
   List<CustomerMessage> _customerMessage = [];
 
   MessageService _messageService = MessageService();
@@ -15,7 +15,7 @@ class ContactProvider extends ChangeNotifier {
   List<CustomerMessage> get customerMessage =>
       List.unmodifiable(_customerMessage);
 
-  ContactProvider() {
+  MessageProvider() {
     getAllContact();
     setupSocket();
   }

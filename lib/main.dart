@@ -1,5 +1,5 @@
 import 'package:aloha/components/pages/home_page.dart';
-import 'package:aloha/data/providers/contact_provider.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         home: const HomePage(),
       ),
       providers: [
-        ChangeNotifierProvider(create: (context) => ContactProvider()),
+        ChangeNotifierProvider(create: (context) => MessageProvider()),
       ],
     );
   }

@@ -1,7 +1,7 @@
 import 'package:aloha/components/widgets/chat_input.dart';
 import 'package:aloha/components/widgets/chat_list.dart';
 import 'package:aloha/data/response/Message.dart';
-import 'package:aloha/data/providers/contact_provider.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

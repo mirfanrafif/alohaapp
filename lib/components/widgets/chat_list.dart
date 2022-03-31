@@ -1,5 +1,5 @@
 import 'package:aloha/components/widgets/chat_item.dart';
-import 'package:aloha/data/providers/contact_provider.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +15,13 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   var chatListController = ScrollController();
-  late ContactProvider provider;
+  late MessageProvider provider;
 
   @override
   void initState() {
     super.initState();
     chatListController.addListener(_loadMore);
-    provider = Provider.of<ContactProvider>(context, listen: false);
+    provider = Provider.of<MessageProvider>(context, listen: false);
     if (provider.getIsFirstLoad(widget.customer.id)) {
       print("first load");
       provider.setFirstLoadDone(widget.customer.id);
@@ -44,7 +44,7 @@ class _ChatListState extends State<ChatList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ContactProvider>(
+    return Consumer<MessageProvider>(
       builder: (context, provider, child) {
         var messages = provider.getMessageByCustomerId(widget.customer.id);
         if (messages.isNotEmpty) {
