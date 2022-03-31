@@ -2,16 +2,15 @@ import 'package:aloha/components/widgets/chat_input.dart';
 import 'package:aloha/components/widgets/chat_list.dart';
 import 'package:aloha/data/response/Message.dart';
 import 'package:aloha/data/service/contact_provider.dart';
-import 'package:aloha/data/service/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/response/Contact.dart';
 
 class ChatPage extends StatelessWidget {
-  final Contact contact;
+  final Customer customer;
 
-  const ChatPage({Key? key, required this.contact}) : super(key: key);
+  const ChatPage({Key? key, required this.customer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,16 +19,16 @@ class ChatPage extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(contact.customer.name),
+            Text(customer.name),
             Text(
-              contact.customer.phoneNumber,
+              customer.phoneNumber,
               style:
                   const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
             ),
           ],
         ),
       ),
-      body: ChatContent(customer: contact.customer),
+      body: ChatContent(customer: customer),
     );
   }
 }
@@ -54,12 +53,12 @@ class _ChatContentState extends State<ChatContent> {
         _currentChat = _chatInputController.text;
       });
     });
-    var messageService = Provider.of<MessageProvider>(context, listen: false);
-    if (messageService.customerMessage[widget.customer.id] != null &&
-        messageService.customerMessage[widget.customer.id]!.firstLoad) {
+    var provider = Provider.of<ContactProvider>(context, listen: false);
+    print(widget.customer.id);
+    if (provider.getIsFirstLoad(widget.customer.id)) {
       print("first load");
-      messageService.setFirstLoadDone(widget.customer.id);
-      messageService.getPastMessages(customerId: widget.customer.id);
+      provider.setFirstLoadDone(widget.customer.id);
+      provider.getPastMessages(customerId: widget.customer.id);
     }
   }
 

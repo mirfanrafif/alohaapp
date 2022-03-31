@@ -1,5 +1,5 @@
 import 'package:aloha/components/widgets/chat_item.dart';
-import 'package:aloha/data/service/message_provider.dart';
+import 'package:aloha/data/service/contact_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +25,7 @@ class _ChatListState extends State<ChatList> {
   void _loadMore() {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
-      Provider.of<MessageProvider>(context, listen: false)
+      Provider.of<ContactProvider>(context, listen: false)
           .getPastMessages(customerId: widget.customer.id, loadMore: true);
     }
   }
@@ -38,19 +38,17 @@ class _ChatListState extends State<ChatList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<MessageProvider>(
-      builder: (context, value, child) {
-        if (value.customerMessage[widget.customer.id] != null) {
+    return Consumer<ContactProvider>(
+      builder: (context, provider, child) {
+        var messages = provider.getMessageByCustomerId(widget.customer.id);
+        if (messages.isNotEmpty) {
           return ListView.builder(
             controller: chatListController,
             itemBuilder: (context, index) {
-              return ChatItem(
-                  message: value
-                      .customerMessage[widget.customer.id]!.message[index]);
+              return ChatItem(message: messages[index]);
             },
             reverse: true,
-            itemCount:
-                value.customerMessage[widget.customer.id]!.message.length,
+            itemCount: messages.length,
           );
         } else {
           return Center(

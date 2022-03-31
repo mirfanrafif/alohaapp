@@ -1,11 +1,13 @@
 import 'package:aloha/components/pages/chat_page.dart';
 import 'package:aloha/data/response/Contact.dart';
+import 'package:aloha/data/service/contact_provider.dart';
 import 'package:flutter/material.dart';
 
 class ContactItem extends StatelessWidget {
-  final Contact contact;
+  final CustomerMessage customerMessage;
 
-  const ContactItem({Key? key, required this.contact}) : super(key: key);
+  const ContactItem({Key? key, required this.customerMessage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,42 +17,18 @@ class ContactItem extends StatelessWidget {
           backgroundColor: Colors.black12,
           foregroundImage: AssetImage('assets/image/user.png'),
         ),
-        title: Text(contact.customer.name),
-        subtitle: Text(contact.lastMessage.message),
+        title: Text(customerMessage.customer.name),
+        subtitle: Text(customerMessage.message.first.message),
       ),
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ChatPage(
-              contact: contact,
+              customer: customerMessage.customer,
             ),
           ),
         );
       },
-    );
-  }
-
-  Widget buildContactItemText() {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            contact.customer.name,
-            style: const TextStyle(color: Colors.black87, fontSize: 18),
-          ),
-          const SizedBox(
-            height: 8,
-          ),
-          Text(
-            contact.lastMessage.message.characters.take(40).string,
-            style: const TextStyle(
-              color: Colors.black45,
-              fontSize: 14,
-            ),
-          )
-        ],
-      ),
     );
   }
 }

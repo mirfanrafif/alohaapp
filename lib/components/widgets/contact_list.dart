@@ -1,4 +1,3 @@
-import 'package:aloha/data/service/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/service/contact_provider.dart';
@@ -16,23 +15,17 @@ class _ContactListState extends State<ContactList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Provider.of<ContactProvider>(context, listen: false)
-        .getAllContact()
-        .then((value) {
-      Provider.of<MessageProvider>(context, listen: false)
-          .mapContactToCustomerMessage(value);
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ContactProvider>(
-      builder: (context, value, child) {
+      builder: (context, provider, child) {
         return ListView.builder(
           itemBuilder: (context, index) => ContactItem(
-            contact: value.contacts[index],
+            customerMessage: provider.customerMessage[index],
           ),
-          itemCount: value.contacts.length,
+          itemCount: provider.customerMessage.length,
         );
       },
     );
