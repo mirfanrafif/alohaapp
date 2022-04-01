@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
 
 import '../response/Contact.dart';
@@ -11,7 +12,7 @@ class MessageService {
       int lastMessageId = 0,
       bool loadMore = false}) async {
     var response = await get(
-        Uri.https("dev.mirfanrafif.me", "/message/${customerId.toString()}",
+        Uri.https(BASE_URL, "/message/${customerId.toString()}",
             loadMore ? {'last_message_id': lastMessageId.toString()} : {}),
         headers: {
           'Authorization':
@@ -27,8 +28,7 @@ class MessageService {
 
   Future<List<Contact>> getAllContact() async {
     try {
-      var response =
-          await get(Uri.https("dev.mirfanrafif.me", "/message"), headers: {
+      var response = await get(Uri.https(BASE_URL, "/message"), headers: {
         'Authorization':
             'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzQyNjUzLCJleHAiOjE2NDg4MjkwNTN9.rc7grHBS8gfPIlHj8Sc2FOiEx3_O4RTEIQ6FS5WwfBE'
       });
@@ -48,8 +48,7 @@ class MessageService {
   Future<List<Message>> sendMessage(
       {required String customerNumber, required String message}) async {
     try {
-      var response =
-          await post(Uri.https("dev.mirfanrafif.me", "/message"), body: {
+      var response = await post(Uri.https(BASE_URL, "/message"), body: {
         'customerNumber': customerNumber,
         'message': message
       }, headers: {

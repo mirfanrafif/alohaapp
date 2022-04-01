@@ -52,7 +52,8 @@ class _ChatInputState extends State<ChatInput> {
                     ),
                   ),
                   fillColor: Colors.white),
-              style: const TextStyle(fontSize: 18),
+              minLines: 1,
+              maxLines: 5,
             ),
           ),
           SizedBox(

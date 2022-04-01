@@ -1,6 +1,8 @@
 import 'package:aloha/data/response/Message.dart';
 import 'package:flutter/material.dart';
 
+double CHAT_MARGIN = 80;
+
 class ChatItem extends StatelessWidget {
   final Message message;
   const ChatItem({Key? key, required this.message}) : super(key: key);
@@ -9,8 +11,8 @@ class ChatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        left: message.fromMe ? 30 : 8,
-        right: message.fromMe ? 8 : 30,
+        left: message.fromMe ? CHAT_MARGIN : 8,
+        right: message.fromMe ? 8 : CHAT_MARGIN,
         top: 8,
         bottom: 8,
       ),
@@ -21,11 +23,11 @@ class ChatItem extends StatelessWidget {
         children: [
           Card(
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(16))),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
             margin: EdgeInsets.zero,
             color: message.fromMe ? Colors.lightGreen : Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: message.fromMe
                     ? CrossAxisAlignment.end
@@ -34,9 +36,6 @@ class ChatItem extends StatelessWidget {
                   if (message.type == "image") buildImageView(),
                   Text(
                     message.message,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
                   ),
                 ],
               ),
