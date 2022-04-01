@@ -26,15 +26,23 @@ class ChatItem extends StatelessWidget {
             color: message.fromMe ? Colors.lightGreen : Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(
-                message.message,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+              child: Column(
+                crossAxisAlignment: message.fromMe
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
+                children: [
+                  if (message.type == "image") buildImageView(),
+                  Text(
+                    message.message,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Text(
@@ -42,6 +50,25 @@ class ChatItem extends StatelessWidget {
             style: const TextStyle(color: Colors.black38),
           )
         ],
+      ),
+    );
+  }
+
+  Widget buildImageView() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.all(
+          Radius.circular(4),
+        ),
+        child: Image(
+          image: NetworkImage(message.fromMe
+              ? "https://dev.mirfanrafif.me/message/image/${message.file}"
+              : "https://solo.wablas.com/image/${message.file}"),
+          width: 300,
+          height: 200,
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }

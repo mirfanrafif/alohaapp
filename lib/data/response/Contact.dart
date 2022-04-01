@@ -39,7 +39,7 @@ class Contact {
   Customer customer;
   DateTime createdAt;
   List<Agent> agent;
-  Message lastMessage;
+  Message? lastMessage;
   DateTime updatedAt;
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
@@ -47,7 +47,9 @@ class Contact {
         customer: Customer.fromJson(json["customer"]),
         createdAt: DateTime.parse(json["created_at"]),
         agent: List<Agent>.from(json["agent"].map((x) => Agent.fromJson(x))),
-        lastMessage: Message.fromJson(json["lastMessage"]),
+        lastMessage: json["lastMessage"] != null
+            ? Message.fromJson(json["lastMessage"])
+            : null,
         updatedAt: DateTime.parse(json["updated_at"]),
       );
 
@@ -56,7 +58,7 @@ class Contact {
         "customer": customer.toJson(),
         "created_at": createdAt.toIso8601String(),
         "agent": List<dynamic>.from(agent.map((x) => x.toJson())),
-        "lastMessage": lastMessage.toJson(),
+        "lastMessage": lastMessage?.toJson(),
         "updated_at": updatedAt.toIso8601String(),
       };
 }

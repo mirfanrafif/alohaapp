@@ -30,7 +30,7 @@ class MessageService {
       var response =
           await get(Uri.https("dev.mirfanrafif.me", "/message"), headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzI4MDk5LCJleHAiOjE2NDg4MTQ0OTl9.l5_JOlx3pExOsN7i5gaPTfKX0uLziO8qu91AdyEg6Ew'
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzQyNjUzLCJleHAiOjE2NDg4MjkwNTN9.rc7grHBS8gfPIlHj8Sc2FOiEx3_O4RTEIQ6FS5WwfBE'
       });
       if (response.statusCode == 200) {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
@@ -40,6 +40,7 @@ class MessageService {
         return [];
       }
     } catch (e) {
+      print("Error: " + e.toString());
       return [];
     }
   }
@@ -53,7 +54,7 @@ class MessageService {
         'message': message
       }, headers: {
         'Authorization':
-            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzI4MDk5LCJleHAiOjE2NDg4MTQ0OTl9.l5_JOlx3pExOsN7i5gaPTfKX0uLziO8qu91AdyEg6Ew'
+            'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQ4NzQyNjUzLCJleHAiOjE2NDg4MjkwNTN9.rc7grHBS8gfPIlHj8Sc2FOiEx3_O4RTEIQ6FS5WwfBE'
       });
       if (response.statusCode == 200) {
         var data = messageResponseFromJson(response.body);
@@ -63,6 +64,7 @@ class MessageService {
         return [];
       }
     } catch (e) {
+      print("Error: " + e.toString());
       return [];
     }
   }

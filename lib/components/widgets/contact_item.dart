@@ -19,7 +19,9 @@ class ContactItem extends StatelessWidget {
         ),
         title: Text(customerMessage.customer.name),
         subtitle: Text(
-          customerMessage.message.first.message,
+          customerMessage.message.isNotEmpty
+              ? customerMessage.message.first.message
+              : "",
           maxLines: 2,
         ),
       ),
@@ -33,21 +35,5 @@ class ContactItem extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class ContactItemData {
-  int id = 0;
-  String nama = "";
-  String lastMessage = "";
-
-  ContactItemData(
-      {required this.id, required this.nama, required this.lastMessage});
-
-  factory ContactItemData.fromContact(Contact contact) {
-    return ContactItemData(
-        id: contact.customer.id,
-        nama: contact.customer.name,
-        lastMessage: contact.lastMessage.message);
   }
 }

@@ -2,7 +2,6 @@ import 'package:aloha/data/response/Contact.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:http/http.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../response/Message.dart';
@@ -34,7 +33,8 @@ class MessageProvider extends ChangeNotifier {
   void mapContactToCustomerMessage(List<Contact> contactList) {
     for (var contact in contactList) {
       _customerMessage.add(CustomerMessage(
-          customer: contact.customer, message: [contact.lastMessage]));
+          customer: contact.customer,
+          message: contact.lastMessage != null ? [contact.lastMessage!] : []));
     }
     notifyListeners();
   }
