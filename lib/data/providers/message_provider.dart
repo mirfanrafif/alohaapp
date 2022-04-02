@@ -18,6 +18,11 @@ class MessageProvider extends ChangeNotifier {
       List.unmodifiable(_customerMessage);
 
   String token = "";
+  int id = 0;
+
+  void setId(int id) {
+    this.id = id;
+  }
 
   void setToken(String token) {
     this.token = token;
@@ -68,7 +73,7 @@ class MessageProvider extends ChangeNotifier {
       socketClient.onConnect((data) {
         print("Connected");
 
-        var data = {'id': 3};
+        var data = {'id': id};
         socketClient.emit("join", jsonEncode(data));
 
         socketClient.on("message", (data) {

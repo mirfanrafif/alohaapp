@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        body: ContactList(token: provider.token),
+        body: ContactList(token: provider.token, id: provider.user.id,),
       ),
     );
   }

@@ -42,7 +42,10 @@ class _ChatInputState extends State<ChatInput> {
               decoration: InputDecoration(
                   hintText: "Tulis pesan disini...",
                   contentPadding: const EdgeInsets.all(8),
-                  prefixIcon: IconButton(onPressed: () {}, icon: const Icon(Icons.attachment)),
+                  prefixIcon: IconButton(
+                    onPressed: showDialog,
+                    icon: const Icon(Icons.attachment),
+                  ),
                   enabledBorder: inputBorder,
                   focusedBorder: inputBorder,
                   fillColor: Colors.white),
@@ -81,4 +84,15 @@ class _ChatInputState extends State<ChatInput> {
       Radius.circular(20),
     ),
   );
+
+  void showDialog() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => Padding(
+              padding: const EdgeInsets.all(60),
+              child: Row(
+                children: [],
+              ),
+            ));
+  }
 }
