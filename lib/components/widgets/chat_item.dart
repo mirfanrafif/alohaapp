@@ -25,7 +25,9 @@ class ChatItem extends StatelessWidget {
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8))),
             margin: EdgeInsets.zero,
-            color: message.fromMe ? Colors.lightGreen : Colors.white,
+            color: message.fromMe
+                ? const Color.fromARGB(255, 202, 255, 191)
+                : Colors.white,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(

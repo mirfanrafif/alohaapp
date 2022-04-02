@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:aloha/data/response/Contact.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart';
 
+import '../models/customer_message.dart';
 import '../response/Message.dart';
 
 class MessageProvider extends ChangeNotifier {
@@ -40,44 +43,54 @@ class MessageProvider extends ChangeNotifier {
   }
 
   void setupSocket() {
-    var socketClient = io("https://dev.mirfanrafif.me/messages",
-        OptionBuilder().setTransports(['websocket']).build());
+    try {
+      var socketClient = io("https://dev.mirfanrafif.me/messages",
+          OptionBuilder().setTransports(['websocket']).build());
 
-    socketClient.onConnectError((data) {
-      print("Error : " + data);
-    });
-    socketClient.onConnect((data) {
-      print("Connected");
-
-      var data = {'id': 3};
-      socketClient.emit("join", jsonEncode(data));
-
-      socketClient.on("message", (data) {
-        print(data);
-        var incomingMessage = Message.fromJson(jsonDecode(data as String));
-        var customerIndex = findCustomerIndexById(incomingMessage.customer.id);
-        if (customerIndex == -1) {
-          _customerMessage = [
-            CustomerMessage(
-                customer: incomingMessage.customer, message: [incomingMessage]),
-            ..._customerMessage
-          ];
+      socketClient.onConnectError((data) {
+        if (data is WebSocketException) {
+          print("Error : " + data.message);
         } else {
-          var messageIndex = customerMessage[customerIndex]
-              .message
-              .indexWhere((element) => element.id == incomingMessage.id);
-          if (messageIndex == -1) {
-            customerMessage[customerIndex].message = [
-              incomingMessage,
-              ...customerMessage[customerIndex].message
-            ];
-          }
+          print("Error : " + data);
         }
-
-        notifyListeners();
-        return data;
       });
-    });
+      socketClient.onConnect((data) {
+        print("Connected");
+
+        var data = {'id': 3};
+        socketClient.emit("join", jsonEncode(data));
+
+        socketClient.on("message", (data) {
+          print(data);
+          var incomingMessage = Message.fromJson(jsonDecode(data as String));
+          var customerIndex =
+              findCustomerIndexById(incomingMessage.customer.id);
+          if (customerIndex == -1) {
+            _customerMessage = [
+              CustomerMessage(
+                  customer: incomingMessage.customer,
+                  message: [incomingMessage]),
+              ..._customerMessage
+            ];
+          } else {
+            var messageIndex = customerMessage[customerIndex]
+                .message
+                .indexWhere((element) => element.id == incomingMessage.id);
+            if (messageIndex == -1) {
+              customerMessage[customerIndex].message = [
+                incomingMessage,
+                ...customerMessage[customerIndex].message
+              ];
+            }
+          }
+
+          notifyListeners();
+          return data;
+        });
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   bool getIsFirstLoad(int customerId) {
@@ -107,16 +120,18 @@ class MessageProvider extends ChangeNotifier {
   }
 
   void getPastMessages({required int customerId, bool loadMore = false}) {
-    var lastMessageId =
-        customerMessage[findCustomerIndexById(customerId)].message.last.id;
-    _messageService
-        .getPastMessages(
-            customerId: customerId,
-            loadMore: loadMore,
-            lastMessageId: lastMessageId)
-        .then((value) {
-      addPreviousMessage(customerId, value);
-    });
+    var messages = customerMessage[findCustomerIndexById(customerId)].message;
+    if (messages.isNotEmpty) {
+      var lastMessageId = messages.last.id;
+      _messageService
+          .getPastMessages(
+              customerId: customerId,
+              loadMore: loadMore,
+              lastMessageId: lastMessageId)
+          .then((value) {
+        addPreviousMessage(customerId, value);
+      });
+    }
   }
 
   int findCustomerIndexById(int customerId) {
@@ -128,14 +143,4 @@ class MessageProvider extends ChangeNotifier {
     _messageService.sendMessage(
         customerNumber: customerNumber, message: message);
   }
-}
-
-class CustomerMessage {
-  Customer customer;
-
-  List<Message> message;
-
-  bool firstLoad = true;
-
-  CustomerMessage({required this.customer, required this.message});
 }

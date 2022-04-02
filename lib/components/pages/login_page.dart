@@ -1,5 +1,7 @@
 import 'package:aloha/components/pages/home_page.dart';
+import 'package:aloha/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -32,11 +34,20 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   login() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
-    );
+    Provider.of<UserProvider>(context, listen: false)
+        .login(username: _username, password: _password)
+        .then((response) {
+      if(response.success) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
+      }else{
+        var snackBar = SnackBar(content: Text(response.message));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    });
   }
 
   @override

@@ -70,21 +70,31 @@ class _ChatListState extends State<ChatList> {
             ],
           );
         } else {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Image(
-                  image: AssetImage(
-                      'assets\\image\\undraw_Online_messaging_re_qft3.png'),
-                  width: 300,
-                ),
-                Text("Pesan akan tampil disini")
-              ],
-            ),
-          );
+          return const EmptyChat();
         }
       },
+    );
+  }
+}
+
+class EmptyChat extends StatelessWidget {
+  const EmptyChat({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Image(
+            image: AssetImage('assets\\image\\empty_message_bg.png'),
+            width: 300,
+          ),
+          Text("Pesan akan tampil disini")
+        ],
+      ),
     );
   }
 }

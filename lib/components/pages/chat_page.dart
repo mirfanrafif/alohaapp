@@ -1,3 +1,4 @@
+import 'package:aloha/components/pages/customer_page.dart';
 import 'package:aloha/components/widgets/chat_input.dart';
 import 'package:aloha/components/widgets/chat_list.dart';
 import 'package:aloha/data/response/Message.dart';
@@ -27,6 +28,23 @@ class ChatPage extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                child: const Text("Show customer details"),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CustomerPage(customer: customer),
+                    ),
+                  );
+                },
+              ),
+            ],
+          )
+        ],
       ),
       body: Column(
         children: [

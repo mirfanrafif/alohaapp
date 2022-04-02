@@ -6,6 +6,7 @@ import '../../data/response/Contact.dart';
 
 class ChatInput extends StatefulWidget {
   Customer customer;
+
   ChatInput({Key? key, required this.customer}) : super(key: key);
 
   @override
@@ -33,30 +34,32 @@ class _ChatInputState extends State<ChatInput> {
       width: double.infinity,
       padding: const EdgeInsets.all(8),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: TextField(
               controller: chatController,
-              decoration: const InputDecoration(
-                  contentPadding: EdgeInsets.all(8),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 3, color: Colors.black12),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 3, color: Colors.black12),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(8),
-                    ),
-                  ),
+              decoration: InputDecoration(
+                  hintText: "Tulis pesan disini...",
+                  contentPadding: const EdgeInsets.all(8),
+                  // prefixIcon: const Icon(Icons.attachment),
+                  prefixIcon: IconButton(onPressed: () {}, icon: const Icon(Icons.attachment)),
+                  enabledBorder: inputBorder,
+                  focusedBorder: inputBorder,
                   fillColor: Colors.white),
               minLines: 1,
               maxLines: 5,
             ),
           ),
-          SizedBox(
+          const SizedBox(
+            width: 8,
+          ),
+          Container(
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(32),
+                ),
+                color: Colors.amber),
             child: IconButton(
               onPressed: () {
                 Provider.of<MessageProvider>(context, listen: false)
@@ -67,10 +70,16 @@ class _ChatInputState extends State<ChatInput> {
               },
               icon: const Icon(Icons.send),
             ),
-            width: 80,
           )
         ],
       ),
     );
   }
+
+  InputBorder inputBorder = const OutlineInputBorder(
+    borderSide: BorderSide(width: 3, color: Colors.black12),
+    borderRadius: BorderRadius.all(
+      Radius.circular(20),
+    ),
+  );
 }
