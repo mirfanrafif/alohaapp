@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
       MaterialPageRoute(
         builder: (context) => const HomePage(),
       ),
-          (route) => false,
+      (route) => false,
     );
   }
 
@@ -61,7 +61,10 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Login", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),),
+            const Text(
+              "Login",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+            ),
             TextField(
               decoration: const InputDecoration(hintText: "Username"),
               controller: _usernameController,

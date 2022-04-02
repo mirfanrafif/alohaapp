@@ -1,10 +1,6 @@
-import 'package:aloha/components/pages/customer_page.dart';
 import 'package:aloha/components/widgets/chat_input.dart';
 import 'package:aloha/components/widgets/chat_list.dart';
-import 'package:aloha/data/response/Message.dart';
-import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../data/response/Contact.dart';
 
@@ -31,18 +27,25 @@ class ChatPage extends StatelessWidget {
         actions: [
           PopupMenuButton(
             itemBuilder: (context) => [
-              PopupMenuItem(
-                child: const Text("Show customer details"),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CustomerPage(customer: customer),
-                    ),
-                  );
-                },
+              const PopupMenuItem(
+                child: Text("Show customer details"),
+                value: showCustomer,
               ),
             ],
+            onSelected: (result) {
+              if (result != null) {
+                if (result == showCustomer) {
+                  //TODO: show customer bottom sheet
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (context) {
+                        return CustomerDetails(
+                          customer: customer,
+                        );
+                      });
+                }
+              }
+            },
           )
         ],
       ),
@@ -61,3 +64,38 @@ class ChatPage extends StatelessWidget {
     );
   }
 }
+
+class CustomerDetails extends StatelessWidget {
+  final Customer customer;
+
+  const CustomerDetails({Key? key, required this.customer}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(60),
+      child: Column(
+        children: <Widget>[
+          const CircleAvatar(
+            backgroundColor: Colors.black12,
+            foregroundImage: AssetImage('assets/image/user.png'),
+            radius: 40,
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          Text(
+            customer.name,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(customer.phoneNumber),
+        ],
+      ),
+    );
+  }
+}
+
+const showCustomer = "show_customer";
