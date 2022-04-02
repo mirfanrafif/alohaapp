@@ -1,5 +1,3 @@
-import 'package:aloha/data/response/Contact.dart';
-import 'package:aloha/data/response/Message.dart';
 import 'package:aloha/data/response/User.dart';
 import 'package:aloha/utils/ApiResponse.dart';
 import 'package:aloha/utils/constants.dart';

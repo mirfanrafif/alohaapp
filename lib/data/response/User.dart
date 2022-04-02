@@ -3,7 +3,6 @@
 //     final userResponse = userResponseFromJson(jsonString);
 
 import 'package:aloha/data/response/Contact.dart';
-import 'package:meta/meta.dart';
 import 'dart:convert';
 
 UserResponse userResponseFromJson(String str) =>

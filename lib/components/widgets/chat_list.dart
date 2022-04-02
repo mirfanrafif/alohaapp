@@ -26,7 +26,6 @@ class _ChatListState extends State<ChatList> {
     userProvider = Provider.of<UserProvider>(context, listen: false);
     messageProvider = Provider.of<MessageProvider>(context, listen: false);
     if (messageProvider.getIsFirstLoad(widget.customer.id)) {
-      print("first load");
       messageProvider.setFirstLoadDone(widget.customer.id);
       messageProvider.getPastMessages(customerId: widget.customer.id, token: userProvider.token);
     }

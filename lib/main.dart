@@ -1,5 +1,3 @@
-import 'package:aloha/components/pages/home_page.dart';
-import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/pages/splash_screen.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';

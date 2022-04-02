@@ -1,5 +1,6 @@
 import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/widgets/contact_list.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +34,7 @@ class HomePage extends StatelessWidget {
                 leading: const Icon(Icons.logout),
                 title: const Text("Logout"),
                 onTap: () {
+                  Provider.of<MessageProvider>(context, listen: false).logout();
                   provider.logout();
                   Navigator.pushReplacement(
                       context,

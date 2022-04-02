@@ -1,6 +1,5 @@
 import 'package:aloha/data/models/agent.dart';
 import 'package:aloha/data/preferences/user_preferences.dart';
-import 'package:aloha/data/response/Contact.dart';
 import 'package:aloha/data/response/User.dart';
 import 'package:aloha/data/service/user_service.dart';
 import 'package:aloha/utils/ApiResponse.dart';
@@ -12,7 +11,7 @@ class UserProvider with ChangeNotifier {
 
   late AgentEntity _agentEntity;
 
-  late String token;
+  late String _token;
 
   UserProvider() {
     _service = UserService();
@@ -21,7 +20,7 @@ class UserProvider with ChangeNotifier {
 
   Future<AgentEntity> getUser() async {
     _agentEntity = await _preferences.getUser();
-    token = await _preferences.getToken();
+    _token = await _preferences.getToken();
     return _agentEntity;
   }
 
@@ -36,6 +35,8 @@ class UserProvider with ChangeNotifier {
             email: value.data!.user.email,
             role: value.data!.user.role,
             profilePhoto: value.data!.user.profilePhoto);
+        _token = value.data!.token;
+        //set preferences
         _preferences.setUser(_agentEntity);
         _preferences.setToken(value.data!.token);
         notifyListeners();
@@ -46,6 +47,8 @@ class UserProvider with ChangeNotifier {
   void logout() {
     _preferences.logout();
   }
+
+  String get token => _token;
 
   AgentEntity get user => _agentEntity;
 }

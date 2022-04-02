@@ -16,7 +16,7 @@ class MessageService {
     var response = await get(
         Uri.https(BASE_URL, "/message/${customerId.toString()}",
             loadMore ? {'last_message_id': lastMessageId.toString()} : {}),
-        headers: {'Authorization': 'Bearer ${token}'});
+        headers: {'Authorization': 'Bearer $token'});
     if (response.statusCode == 200) {
       var data = messageResponseFromJson(response.body);
       return data.data;
@@ -28,7 +28,7 @@ class MessageService {
   Future<List<Contact>> getAllContact(String token) async {
     try {
       var response = await get(Uri.https(BASE_URL, "/message"),
-          headers: {'Authorization': 'Bearer ${token}'});
+          headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
         return data.data;
@@ -50,7 +50,7 @@ class MessageService {
     try {
       var response = await post(Uri.https(BASE_URL, "/message"),
           body: {'customerNumber': customerNumber, 'message': message},
-          headers: {'Authorization': 'Bearer ${token}'});
+          headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
         var data = messageResponseFromJson(response.body);
         return data.data;

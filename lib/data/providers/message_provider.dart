@@ -48,6 +48,11 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void logout() {
+    _customerMessage.clear();
+    notifyListeners();
+  }
+
   void setupSocket() {
     try {
       var socketClient = io("https://dev.mirfanrafif.me/messages",

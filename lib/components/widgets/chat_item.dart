@@ -1,7 +1,7 @@
 import 'package:aloha/data/response/Message.dart';
 import 'package:flutter/material.dart';
 
-double CHAT_MARGIN = 80;
+double chatMargin = 80;
 
 class ChatItem extends StatelessWidget {
   final Message message;
@@ -11,8 +11,8 @@ class ChatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        left: message.fromMe ? CHAT_MARGIN : 8,
-        right: message.fromMe ? 8 : CHAT_MARGIN,
+        left: message.fromMe ? chatMargin : 8,
+        right: message.fromMe ? 8 : chatMargin,
         top: 8,
         bottom: 8,
       ),

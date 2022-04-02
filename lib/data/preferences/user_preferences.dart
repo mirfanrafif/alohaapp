@@ -1,4 +1,3 @@
-import 'package:aloha/data/response/Contact.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/agent.dart';

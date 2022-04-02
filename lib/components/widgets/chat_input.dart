@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import '../../data/response/Contact.dart';
 
 class ChatInput extends StatefulWidget {
-  Customer customer;
+  final Customer customer;
 
-  ChatInput({Key? key, required this.customer}) : super(key: key);
+  const ChatInput({Key? key, required this.customer}) : super(key: key);
 
   @override
   State<ChatInput> createState() => _ChatInputState();
