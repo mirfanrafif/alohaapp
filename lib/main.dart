@@ -1,5 +1,6 @@
 import 'package:aloha/components/pages/home_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
+import 'package:aloha/components/pages/splash_screen.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
         ),
-        home: const LoginPage(),
+        home: const SplashScreen(),
       ),
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),

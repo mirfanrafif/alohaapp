@@ -47,6 +47,11 @@ class UserPreferences {
     var preferences = await SharedPreferences.getInstance();
     preferences.setString(JWT_TOKEN, token);
   }
+
+  void logout() async {
+    var preferences = await SharedPreferences.getInstance();
+    preferences.clear();
+  }
 }
 
 

@@ -17,8 +17,14 @@ class MessageProvider extends ChangeNotifier {
   List<CustomerMessage> get customerMessage =>
       List.unmodifiable(_customerMessage);
 
-  MessageProvider() {
-    getAllContact();
+  String token = "";
+
+  void setToken(String token) {
+    this.token = token;
+  }
+
+  init() {
+    getAllContact(token);
     setupSocket();
   }
 
@@ -27,8 +33,8 @@ class MessageProvider extends ChangeNotifier {
   List<Message> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
 
-  void getAllContact() async {
-    _messageService.getAllContact().then((value) {
+  void getAllContact(String token) async {
+    _messageService.getAllContact(token).then((value) {
       mapContactToCustomerMessage(value);
     });
   }
@@ -119,7 +125,8 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getPastMessages({required int customerId, bool loadMore = false}) {
+  void getPastMessages(
+      {required int customerId, bool loadMore = false, required String token}) {
     var messages = customerMessage[findCustomerIndexById(customerId)].message;
     if (messages.isNotEmpty) {
       var lastMessageId = messages.last.id;
@@ -127,7 +134,8 @@ class MessageProvider extends ChangeNotifier {
           .getPastMessages(
               customerId: customerId,
               loadMore: loadMore,
-              lastMessageId: lastMessageId)
+              lastMessageId: lastMessageId,
+              token: token)
           .then((value) {
         addPreviousMessage(customerId, value);
       });
@@ -141,6 +149,6 @@ class MessageProvider extends ChangeNotifier {
 
   void sendMessage({required String customerNumber, required String message}) {
     _messageService.sendMessage(
-        customerNumber: customerNumber, message: message);
+        customerNumber: customerNumber, message: message, token: token);
   }
 }

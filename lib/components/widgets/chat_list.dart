@@ -1,5 +1,6 @@
 import 'package:aloha/components/widgets/chat_item.dart';
 import 'package:aloha/data/providers/message_provider.dart';
+import 'package:aloha/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,24 +16,26 @@ class ChatList extends StatefulWidget {
 
 class _ChatListState extends State<ChatList> {
   var chatListController = ScrollController();
-  late MessageProvider provider;
+  late MessageProvider messageProvider;
+  late UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
     chatListController.addListener(_loadMore);
-    provider = Provider.of<MessageProvider>(context, listen: false);
-    if (provider.getIsFirstLoad(widget.customer.id)) {
+    userProvider = Provider.of<UserProvider>(context, listen: false);
+    messageProvider = Provider.of<MessageProvider>(context, listen: false);
+    if (messageProvider.getIsFirstLoad(widget.customer.id)) {
       print("first load");
-      provider.setFirstLoadDone(widget.customer.id);
-      provider.getPastMessages(customerId: widget.customer.id);
+      messageProvider.setFirstLoadDone(widget.customer.id);
+      messageProvider.getPastMessages(customerId: widget.customer.id, token: userProvider.token);
     }
   }
 
   void _loadMore() {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
-      provider.getPastMessages(customerId: widget.customer.id, loadMore: true);
+      messageProvider.getPastMessages(customerId: widget.customer.id, loadMore: true,  token: userProvider.token);
     }
   }
 

@@ -12,14 +12,17 @@ class UserProvider with ChangeNotifier {
 
   late AgentEntity _agentEntity;
 
+  late String token;
+
   UserProvider() {
     _service = UserService();
     _preferences = UserPreferences();
-    getUser();
   }
 
-  getUser() async {
+  Future<AgentEntity> getUser() async {
     _agentEntity = await _preferences.getUser();
+    token = await _preferences.getToken();
+    return _agentEntity;
   }
 
   Future<ApiResponse<LoginData>> login(
@@ -39,6 +42,9 @@ class UserProvider with ChangeNotifier {
       }
       return value;
     });
+  }
+  void logout() {
+    _preferences.logout();
   }
 
   AgentEntity get user => _agentEntity;

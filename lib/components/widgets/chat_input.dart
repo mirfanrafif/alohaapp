@@ -42,7 +42,6 @@ class _ChatInputState extends State<ChatInput> {
               decoration: InputDecoration(
                   hintText: "Tulis pesan disini...",
                   contentPadding: const EdgeInsets.all(8),
-                  // prefixIcon: const Icon(Icons.attachment),
                   prefixIcon: IconButton(onPressed: () {}, icon: const Icon(Icons.attachment)),
                   enabledBorder: inputBorder,
                   focusedBorder: inputBorder,

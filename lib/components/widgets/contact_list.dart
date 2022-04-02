@@ -3,8 +3,25 @@ import 'package:provider/provider.dart';
 import '../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
-class ContactList extends StatelessWidget {
-  const ContactList({Key? key}) : super(key: key);
+class ContactList extends StatefulWidget {
+  String token;
+
+  ContactList({Key? key, required this.token}) : super(key: key);
+
+  @override
+  State<ContactList> createState() => _ContactListState();
+}
+
+class _ContactListState extends State<ContactList> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    var provider = Provider.of<MessageProvider>(context, listen: false);
+    provider.setToken(widget.token);
+    provider.init();
+  }
 
   @override
   Widget build(BuildContext context) {
