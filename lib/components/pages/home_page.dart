@@ -35,7 +35,6 @@ class HomePage extends StatelessWidget {
                 title: const Text("Logout"),
                 onTap: () {
                   Provider.of<MessageProvider>(context, listen: false).logout();
-                  provider.logout();
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -46,7 +45,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        body: ContactList(token: provider.token, id: provider.user.id,),
+        body: ContactList(),
       ),
     );
   }

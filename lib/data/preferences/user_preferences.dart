@@ -1,4 +1,4 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:aloha/data/preferences/BasePreferences.dart';
 
 import '../models/agent.dart';
 
@@ -10,11 +10,9 @@ class UserPreferences {
   final ROLE = "role";
   final PROFILE_PHOTO = "profile_photo";
   final JWT_TOKEN = "jwt_token";
+  var preferences = BasePreferences.preferences;
 
-  Future<AgentEntity> getUser() async {
-
-    var preferences = await SharedPreferences.getInstance();
-
+  AgentEntity getUser() {
     var user = AgentEntity(
         id: preferences.getInt("id") ?? 0,
         fullName: preferences.getString("full_name") ?? "",
@@ -25,9 +23,7 @@ class UserPreferences {
     return user;
   }
 
-  void setUser(AgentEntity agent) async {
-
-    var preferences = await SharedPreferences.getInstance();
+  void setUser(AgentEntity agent) {
     preferences.setInt(ID, agent.id);
     preferences.setString(FULL_NAME, agent.fullName);
     preferences.setString(USERNAME, agent.username);
@@ -36,21 +32,15 @@ class UserPreferences {
     preferences.setString(PROFILE_PHOTO, agent.profilePhoto ?? "");
   }
 
-  Future<String> getToken() async {
-    var preferences = await SharedPreferences.getInstance();
-
+  String getToken() {
     return preferences.getString(JWT_TOKEN) ?? "";
   }
 
   void setToken(String token) async {
-    var preferences = await SharedPreferences.getInstance();
     preferences.setString(JWT_TOKEN, token);
   }
 
-  void logout() async {
-    var preferences = await SharedPreferences.getInstance();
+  void logout() {
     preferences.clear();
   }
 }
-
-

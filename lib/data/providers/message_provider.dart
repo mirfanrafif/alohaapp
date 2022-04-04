@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/Contact.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:flutter/material.dart';
@@ -13,23 +14,19 @@ class MessageProvider extends ChangeNotifier {
   List<CustomerMessage> _customerMessage = [];
 
   final MessageService _messageService = MessageService();
+  final UserPreferences _preferences = UserPreferences();
 
   List<CustomerMessage> get customerMessage =>
       List.unmodifiable(_customerMessage);
 
-  String token = "";
-  int id = 0;
+  String _token = "";
+  int _id = 0;
 
-  void setId(int id) {
-    this.id = id;
-  }
-
-  void setToken(String token) {
-    this.token = token;
-  }
-
-  init() {
-    getAllContact(token);
+  void init() {
+    _token = _preferences.getToken();
+    var user = _preferences.getUser();
+    _id = user.id;
+    getAllContact();
     setupSocket();
   }
 
@@ -38,10 +35,9 @@ class MessageProvider extends ChangeNotifier {
   List<Message> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
 
-  void getAllContact(String token) async {
-    _messageService.getAllContact(token).then((value) {
-      mapContactToCustomerMessage(value);
-    });
+  void getAllContact() async {
+    var value = await _messageService.getAllContact(_token);
+    mapContactToCustomerMessage(value);
   }
 
   void mapContactToCustomerMessage(List<Contact> contactList) {
@@ -55,16 +51,23 @@ class MessageProvider extends ChangeNotifier {
 
   void logout() {
     _customerMessage.clear();
+    _preferences.logout();
     notifyListeners();
   }
 
   void setupSocket() {
     try {
-      var socketClient = io("https://dev.mirfanrafif.me/messages",
-          OptionBuilder().setTransports(['websocket']).build());
+      var socketClient = io(
+          "https://dev.mirfanrafif.me/messages",
+          OptionBuilder()
+              .setTransports(['websocket'])
+              .enableReconnection()
+              .build());
 
       socketClient.onConnectError((data) {
         if (data is WebSocketException) {
+          print("Error : " + data.message);
+        } else if (data is SocketException) {
           print("Error : " + data.message);
         } else {
           print("Error : " + data);
@@ -73,7 +76,7 @@ class MessageProvider extends ChangeNotifier {
       socketClient.onConnect((data) {
         print("Connected");
 
-        var data = {'id': id};
+        var data = {'id': _id};
         socketClient.emit("join", jsonEncode(data));
 
         socketClient.on("message", (data) {
@@ -136,19 +139,19 @@ class MessageProvider extends ChangeNotifier {
   }
 
   void getPastMessages(
-      {required int customerId, bool loadMore = false, required String token}) {
+      {required int customerId,
+      bool loadMore = false,
+      required String token}) async {
     var messages = customerMessage[findCustomerIndexById(customerId)].message;
     if (messages.isNotEmpty) {
       var lastMessageId = messages.last.id;
-      _messageService
-          .getPastMessages(
-              customerId: customerId,
-              loadMore: loadMore,
-              lastMessageId: lastMessageId,
-              token: token)
-          .then((value) {
-        addPreviousMessage(customerId, value);
-      });
+      var response = await _messageService.getPastMessages(
+          customerId: customerId,
+          loadMore: loadMore,
+          lastMessageId: lastMessageId,
+          token: token);
+
+      addPreviousMessage(customerId, response);
     }
   }
 
@@ -159,6 +162,6 @@ class MessageProvider extends ChangeNotifier {
 
   void sendMessage({required String customerNumber, required String message}) {
     _messageService.sendMessage(
-        customerNumber: customerNumber, message: message, token: token);
+        customerNumber: customerNumber, message: message, token: _token);
   }
 }

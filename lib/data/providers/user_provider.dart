@@ -16,36 +16,28 @@ class UserProvider with ChangeNotifier {
   UserProvider() {
     _service = UserService();
     _preferences = UserPreferences();
-  }
-
-  Future<AgentEntity> getUser() async {
-    _agentEntity = await _preferences.getUser();
-    _token = await _preferences.getToken();
-    return _agentEntity;
+    _agentEntity = _preferences.getUser();
+    _token = _preferences.getToken();
   }
 
   Future<ApiResponse<LoginData>> login(
-      {required String username, required String password}) {
-    return _service.login(username: username, password: password).then((value) {
-      if (value.success && value.data != null) {
-        _agentEntity = AgentEntity(
-            id: value.data!.user.id,
-            fullName: value.data!.user.fullName,
-            username: value.data!.user.username,
-            email: value.data!.user.email,
-            role: value.data!.user.role,
-            profilePhoto: value.data!.user.profilePhoto);
-        _token = value.data!.token;
-        //set preferences
-        _preferences.setUser(_agentEntity);
-        _preferences.setToken(value.data!.token);
-        notifyListeners();
-      }
-      return value;
-    });
-  }
-  void logout() {
-    _preferences.logout();
+      {required String username, required String password}) async {
+    var value = await _service.login(username: username, password: password);
+    if (value.success && value.data != null) {
+      _agentEntity = AgentEntity(
+          id: value.data!.user.id,
+          fullName: value.data!.user.fullName,
+          username: value.data!.user.username,
+          email: value.data!.user.email,
+          role: value.data!.user.role,
+          profilePhoto: value.data!.user.profilePhoto);
+      _token = value.data!.token;
+      //set preferences
+      _preferences.setUser(_agentEntity);
+      _preferences.setToken(value.data!.token);
+      notifyListeners();
+    }
+    return value;
   }
 
   String get token => _token;

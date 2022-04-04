@@ -19,7 +19,6 @@ class _ChatInputState extends State<ChatInput> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     chatController.addListener(() {
       setState(() {
