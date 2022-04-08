@@ -8,5 +8,7 @@ class CustomerMessage {
 
   bool firstLoad = true;
 
+  bool allLoaded = false;
+
   CustomerMessage({required this.customer, required this.message});
 }

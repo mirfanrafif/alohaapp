@@ -1,9 +1,10 @@
 import 'package:aloha/components/pages/home_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
-import 'package:aloha/data/preferences/BasePreferences.dart';
+import 'package:aloha/data/preferences/base_preferences.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,8 +22,10 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       child: MaterialApp(
         title: 'Aloha',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.deepOrange,
+          textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
         ),
         home: Consumer<UserProvider>(
           builder: (context, provider, child) =>

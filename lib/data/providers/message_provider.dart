@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/Contact.dart';
 import 'package:aloha/data/service/message_service.dart';
+import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart';
 
@@ -30,7 +32,7 @@ class MessageProvider extends ChangeNotifier {
     setupSocket();
   }
 
-  var loading = false;
+  var chatLoading = false;
 
   List<Message> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
@@ -38,6 +40,11 @@ class MessageProvider extends ChangeNotifier {
   void getAllContact() async {
     var value = await _messageService.getAllContact(_token);
     mapContactToCustomerMessage(value);
+  }
+
+  bool getIsAllLoaded(int customerId) {
+    var index = findCustomerIndexById(customerId);
+    return customerMessage[index].allLoaded;
   }
 
   void mapContactToCustomerMessage(List<Contact> contactList) {
@@ -58,7 +65,7 @@ class MessageProvider extends ChangeNotifier {
   void setupSocket() {
     try {
       var socketClient = io(
-          "https://dev.mirfanrafif.me/messages",
+          "https://" + BASE_URL + "/messages",
           OptionBuilder()
               .setTransports(['websocket'])
               .enableReconnection()
@@ -100,6 +107,9 @@ class MessageProvider extends ChangeNotifier {
                 incomingMessage,
                 ...customerMessage[customerIndex].message
               ];
+            } else {
+              customerMessage[customerIndex].message[messageIndex] =
+                  incomingMessage;
             }
           }
 
@@ -135,24 +145,31 @@ class MessageProvider extends ChangeNotifier {
         customerMessage[customerIndex].message.add(item);
       }
     }
-    notifyListeners();
   }
 
-  void getPastMessages(
-      {required int customerId,
-      bool loadMore = false,
-      required String token}) async {
-    var messages = customerMessage[findCustomerIndexById(customerId)].message;
-    if (messages.isNotEmpty) {
+  void getPastMessages({required int customerId, bool loadMore = false}) async {
+    chatLoading = true;
+    var customerIndex = findCustomerIndexById(customerId);
+    var messages = customerMessage[customerIndex].message;
+    if (customerMessage[customerIndex].allLoaded) {
+      // return;
+    } else if (messages.isNotEmpty) {
       var lastMessageId = messages.last.id;
       var response = await _messageService.getPastMessages(
           customerId: customerId,
           loadMore: loadMore,
           lastMessageId: lastMessageId,
-          token: token);
+          token: _token);
 
-      addPreviousMessage(customerId, response);
+      if (response.isNotEmpty) {
+        addPreviousMessage(customerId, response);
+      } else {
+        customerMessage[customerIndex].allLoaded = true;
+      }
     }
+
+    chatLoading = false;
+    notifyListeners();
   }
 
   int findCustomerIndexById(int customerId) {
@@ -163,5 +180,21 @@ class MessageProvider extends ChangeNotifier {
   void sendMessage({required String customerNumber, required String message}) {
     _messageService.sendMessage(
         customerNumber: customerNumber, message: message, token: _token);
+  }
+
+  void sendDocument({required File file, required String customerNumber}) {
+    _messageService.sendDocument(
+        file: file, customerNumber: customerNumber, token: _token);
+  }
+
+  Future<void> sendImage(
+      {required XFile file,
+      required String customerNumber,
+      required String message}) async {
+    await _messageService.sendImage(
+        file: file,
+        message: message,
+        customerNumber: customerNumber,
+        token: _token);
   }
 }

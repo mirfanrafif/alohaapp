@@ -1,6 +1,5 @@
 import 'package:aloha/components/widgets/chat_item.dart';
 import 'package:aloha/data/providers/message_provider.dart';
-import 'package:aloha/data/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,24 +16,30 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   var chatListController = ScrollController();
   late MessageProvider messageProvider;
-  late UserProvider userProvider;
 
   @override
   void initState() {
     super.initState();
     chatListController.addListener(_loadMore);
-    userProvider = Provider.of<UserProvider>(context, listen: false);
     messageProvider = Provider.of<MessageProvider>(context, listen: false);
     if (messageProvider.getIsFirstLoad(widget.customer.id)) {
       messageProvider.setFirstLoadDone(widget.customer.id);
-      messageProvider.getPastMessages(customerId: widget.customer.id, token: userProvider.token);
+      messageProvider.getPastMessages(customerId: widget.customer.id);
     }
   }
 
   void _loadMore() {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
-      messageProvider.getPastMessages(customerId: widget.customer.id, loadMore: true,  token: userProvider.token);
+      if (messageProvider.getIsAllLoaded(widget.customer.id)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Sudah di pesan paling atas")));
+        return;
+      }
+      messageProvider.getPastMessages(
+        customerId: widget.customer.id,
+        loadMore: true,
+      );
     }
   }
 
@@ -52,13 +57,7 @@ class _ChatListState extends State<ChatList> {
         if (messages.isNotEmpty) {
           return Column(
             children: [
-              if (provider.loading)
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+              if (provider.chatLoading) const LinearProgressIndicator(),
               Expanded(
                 child: ListView.builder(
                   controller: chatListController,
@@ -76,6 +75,27 @@ class _ChatListState extends State<ChatList> {
         }
       },
     );
+  }
+
+  Positioned buildScrollToBottomButton() {
+    return Positioned(
+      right: 16,
+      bottom: 16,
+      child: Container(
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(40),
+            ),
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+            color: Colors.white),
+        child: IconButton(
+            onPressed: scrollToBottom, icon: const Icon(Icons.arrow_downward)),
+      ),
+    );
+  }
+
+  void scrollToBottom() {
+    chatListController.jumpTo(0);
   }
 }
 

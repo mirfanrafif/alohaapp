@@ -3,6 +3,7 @@ import 'package:aloha/components/widgets/chat_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/response/Contact.dart';
+import '../widgets/customer_details.dart';
 
 class ChatPage extends StatelessWidget {
   final Customer customer;
@@ -35,7 +36,6 @@ class ChatPage extends StatelessWidget {
             onSelected: (result) {
               if (result != null) {
                 if (result == showCustomer) {
-                  //TODO: show customer bottom sheet
                   showModalBottomSheet(
                       context: context,
                       builder: (context) {
@@ -59,39 +59,6 @@ class ChatPage extends StatelessWidget {
           ChatInput(
             customer: customer,
           )
-        ],
-      ),
-    );
-  }
-}
-
-class CustomerDetails extends StatelessWidget {
-  final Customer customer;
-
-  const CustomerDetails({Key? key, required this.customer}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(60),
-      child: Column(
-        children: <Widget>[
-          const CircleAvatar(
-            backgroundColor: Colors.black12,
-            foregroundImage: AssetImage('assets/image/user.png'),
-            radius: 40,
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          Text(
-            customer.name,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Text(customer.phoneNumber),
         ],
       ),
     );

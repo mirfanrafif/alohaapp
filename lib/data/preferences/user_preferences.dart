@@ -1,4 +1,4 @@
-import 'package:aloha/data/preferences/BasePreferences.dart';
+import 'package:aloha/data/preferences/base_preferences.dart';
 
 import '../models/agent.dart';
 

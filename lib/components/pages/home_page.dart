@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
-        body: ContactList(),
+        body: const ContactList(),
       ),
     );
   }

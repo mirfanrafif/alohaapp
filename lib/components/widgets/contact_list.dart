@@ -13,7 +13,6 @@ class ContactList extends StatefulWidget {
 class _ContactListState extends State<ContactList> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     var provider = Provider.of<MessageProvider>(context, listen: false);
     provider.init();

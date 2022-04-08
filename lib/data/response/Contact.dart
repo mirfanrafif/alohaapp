@@ -90,7 +90,7 @@ class Agent {
         username: json["username"],
         email: json["email"],
         role: json["role"],
-        profilePhoto: json["profile_photo"] as String?,
+        profilePhoto: json["profile_photo"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
       );
