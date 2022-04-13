@@ -97,19 +97,28 @@ class MessageProvider extends ChangeNotifier {
               ..._customerMessage
             ];
           } else {
+            //mencari index pesan
             var messageIndex = customerMessage[customerIndex]
                 .message
                 .indexWhere((element) => element.id == incomingMessage.id);
             if (messageIndex == -1) {
+              //menerima pesan baru
               customerMessage[customerIndex].message = [
                 incomingMessage,
                 ...customerMessage[customerIndex].message
               ];
+
+              //update unread nya
+              if (incomingMessage.fromMe) {
+                customerMessage[customerIndex].unread = 0;
+              } else {
+                customerMessage[customerIndex].unread++;
+              }
             } else {
+              //bagian ini cuma buat update tracking
               customerMessage[customerIndex].message[messageIndex] =
                   incomingMessage;
             }
-            customerMessage[customerIndex].unread++;
           }
 
           notifyListeners();

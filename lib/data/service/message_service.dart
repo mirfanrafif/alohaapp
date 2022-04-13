@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import '../response/contact.dart';
 import '../response/Message.dart';
+import '../response/statistics.dart';
 
 class MessageService {
   Future<List<Message>> getPastMessages({

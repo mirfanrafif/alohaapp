@@ -10,10 +10,10 @@ class SalesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SalesProvider>(
-      builder: (context, value, child) {
+      builder: (context, provider, child) {
         return ListView.builder(
           itemBuilder: (context, index) {
-            var agent = value.agents[index];
+            var agent = provider.agents[index];
             return ListTile(
               leading: ProfilePicture(profilePhoto: agent.profilePhoto),
               title: Text(agent.fullName),
@@ -25,7 +25,7 @@ class SalesList extends StatelessWidget {
                           fontWeight: FontWeight.bold, color: Colors.red),
                     ),
               onTap: () {
-                value.selectedAgent = agent;
+                provider.selectedAgent = agent;
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) => AgentPage(
                     agent: agent,
@@ -34,7 +34,7 @@ class SalesList extends StatelessWidget {
               },
             );
           },
-          itemCount: value.agents.length,
+          itemCount: provider.agents.length,
         );
       },
     );

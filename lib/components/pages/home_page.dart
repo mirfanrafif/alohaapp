@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 const String pesanLabel = "Pesan";
 const String salesLabel = "Sales";
 const String jobLabel = "Job";
+const String profilLabel = "Profil";
 
 class _HomePageState extends State<HomePage> {
   String _selectedIndex = pesanLabel;
@@ -53,8 +54,14 @@ class _HomePageState extends State<HomePage> {
               if (provider.user.role == "admin") ...getAdminMenus(),
               ListTile(
                 leading: const Icon(Icons.account_circle),
-                title: const Text("Profil"),
-                onTap: () {},
+                title: const Text(profilLabel),
+                onTap: () {
+                  setState(() {
+                    _selectedIndex = profilLabel;
+                    _title = profilLabel;
+                  });
+                  Navigator.pop(context);
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.logout),
@@ -111,7 +118,33 @@ class _HomePageState extends State<HomePage> {
       case salesLabel:
         return const SalesList();
       default:
-        return Container();
+        return Container(
+          padding: const EdgeInsets.all(32),
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  "assets\\image\\under_contruction.png",
+                  width: 200,
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                const Text(
+                  "Masih dalam tahap pengembangan",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const Text("Mohon bersabar")
+              ],
+            ),
+          ),
+        );
     }
   }
 

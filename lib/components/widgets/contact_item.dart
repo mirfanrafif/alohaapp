@@ -31,7 +31,9 @@ class ContactItem extends StatelessWidget {
                 color: Colors.deepOrange,
                 child: Center(
                   child: Text(
-                    customerMessage.unread.toString(),
+                    customerMessage.unread > 9
+                        ? "9+"
+                        : customerMessage.unread.toString(),
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
