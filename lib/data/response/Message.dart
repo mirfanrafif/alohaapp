@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'Contact.dart';
+import 'contact.dart';
 
 MessageResponse messageResponseFromJson(String str) =>
     MessageResponse.fromJson(json.decode(str));

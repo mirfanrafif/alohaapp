@@ -1,4 +1,5 @@
 import 'package:aloha/data/response/Message.dart';
+import 'package:aloha/data/response/job.dart';
 
 class ContactResponse {
   ContactResponse({
@@ -31,6 +32,7 @@ class Contact {
     required this.customer,
     required this.createdAt,
     required this.agent,
+    required this.unread,
     required this.lastMessage,
     required this.updatedAt,
   });
@@ -38,6 +40,7 @@ class Contact {
   int id;
   Customer customer;
   DateTime createdAt;
+  int unread;
   List<Agent> agent;
   Message? lastMessage;
   DateTime updatedAt;
@@ -46,6 +49,7 @@ class Contact {
         id: json["id"],
         customer: Customer.fromJson(json["customer"]),
         createdAt: DateTime.parse(json["created_at"]),
+        unread: json['unread'],
         agent: List<Agent>.from(json["agent"].map((x) => Agent.fromJson(x))),
         lastMessage: json["lastMessage"] != null
             ? Message.fromJson(json["lastMessage"])
@@ -57,6 +61,7 @@ class Contact {
         "id": id,
         "customer": customer.toJson(),
         "created_at": createdAt.toIso8601String(),
+        "unread": unread,
         "agent": List<dynamic>.from(agent.map((x) => x.toJson())),
         "lastMessage": lastMessage?.toJson(),
         "updated_at": updatedAt.toIso8601String(),
@@ -73,6 +78,7 @@ class Agent {
     required this.profilePhoto,
     required this.createdAt,
     required this.updatedAt,
+    this.job,
   });
 
   int id;
@@ -83,17 +89,18 @@ class Agent {
   String? profilePhoto;
   DateTime createdAt;
   DateTime updatedAt;
+  Job? job;
 
   factory Agent.fromJson(Map<String, dynamic> json) => Agent(
-        id: json["id"],
-        fullName: json["full_name"],
-        username: json["username"],
-        email: json["email"],
-        role: json["role"],
-        profilePhoto: json["profile_photo"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-      );
+      id: json["id"],
+      fullName: json["full_name"],
+      username: json["username"],
+      email: json["email"],
+      role: json["role"],
+      profilePhoto: json["profile_photo"],
+      createdAt: DateTime.parse(json["created_at"]),
+      updatedAt: DateTime.parse(json["updated_at"]),
+      job: json['job'] != null ? Job.fromJson(json['job']) : null);
 
   Map<String, dynamic> toJson() => {
         "id": id,

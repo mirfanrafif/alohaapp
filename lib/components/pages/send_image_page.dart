@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:aloha/data/response/Contact.dart';
+import 'package:aloha/data/response/contact.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

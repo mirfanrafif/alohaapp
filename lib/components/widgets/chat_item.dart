@@ -1,4 +1,3 @@
-import 'package:aloha/components/pages/image_page.dart';
 import 'package:aloha/data/response/Message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -52,8 +51,7 @@ class ChatItem extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        DateFormat("Hm")
-                            .format(message.createdAt.add(Duration(hours: 7))),
+                        DateFormat("Hm").format(message.createdAt),
                         style: const TextStyle(
                             fontSize: 12, color: Colors.black54),
                       ),

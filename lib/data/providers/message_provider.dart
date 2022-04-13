@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:aloha/data/preferences/user_preferences.dart';
-import 'package:aloha/data/response/Contact.dart';
+import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -23,8 +23,10 @@ class MessageProvider extends ChangeNotifier {
 
   String _token = "";
   int _id = 0;
+  bool initDone = false;
 
   void init() {
+    initDone = true;
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
@@ -51,7 +53,8 @@ class MessageProvider extends ChangeNotifier {
     for (var contact in contactList) {
       _customerMessage.add(CustomerMessage(
           customer: contact.customer,
-          message: contact.lastMessage != null ? [contact.lastMessage!] : []));
+          message: contact.lastMessage != null ? [contact.lastMessage!] : [],
+          unread: contact.unread));
     }
     notifyListeners();
   }
@@ -59,6 +62,7 @@ class MessageProvider extends ChangeNotifier {
   void logout() {
     _customerMessage.clear();
     _preferences.logout();
+    initDone = false;
     notifyListeners();
   }
 
@@ -73,21 +77,14 @@ class MessageProvider extends ChangeNotifier {
 
       socketClient.onConnectError((data) {
         if (data is WebSocketException) {
-          print("Error : " + data.message);
         } else if (data is SocketException) {
-          print("Error : " + data.message);
-        } else {
-          print("Error : " + data);
-        }
+        } else {}
       });
       socketClient.onConnect((data) {
-        print("Connected");
-
         var data = {'id': _id};
         socketClient.emit("join", jsonEncode(data));
 
         socketClient.on("message", (data) {
-          print(data);
           var incomingMessage = Message.fromJson(jsonDecode(data as String));
           var customerIndex =
               findCustomerIndexById(incomingMessage.customer.id);
@@ -95,7 +92,8 @@ class MessageProvider extends ChangeNotifier {
             _customerMessage = [
               CustomerMessage(
                   customer: incomingMessage.customer,
-                  message: [incomingMessage]),
+                  message: [incomingMessage],
+                  unread: 1),
               ..._customerMessage
             ];
           } else {
@@ -111,15 +109,14 @@ class MessageProvider extends ChangeNotifier {
               customerMessage[customerIndex].message[messageIndex] =
                   incomingMessage;
             }
+            customerMessage[customerIndex].unread++;
           }
 
           notifyListeners();
           return data;
         });
       });
-    } catch (e) {
-      print(e);
-    }
+    } catch (e) {}
   }
 
   bool getIsFirstLoad(int customerId) {
@@ -148,12 +145,13 @@ class MessageProvider extends ChangeNotifier {
   }
 
   void getPastMessages({required int customerId, bool loadMore = false}) async {
-    chatLoading = true;
     var customerIndex = findCustomerIndexById(customerId);
     var messages = customerMessage[customerIndex].message;
     if (customerMessage[customerIndex].allLoaded) {
-      // return;
-    } else if (messages.isNotEmpty) {
+      return;
+    }
+    if (messages.isNotEmpty) {
+      chatLoading = true;
       var lastMessageId = messages.last.id;
       var response = await _messageService.getPastMessages(
           customerId: customerId,
@@ -166,10 +164,9 @@ class MessageProvider extends ChangeNotifier {
       } else {
         customerMessage[customerIndex].allLoaded = true;
       }
+      chatLoading = false;
+      notifyListeners();
     }
-
-    chatLoading = false;
-    notifyListeners();
   }
 
   int findCustomerIndexById(int customerId) {

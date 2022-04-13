@@ -2,7 +2,7 @@
 //
 //     final userResponse = userResponseFromJson(jsonString);
 
-import 'package:aloha/data/response/Contact.dart';
+import 'package:aloha/data/response/contact.dart';
 import 'dart:convert';
 
 UserResponse userResponseFromJson(String str) =>
@@ -51,5 +51,61 @@ class LoginData {
   Map<String, dynamic> toJson() => {
         "user": user.toJson(),
         "token": token,
+      };
+}
+
+GetAllUserResponse getAllUserResponseFromJson(String str) =>
+    GetAllUserResponse.fromJson(json.decode(str));
+
+String getAllUserResponseToJson(GetAllUserResponse data) =>
+    json.encode(data.toJson());
+
+class GetAllUserResponse {
+  GetAllUserResponse({
+    required this.success,
+    required this.data,
+    required this.message,
+  });
+
+  final bool success;
+  final List<Agent> data;
+  final String message;
+
+  factory GetAllUserResponse.fromJson(Map<String, dynamic> json) =>
+      GetAllUserResponse(
+        success: json["success"],
+        data: List<Agent>.from(json["data"].map((x) => Agent.fromJson(x))),
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "success": success,
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "message": message,
+      };
+}
+
+class UpdateUserResponse {
+  UpdateUserResponse({
+    required this.success,
+    required this.data,
+    required this.message,
+  });
+
+  bool success;
+  Agent data;
+  String message;
+
+  factory UpdateUserResponse.fromJson(Map<String, dynamic> json) =>
+      UpdateUserResponse(
+        success: json["success"],
+        data: Agent.fromJson(json["data"]),
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "success": success,
+        "data": data.toJson(),
+        "message": message,
       };
 }

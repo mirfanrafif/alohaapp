@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-import '../response/Contact.dart';
+import '../response/contact.dart';
 import '../response/Message.dart';
 
 class MessageService {
@@ -13,14 +13,19 @@ class MessageService {
     bool loadMore = false,
     required String token,
   }) async {
-    var response = await get(
-        Uri.https(BASE_URL, "/message/${customerId.toString()}",
-            loadMore ? {'last_message_id': lastMessageId.toString()} : {}),
-        headers: {'Authorization': 'Bearer $token'});
-    if (response.statusCode == 200) {
-      var data = messageResponseFromJson(response.body);
-      return data.data;
-    } else {
+    try {
+      var response = await get(
+          Uri.https(BASE_URL, "/message/${customerId.toString()}",
+              loadMore ? {'last_message_id': lastMessageId.toString()} : {}),
+          headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode == 200) {
+        var data = messageResponseFromJson(response.body);
+        return data.data;
+      } else {
+        return [];
+      }
+    } catch (e) {
+      print(e.toString());
       return [];
     }
   }
@@ -33,11 +38,10 @@ class MessageService {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
         return data.data;
       } else {
-        print(response.body);
         return [];
       }
     } catch (e) {
-      print("Error: " + e.toString());
+      print(e.toString());
       return [];
     }
   }
@@ -55,11 +59,9 @@ class MessageService {
         var data = messageResponseFromJson(response.body);
         return data.data;
       } else {
-        print(response.body);
         return [];
       }
     } catch (e) {
-      print("Error: " + e.toString());
       return [];
     }
   }
@@ -92,11 +94,9 @@ class MessageService {
         var data = messageResponseFromJson(response);
         return data.data;
       } else {
-        print(response);
         return [];
       }
     } catch (e) {
-      print("Error: " + e.toString());
       return [];
     }
   }
@@ -125,11 +125,9 @@ class MessageService {
         var data = messageResponseFromJson(response);
         return data.data;
       } else {
-        print(response);
         return [];
       }
     } catch (e) {
-      print("Error: " + e.toString());
       return [];
     }
   }

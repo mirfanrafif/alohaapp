@@ -3,7 +3,7 @@ import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/response/Contact.dart';
+import '../../data/response/contact.dart';
 
 class ChatList extends StatefulWidget {
   const ChatList({Key? key, required this.customer}) : super(key: key);
@@ -77,23 +77,6 @@ class _ChatListState extends State<ChatList> {
     );
   }
 
-  Positioned buildScrollToBottomButton() {
-    return Positioned(
-      right: 16,
-      bottom: 16,
-      child: Container(
-        decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(40),
-            ),
-            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
-            color: Colors.white),
-        child: IconButton(
-            onPressed: scrollToBottom, icon: const Icon(Icons.arrow_downward)),
-      ),
-    );
-  }
-
   void scrollToBottom() {
     chatListController.jumpTo(0);
   }
@@ -112,7 +95,11 @@ class EmptyChat extends StatelessWidget {
         children: const [
           Image(
             image: AssetImage('assets\\image\\empty_message_bg.png'),
-            width: 300,
+            height: 200,
+          ),
+          Text(
+            "Chat Kosong",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
           Text("Pesan akan tampil disini")
         ],

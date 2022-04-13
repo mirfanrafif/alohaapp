@@ -21,6 +21,7 @@ class UserService {
             message: "Failed to login: " + error.message);
       }
     } catch (e) {
+      print(e);
       return ApiResponse(
           success: false,
           data: null,

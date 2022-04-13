@@ -1,4 +1,4 @@
-import '../response/Contact.dart';
+import '../response/contact.dart';
 import '../response/Message.dart';
 
 class CustomerMessage {
@@ -10,5 +10,8 @@ class CustomerMessage {
 
   bool allLoaded = false;
 
-  CustomerMessage({required this.customer, required this.message});
+  int unread = 0;
+
+  CustomerMessage(
+      {required this.customer, required this.message, required this.unread});
 }
