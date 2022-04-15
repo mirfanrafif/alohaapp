@@ -1,6 +1,7 @@
+import 'package:aloha/components/pages/job_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
-import 'package:aloha/components/widgets/contact_list.dart';
-import 'package:aloha/components/widgets/sales_list.dart';
+import 'package:aloha/components/widgets/messages/contact_list.dart';
+import 'package:aloha/components/widgets/agents/sales_list.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:aloha/utils/constants.dart';
@@ -117,6 +118,8 @@ class _HomePageState extends State<HomePage> {
         return const ContactList();
       case salesLabel:
         return const SalesList();
+      case jobLabel:
+        return const JobPage();
       default:
         return Container(
           padding: const EdgeInsets.all(32),

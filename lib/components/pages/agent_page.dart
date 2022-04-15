@@ -1,5 +1,5 @@
-import 'package:aloha/components/widgets/agent_profile.dart';
-import 'package:aloha/components/widgets/agent_statistics.dart';
+import 'package:aloha/components/widgets/agents/agent_profile.dart';
+import 'package:aloha/components/widgets/agents/agent_statistics.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/response/contact.dart';

@@ -14,9 +14,7 @@ class ProfilePicture extends StatelessWidget {
       return CircleAvatar(
         foregroundImage: NetworkImage(imageUrl),
         backgroundColor: Colors.black12,
-        onForegroundImageError: (o, e) {
-          print(e);
-        },
+        onForegroundImageError: (o, e) {},
       );
     } else {
       return const CircleAvatar(

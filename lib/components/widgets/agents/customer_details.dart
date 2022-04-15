@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../data/response/contact.dart';
+import '../../../data/response/contact.dart';
 
 class CustomerDetails extends StatelessWidget {
   final Customer customer;
@@ -32,7 +32,10 @@ class CustomerDetails extends StatelessWidget {
           const SizedBox(
             height: 32,
           ),
-          OutlinedButton(onPressed: () {}, child: Text("Tombol untuk apa gitu"))
+          OutlinedButton(
+            onPressed: () {},
+            child: const Text("Tombol untuk apa gitu"),
+          )
         ],
       ),
     );

@@ -2,8 +2,8 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/providers/sales_provider.dart';
-import '../../data/response/statistics.dart';
+import '../../../data/providers/sales_provider.dart';
+import '../../../data/response/statistics.dart';
 
 class AgentStatisticsCustomerChart extends StatelessWidget {
   const AgentStatisticsCustomerChart({Key? key}) : super(key: key);

@@ -64,8 +64,12 @@ class _LoginPageState extends State<LoginPage> {
               "Login",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
             ),
+            const SizedBox(
+              height: 24,
+            ),
             TextField(
-              decoration: const InputDecoration(hintText: "Username"),
+              decoration: const InputDecoration(
+                  labelText: "Username", border: OutlineInputBorder()),
               controller: _usernameController,
             ),
             const SizedBox(
@@ -74,7 +78,8 @@ class _LoginPageState extends State<LoginPage> {
             TextField(
               obscureText: true,
               controller: _passwordController,
-              decoration: const InputDecoration(hintText: "Password"),
+              decoration: const InputDecoration(
+                  labelText: "Password", border: OutlineInputBorder()),
             ),
             const SizedBox(
               height: 8,

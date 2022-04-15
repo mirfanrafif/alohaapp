@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../data/providers/message_provider.dart';
+import '../../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
 class ContactList extends StatefulWidget {
@@ -35,18 +35,18 @@ class _ContactListState extends State<ContactList> {
       builder: (context, provider, child) {
         return Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: const InputDecoration(
-                  labelText: "Cari kontak...",
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(8),
-                  suffixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextField(
+            //     controller: _searchController,
+            //     decoration: const InputDecoration(
+            //       labelText: "Cari kontak...",
+            //       border: OutlineInputBorder(),
+            //       contentPadding: EdgeInsets.all(8),
+            //       suffixIcon: Icon(Icons.search),
+            //     ),
+            //   ),
+            // ),
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) => ContactItem(

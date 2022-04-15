@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/providers/sales_provider.dart';
+import '../../../data/providers/sales_provider.dart';
 
 class AgentProfile extends StatefulWidget {
   const AgentProfile({Key? key}) : super(key: key);

@@ -82,11 +82,10 @@ class _SendImagePageState extends State<SendImagePage> {
                           contentPadding: const EdgeInsets.all(8),
                           enabledBorder: inputBorder,
                           focusedBorder: inputBorder,
-                          hintStyle: const TextStyle(color: Colors.white70),
+                          filled: true,
                           fillColor: Colors.white),
                       minLines: 1,
                       maxLines: 5,
-                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                   const SizedBox(

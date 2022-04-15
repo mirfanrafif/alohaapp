@@ -1,9 +1,9 @@
-import 'package:aloha/components/widgets/chat_input.dart';
-import 'package:aloha/components/widgets/chat_list.dart';
+import 'package:aloha/components/widgets/messages/chat_input.dart';
+import 'package:aloha/components/widgets/messages/chat_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../data/response/contact.dart';
-import '../widgets/customer_details.dart';
+import '../widgets/agents/customer_details.dart';
 
 class ChatPage extends StatelessWidget {
   final Customer customer;

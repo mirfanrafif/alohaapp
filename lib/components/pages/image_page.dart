@@ -45,6 +45,7 @@ class ImagePage extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 width: double.infinity,
+                color: Colors.black54,
                 padding: const EdgeInsets.all(8),
                 child: Text(
                   message.message,

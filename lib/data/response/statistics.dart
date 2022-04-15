@@ -35,16 +35,16 @@ class StatisticsResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['full_name'] = this.fullName;
-    data['username'] = this.username;
-    data['email'] = this.email;
-    data['role'] = this.role;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    if (this.statistics != null) {
-      data['statistics'] = this.statistics!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['full_name'] = fullName;
+    data['username'] = username;
+    data['email'] = email;
+    data['role'] = role;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    if (statistics != null) {
+      data['statistics'] = statistics!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -81,22 +81,22 @@ class Statistics {
     if (json['dailyReport'] != null) {
       dailyReport = <DailyReport>[];
       json['dailyReport'].forEach((v) {
-        dailyReport!.add(new DailyReport.fromJson(v));
+        dailyReport!.add(DailyReport.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['phoneNumber'] = this.phoneNumber;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['average_all_response_time'] = this.averageAllResponseTime;
-    data['all_unread_message_count'] = this.allUnreadMessageCount;
-    if (this.dailyReport != null) {
-      data['dailyReport'] = this.dailyReport!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['phoneNumber'] = phoneNumber;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
+    data['average_all_response_time'] = averageAllResponseTime;
+    data['all_unread_message_count'] = allUnreadMessageCount;
+    if (dailyReport != null) {
+      data['dailyReport'] = dailyReport!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -117,7 +117,6 @@ class DailyReport {
       this.responseTimes});
 
   DailyReport.fromJson(Map<String, dynamic> json) {
-    print(json);
     date = json['date'];
     average = json['average'].toDouble();
     lateResponse = json['late_response'];
@@ -125,20 +124,19 @@ class DailyReport {
     if (json['responseTimes'] != null) {
       responseTimes = <ResponseTimes>[];
       json['responseTimes'].forEach((v) {
-        responseTimes!.add(new ResponseTimes.fromJson(v));
+        responseTimes!.add(ResponseTimes.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['date'] = this.date;
-    data['average'] = this.average;
-    data['late_response'] = this.lateResponse;
-    data['unread_message'] = this.unreadMessage;
-    if (this.responseTimes != null) {
-      data['responseTimes'] =
-          this.responseTimes!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = {};
+    data['date'] = date;
+    data['average'] = average;
+    data['late_response'] = lateResponse;
+    data['unread_message'] = unreadMessage;
+    if (responseTimes != null) {
+      data['responseTimes'] = responseTimes!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -161,11 +159,11 @@ class ResponseTimes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['question'] = this.question;
-    data['answer'] = this.answer;
-    data['formattedString'] = this.formattedString;
-    data['seconds'] = this.seconds;
+    final Map<String, dynamic> data = {};
+    data['question'] = question;
+    data['answer'] = answer;
+    data['formattedString'] = formattedString;
+    data['seconds'] = seconds;
     return data;
   }
 }

@@ -1,9 +1,9 @@
-import 'package:aloha/components/widgets/chat_item.dart';
+import 'package:aloha/components/widgets/messages/chat_item.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../data/response/contact.dart';
+import '../../../data/response/contact.dart';
 
 class ChatList extends StatefulWidget {
   const ChatList({Key? key, required this.customer}) : super(key: key);

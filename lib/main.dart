@@ -1,6 +1,7 @@
 import 'package:aloha/components/pages/home_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/data/preferences/base_preferences.dart';
+import 'package:aloha/data/providers/job_provider.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
         title: 'Aloha',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.teal,
           textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
         ),
         home: Consumer<UserProvider>(
@@ -34,11 +35,18 @@ class MyApp extends StatelessWidget {
         ),
       ),
       providers: [
-        ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => MessageProvider()),
+        ChangeNotifierProvider(
+          create: (context) => UserProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MessageProvider(),
+        ),
         ChangeNotifierProvider(
           create: (context) => SalesProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (context) => JobProvider(),
+        ),
       ],
     );
   }

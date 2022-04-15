@@ -1,6 +1,5 @@
-import 'package:aloha/components/widgets/customer_daily_chart.dart';
+import 'package:aloha/components/widgets/agents/customer_daily_chart.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
-import 'package:aloha/data/response/statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +33,6 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _provider = Provider.of<SalesProvider>(context, listen: false);
   }

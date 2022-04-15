@@ -2,7 +2,7 @@ import 'package:aloha/components/pages/chat_page.dart';
 import 'package:aloha/data/response/Message.dart';
 import 'package:flutter/material.dart';
 
-import '../../data/models/customer_message.dart';
+import '../../../data/models/customer_message.dart';
 
 class ContactItem extends StatelessWidget {
   final CustomerMessage customerMessage;
@@ -57,17 +57,6 @@ class ContactItem extends StatelessWidget {
       return const Text("");
     }
 
-    var getBody = () {
-      if (lastMessage.message.isNotEmpty) {
-        return Text(
-          lastMessage.message,
-          maxLines: 2,
-        );
-      } else {
-        return Text(lastMessage.type);
-      }
-    };
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -79,8 +68,12 @@ class ContactItem extends StatelessWidget {
           const SizedBox(width: 8)
         ],
         Expanded(
-          child: getBody(),
-        ),
+            child: lastMessage.message.isNotEmpty
+                ? Text(
+                    lastMessage.message,
+                    maxLines: 2,
+                  )
+                : Text(lastMessage.type)),
       ],
     );
   }
