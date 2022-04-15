@@ -13,7 +13,8 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
     var provider = Provider.of<SalesProvider>(context);
     return Column(
       children: [
-        const Text("Rata-rata waktu respon per-hari"),
+        Text("Waktu respon per-hari dengan customer " +
+            (provider.statistics!.name ?? "")),
         SizedBox(
           width: 500,
           height: 200,
@@ -22,7 +23,9 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
               id: 'Agent to customer Report',
               colorFn: (DailyReport report, _) =>
                   Color.fromHex(code: "#ffa600"),
-              data: provider.statistics?.dailyReport ?? [],
+              data: provider.statistics!.dailyReport ?? [],
+              measureLowerBoundFn: (_, __) => 0,
+              measureUpperBoundFn: (_, __) => 15,
               domainFn: (DailyReport report, _) {
                 var dateSplit = report.date?.split('/');
                 return DateTime(
@@ -31,7 +34,7 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
                   int.parse(dateSplit?[0] ?? "1"),
                 );
               },
-              measureFn: (DailyReport report, _) => report.average,
+              measureFn: (DailyReport report, _) => (report.average ?? 0) / 60,
             ),
           ]),
         ),

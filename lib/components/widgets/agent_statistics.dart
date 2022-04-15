@@ -15,7 +15,6 @@ class AgentStatistics extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: const [
-          StatisticsDatePicker(),
           Expanded(child: AgentStatisticsContent()),
         ],
       ),
@@ -23,18 +22,19 @@ class AgentStatistics extends StatelessWidget {
   }
 }
 
-class StatisticsDatePicker extends StatefulWidget {
-  const StatisticsDatePicker({Key? key}) : super(key: key);
+class AgentStatisticsContent extends StatefulWidget {
+  const AgentStatisticsContent({Key? key}) : super(key: key);
 
   @override
-  State<StatisticsDatePicker> createState() => _StatisticsDatePickerState();
+  State<AgentStatisticsContent> createState() => _AgentStatisticsContentState();
 }
 
-class _StatisticsDatePickerState extends State<StatisticsDatePicker> {
+class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
   late SalesProvider _provider;
 
   @override
   void initState() {
+    // TODO: implement initState
     super.initState();
     _provider = Provider.of<SalesProvider>(context, listen: false);
   }
@@ -53,45 +53,33 @@ class _StatisticsDatePickerState extends State<StatisticsDatePicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SalesProvider>(
-      builder: (context, value, child) => Row(
-        children: [
-          Expanded(
-            child: Text(
-              value.selectedDate != null
-                  ? value.getFormattedStartDate() +
-                      " s.d " +
-                      value.getFormattedEndDate()
-                  : "Pilih tanggal",
-            ),
-          ),
-          IconButton(
-            onPressed: selectDate,
-            icon: const Icon(
-              Icons.date_range,
-              color: Colors.deepOrange,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class AgentStatisticsContent extends StatefulWidget {
-  const AgentStatisticsContent({Key? key}) : super(key: key);
-
-  @override
-  State<AgentStatisticsContent> createState() => _AgentStatisticsContentState();
-}
-
-class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
-  @override
-  Widget build(BuildContext context) {
     return Consumer<SalesProvider>(builder: (context, provider, child) {
-      if (provider.statisticsResponse != null) {
-        return ListView(
-          children: [
+      return ListView(
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  provider.selectedDate != null
+                      ? provider.getFormattedStartDate() +
+                          " s.d " +
+                          provider.getFormattedEndDate()
+                      : "Pilih tanggal",
+                ),
+              ),
+              IconButton(
+                onPressed: selectDate,
+                icon: const Icon(
+                  Icons.date_range,
+                  color: Colors.deepOrange,
+                ),
+              )
+            ],
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          if (provider.statisticsResponse != null) ...[
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -110,6 +98,11 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text("Laporan per-customer dari sales " +
+                (provider.selectedAgent?.fullName ?? "")),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16),
@@ -139,130 +132,208 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                 ),
               ),
             ),
-            if (provider.statistics != null) ...[
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Pesan tidak terjawab",
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              provider.statistics?.allUnreadMessageCount
-                                      ?.toString() ??
-                                  "",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
+          ],
+          if (provider.statistics != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Pesan tidak terjawab",
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            provider.statistics?.allUnreadMessageCount
+                                    ?.toString() ??
+                                "",
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          )
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Rata-rata waktu respons",
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              (provider.statistics?.averageAllResponseTime
-                                          ?.floor()
-                                          .toString() ??
-                                      "") +
-                                  "\ndetik",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            )
-                          ],
-                        ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Rata-rata waktu respons",
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            (provider.statistics?.averageAllResponseTime
+                                        ?.floor()
+                                        .toString() ??
+                                    "") +
+                                "\ndetik",
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Jumlah pesan dijawab",
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Text(
-                              provider.statistics?.dailyReport?.length
-                                      .toString() ??
-                                  "",
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const Text(
+                            "Jumlah pesan dijawab",
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            provider.statistics?.dailyReport?.length
+                                    .toString() ??
+                                "",
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-              Card(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: const AgentStatisticsCustomerChart(),
+            ),
+            Card(
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: const AgentStatisticsCustomerChart(),
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            Text("Laporan per-tanggal dari customer " +
+                (provider.statistics?.name ?? "")),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Text("Pilih tanggal"),
+                    DropdownButton<String>(
+                        value: provider.selectedReport,
+                        isExpanded: true,
+                        items: provider.statistics!.dailyReport!.isNotEmpty
+                            ? provider.statistics!.dailyReport
+                                ?.map((e) => DropdownMenuItem(
+                                      child: Text(e.date ?? ""),
+                                      value: e.date,
+                                    ))
+                                .toList()
+                            : [],
+                        onChanged: (newValue) {
+                          provider.selectedReport = newValue;
+                        })
+                  ],
                 ),
               ),
-              Card(
-                child: Padding(
+            )
+          ],
+          if (provider.dailyReport != null) ...[
+            Card(
+              child: Container(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      const Text("Pilih tanggal"),
-                      DropdownButton<String>(
-                          value: provider.selectedReport,
-                          isExpanded: true,
-                          items: provider.statistics!.dailyReport!.isNotEmpty
-                              ? provider.statistics!.dailyReport
-                                  ?.map((e) => DropdownMenuItem(
-                                        child: Text(e.date ?? ""),
-                                        value: e.date,
-                                      ))
-                                  .toList()
-                              : [],
-                          onChanged: (newValue) {
-                            provider.selectedReport = newValue;
-                          })
+                      Text("Waktu respon pada tanggal " +
+                          (provider.dailyReport!.date ?? "")),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Pesan tidak terjawab",
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  provider.dailyReport?.unreadMessage
+                                          ?.toString() ??
+                                      "",
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Rata-rata waktu respons",
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  (provider.dailyReport?.average
+                                              ?.floor()
+                                              .toString() ??
+                                          "") +
+                                      "\ndetik",
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const Text(
+                                  "Pesan telat menjawab",
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Text(
+                                  provider.dailyReport?.lateResponse
+                                          ?.toString() ??
+                                      "",
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      const AgentCustomerDailyChart()
                     ],
-                  ),
-                ),
-              )
-            ],
-            if (provider.dailyReport != null) ...[
-              Card(
-                child: Container(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Text("Waktu respon pada tanggal " +
-                            (provider.dailyReport!.date ?? "")),
-                        const AgentCustomerDailyChart()
-                      ],
-                    )),
-              )
-            ],
+                  )),
+            )
           ],
-        );
-      } else {
-        return Container();
-      }
+        ],
+      );
     });
   }
 }

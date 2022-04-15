@@ -12,19 +12,34 @@ class AgentCustomerDailyChart extends StatelessWidget {
     return Consumer<SalesProvider>(
       builder: (context, provider, child) => SizedBox(
         width: 500,
-        height: 200,
-        child: BarChart([
-          Series<ResponseTimes, String>(
-              id: 'Agent Customer Daily Report',
-              data: provider.dailyReport!.responseTimes!,
-              colorFn: (ResponseTimes times, _) => times.seconds! > 600
-                  ? Color.fromHex(code: "#ff6361")
-                  : Color.fromHex(code: "#003f5c"),
-              measureLowerBoundFn: (_, __) => 0,
-              domainFn: (ResponseTimes times, index) => index?.toString() ?? "",
-              measureFn: (ResponseTimes times, index) =>
-                  (times.seconds ?? 0) / 60),
-        ]),
+        height: provider.dailyReport!.responseTimes!.length * 25 + 50,
+        child: BarChart(
+          [
+            Series<ResponseTimes, String>(
+                id: 'Agent Customer Daily Report',
+                data: provider.dailyReport!.responseTimes!,
+                colorFn: (ResponseTimes times, _) {
+                  if (times.seconds! > 600) {
+                    return Color.fromHex(code: "#ff6361");
+                  } else if (times.seconds! > 300) {
+                    return Color.fromHex(code: "#ffa600");
+                  } else {
+                    return Color.fromHex(code: "#003f5c");
+                  }
+                },
+                measureLowerBoundFn: (_, __) => 0,
+                measureUpperBoundFn: (_, __) => 15,
+                labelAccessorFn: (ResponseTimes times, _) =>
+                    times.formattedString ?? "",
+                domainFn: (ResponseTimes times, index) =>
+                    index?.toString() ?? "",
+                measureFn: (ResponseTimes times, index) =>
+                    (times.seconds ?? 0) / 60),
+          ],
+          vertical: false,
+          barRendererDecorator: BarLabelDecorator<String>(),
+          domainAxis: const OrdinalAxisSpec(renderSpec: NoneRenderSpec()),
+        ),
       ),
     );
   }
