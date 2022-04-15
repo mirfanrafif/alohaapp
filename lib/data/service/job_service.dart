@@ -50,6 +50,33 @@ class JobService {
             message: 'Gagal mengambil data job : ' + errorResponse.message);
       }
     } catch (e) {
+      print(e.toString());
+      return ApiResponse(
+          success: false,
+          data: null,
+          message: 'Gagal mengambil data job : ' + e.toString());
+    }
+  }
+
+  Future<ApiResponse<Job?>> deleteJob(int id, String token) async {
+    try {
+      var response = await delete(Uri.https(baseUrl, '/user/job/$id'),
+          headers: {'Authorization': 'Bearer $token'});
+      if (response.statusCode < 400) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
+        var data = Job.fromJson(responseData['data']);
+        return ApiResponse(
+            success: true, data: data, message: 'Sukses mengambil data job');
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false,
+            data: null,
+            message: 'Gagal mengambil data job : ' + errorResponse.message);
+      }
+    } catch (e) {
+      print(e.toString());
       return ApiResponse(
           success: false,
           data: null,

@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import '../../data/response/job.dart';
 
 class JobFormPage extends StatefulWidget {
-  const JobFormPage({Key? key}) : super(key: key);
+  const JobFormPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<JobFormPage> createState() => _JobFormPageState();
@@ -73,9 +75,15 @@ class _JobFormPageState extends State<JobFormPage> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            value.saveJob(
+                          onPressed: () async {
+                            var response = await value.saveJob(
                                 _namaController.text, _descController.text);
+                            if (response.success) {
+                              Navigator.pop(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(response.message)));
+                            }
                           },
                           child: const Text("Simpan"),
                         ),
@@ -87,11 +95,20 @@ class _JobFormPageState extends State<JobFormPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Hapus Job"),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all(Colors.red))),
+                  onPressed: () async {
+                    var response = await value.deleteJob();
+                    if (response.success) {
+                      Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(response.message)));
+                    }
+                  },
+                  child: const Text("Hapus Job"),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
+                  ),
+                ),
               ),
             ],
           ),

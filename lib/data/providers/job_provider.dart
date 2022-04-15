@@ -67,4 +67,18 @@ class JobProvider extends ChangeNotifier {
 
     return response;
   }
+
+  Future<ApiResponse<Job?>> deleteJob() async {
+    ApiResponse<Job?> response =
+        await _jobService.deleteJob(_selectedJobId!, token);
+
+    if (response.success) {
+      var jobIndex =
+          jobs!.indexWhere((element) => element.id == response.data!.id);
+      jobs?.removeAt(jobIndex);
+    }
+    notifyListeners();
+
+    return response;
+  }
 }
