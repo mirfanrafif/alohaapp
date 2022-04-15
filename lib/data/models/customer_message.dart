@@ -1,5 +1,5 @@
 import '../response/contact.dart';
-import '../response/Message.dart';
+import '../response/message.dart';
 
 class CustomerMessage {
   Customer customer;

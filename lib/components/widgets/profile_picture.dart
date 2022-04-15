@@ -10,7 +10,7 @@ class ProfilePicture extends StatelessWidget {
   Widget build(BuildContext context) {
     if (profilePhoto != null && profilePhoto!.isNotEmpty) {
       var imageUrl =
-          "https://" + BASE_URL + "/user/profile_image/" + profilePhoto!;
+          "https://" + baseUrl + "/user/profile_image/" + profilePhoto!;
       return CircleAvatar(
         foregroundImage: NetworkImage(imageUrl),
         backgroundColor: Colors.black12,

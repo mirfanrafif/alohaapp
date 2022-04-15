@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final userResponse = userResponseFromJson(jsonString);
-
 import 'package:aloha/data/response/contact.dart';
 import 'dart:convert';
 

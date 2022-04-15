@@ -1,6 +1,6 @@
 import 'package:aloha/data/models/agent.dart';
 import 'package:aloha/data/preferences/user_preferences.dart';
-import 'package:aloha/data/response/User.dart';
+import 'package:aloha/data/response/user.dart';
 import 'package:aloha/data/service/user_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:flutter/material.dart';

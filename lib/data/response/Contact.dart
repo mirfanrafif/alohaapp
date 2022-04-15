@@ -1,4 +1,4 @@
-import 'package:aloha/data/response/Message.dart';
+import 'package:aloha/data/response/message.dart';
 import 'package:aloha/data/response/job.dart';
 
 class ContactResponse {

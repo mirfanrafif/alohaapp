@@ -1,4 +1,4 @@
-import 'package:aloha/data/response/User.dart';
+import 'package:aloha/data/response/user.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
@@ -7,7 +7,7 @@ class UserService {
   Future<ApiResponse<LoginData>> login(
       {required String username, required String password}) async {
     try {
-      var response = await post(Uri.https(BASE_URL, "/auth/login"),
+      var response = await post(Uri.https(baseUrl, "/auth/login"),
           body: <String, String>{'username': username, 'password': password});
       if (response.statusCode < 400) {
         var userResponse = userResponseFromJson(response.body);

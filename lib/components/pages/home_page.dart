@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
   Widget renderProfilePicture(String? profilePhoto) {
     if (profilePhoto != null && profilePhoto.isNotEmpty) {
       var imageUrl =
-          "https://" + BASE_URL + "/user/profile_image/" + profilePhoto;
+          "https://" + baseUrl + "/user/profile_image/" + profilePhoto;
       return ClipOval(
         child: Image(
             image: NetworkImage(imageUrl),

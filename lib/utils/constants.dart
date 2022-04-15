@@ -1,1 +1,1 @@
-const String BASE_URL = "dev.mirfanrafif.me";
+const String baseUrl = "dev.mirfanrafif.me";

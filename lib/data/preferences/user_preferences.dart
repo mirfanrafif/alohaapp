@@ -3,13 +3,13 @@ import 'package:aloha/data/preferences/base_preferences.dart';
 import '../models/agent.dart';
 
 class UserPreferences {
-  final ID = "id";
-  final FULL_NAME = "full_name";
-  final USERNAME = "username";
-  final EMAIL = "email";
-  final ROLE = "role";
-  final PROFILE_PHOTO = "profile_photo";
-  final JWT_TOKEN = "jwt_token";
+  final _id = "id";
+  final _fullName = "full_name";
+  final _username = "username";
+  final _email = "email";
+  final _role = "role";
+  final _profilePhoto = "profile_photo";
+  final _jwtToken = "jwt_token";
   var preferences = BasePreferences.preferences;
 
   AgentEntity getUser() {
@@ -17,27 +17,27 @@ class UserPreferences {
         id: preferences.getInt("id") ?? 0,
         fullName: preferences.getString("full_name") ?? "",
         username: preferences.getString("username") ?? "",
-        email: preferences.getString(EMAIL) ?? "",
-        role: preferences.getString(ROLE) ?? "",
-        profilePhoto: preferences.getString(PROFILE_PHOTO));
+        email: preferences.getString(_email) ?? "",
+        role: preferences.getString(_role) ?? "",
+        profilePhoto: preferences.getString(_profilePhoto));
     return user;
   }
 
   void setUser(AgentEntity agent) {
-    preferences.setInt(ID, agent.id);
-    preferences.setString(FULL_NAME, agent.fullName);
-    preferences.setString(USERNAME, agent.username);
-    preferences.setString(EMAIL, agent.email);
-    preferences.setString(ROLE, agent.role);
-    preferences.setString(PROFILE_PHOTO, agent.profilePhoto ?? "");
+    preferences.setInt(_id, agent.id);
+    preferences.setString(_fullName, agent.fullName);
+    preferences.setString(_username, agent.username);
+    preferences.setString(_email, agent.email);
+    preferences.setString(_role, agent.role);
+    preferences.setString(_profilePhoto, agent.profilePhoto ?? "");
   }
 
   String getToken() {
-    return preferences.getString(JWT_TOKEN) ?? "";
+    return preferences.getString(_jwtToken) ?? "";
   }
 
   void setToken(String token) async {
-    preferences.setString(JWT_TOKEN, token);
+    preferences.setString(_jwtToken, token);
   }
 
   void logout() {

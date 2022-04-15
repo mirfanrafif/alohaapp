@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/response/Message.dart';
+import '../../../data/response/message.dart';
 import '../../pages/image_page.dart';
 
 class ChatImage extends StatelessWidget {

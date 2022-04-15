@@ -7,12 +7,12 @@ import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
 
-import '../response/User.dart';
+import '../response/user.dart';
 
 class UserJobService {
   Future<List<Job>> getAllJobs(String token) async {
     try {
-      var response = await get(Uri.https(BASE_URL, '/user/job'),
+      var response = await get(Uri.https(baseUrl, '/user/job'),
           headers: {'Authorization': 'Bearer $token'});
 
       var jobs = jobFromJson(response.body);
@@ -24,7 +24,7 @@ class UserJobService {
 
   Future<List<Agent>> getAgentFromJobId(int jobId, String token) async {
     try {
-      var response = await get(Uri.https(BASE_URL, '/user/job/$jobId'),
+      var response = await get(Uri.https(baseUrl, '/user/job/$jobId'),
           headers: {'Authorization': 'Bearer $token'});
 
       var job = JobResponse.fromJson(jsonDecode(response.body));
@@ -40,7 +40,7 @@ class UserJobService {
 
   Future<List<Agent>> getAllUsers(String token) async {
     try {
-      var response = await get(Uri.https(BASE_URL, '/user'),
+      var response = await get(Uri.https(baseUrl, '/user'),
           headers: {'Authorization': 'Bearer $token'});
 
       if (response.statusCode < 400) {
@@ -68,7 +68,7 @@ class UserJobService {
         'email': email,
         'role': role
       };
-      var response = await put(Uri.https(BASE_URL, '/user/manage/$id'),
+      var response = await put(Uri.https(baseUrl, '/user/manage/$id'),
           body: request, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode < 400) {
         var responseData =
@@ -98,7 +98,7 @@ class UserJobService {
     Map<String, dynamic> requestData = {'agentId': agentId, 'jobId': jobId};
     var requestJson = jsonEncode(requestData);
     try {
-      var response = await post(Uri.https(BASE_URL, '/user/job/assign'),
+      var response = await post(Uri.https(baseUrl, '/user/job/assign'),
           body: requestJson,
           headers: {
             'Authorization': 'Bearer $token',
@@ -134,7 +134,7 @@ class UserJobService {
       required String endDate}) async {
     try {
       var response = await get(
-          Uri.https(BASE_URL, "/user/manage/$agentId/stats",
+          Uri.https(baseUrl, "/user/manage/$agentId/stats",
               {'start': startDate, 'end': endDate}),
           headers: {
             'Authorization': 'Bearer $token',

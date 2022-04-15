@@ -4,7 +4,7 @@ import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import '../response/contact.dart';
-import '../response/Message.dart';
+import '../response/message.dart';
 
 class MessageService {
   Future<List<Message>> getPastMessages({
@@ -15,7 +15,7 @@ class MessageService {
   }) async {
     try {
       var response = await get(
-          Uri.https(BASE_URL, "/message/${customerId.toString()}",
+          Uri.https(baseUrl, "/message/${customerId.toString()}",
               loadMore ? {'last_message_id': lastMessageId.toString()} : {}),
           headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
@@ -31,7 +31,7 @@ class MessageService {
 
   Future<List<Contact>> getAllContact(String token) async {
     try {
-      var response = await get(Uri.https(BASE_URL, "/message"),
+      var response = await get(Uri.https(baseUrl, "/message"),
           headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode == 200) {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
@@ -50,7 +50,7 @@ class MessageService {
     required String token,
   }) async {
     try {
-      var response = await post(Uri.https(BASE_URL, "/message"),
+      var response = await post(Uri.https(baseUrl, "/message"),
           body: {'customerNumber': customerNumber, 'message': message},
           headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode < 400) {
@@ -71,7 +71,7 @@ class MessageService {
       required String token}) async {
     try {
       var request =
-          MultipartRequest('POST', Uri.https(BASE_URL, "/message/image"));
+          MultipartRequest('POST', Uri.https(baseUrl, "/message/image"));
       request.headers.addAll({'Authorization': 'Bearer $token'});
 
       //add file request
@@ -105,7 +105,7 @@ class MessageService {
       required String token}) async {
     try {
       var request =
-          MultipartRequest('POST', Uri.https(BASE_URL, "/message/document"));
+          MultipartRequest('POST', Uri.https(baseUrl, "/message/document"));
       request.headers.addAll({'Authorization': 'Bearer $token'});
       //add file request
       request.files.add(MultipartFile.fromBytes(

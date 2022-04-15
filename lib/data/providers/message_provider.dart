@@ -10,7 +10,7 @@ import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../models/customer_message.dart';
-import '../response/Message.dart';
+import '../response/message.dart';
 
 class MessageProvider extends ChangeNotifier {
   List<CustomerMessage> _customerMessage = [];
@@ -69,7 +69,7 @@ class MessageProvider extends ChangeNotifier {
   void setupSocket() {
     try {
       var socketClient = io(
-          "https://" + BASE_URL + "/messages",
+          "https://" + baseUrl + "/messages",
           OptionBuilder()
               .setTransports(['websocket'])
               .enableReconnection()

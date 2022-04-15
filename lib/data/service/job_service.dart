@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 class JobService {
   Future<ApiResponse<List<Job>?>> getAllJobs(String token) async {
     try {
-      var response = await get(Uri.https(BASE_URL, '/user/job'));
+      var response = await get(Uri.https(baseUrl, '/user/job'));
       if (response.statusCode < 400) {
         var data = jobFromJson(response.body);
         return ApiResponse(
@@ -34,7 +34,7 @@ class JobService {
     try {
       var requestData = {'name': nama, 'description': desc};
 
-      var response = await put(Uri.https(BASE_URL, '/user/job/$id'),
+      var response = await put(Uri.https(baseUrl, '/user/job/$id'),
           body: requestData, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode < 400) {
         Map<String, dynamic> responseData = jsonDecode(response.body);
@@ -62,7 +62,7 @@ class JobService {
     try {
       var requestData = {'name': nama, 'description': desc};
 
-      var response = await post(Uri.https(BASE_URL, '/user/job'),
+      var response = await post(Uri.https(baseUrl, '/user/job'),
           body: requestData, headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode < 400) {
         Map<String, dynamic> responseData = jsonDecode(response.body);

@@ -1,5 +1,5 @@
 import 'package:aloha/components/pages/chat_page.dart';
-import 'package:aloha/data/response/Message.dart';
+import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/models/customer_message.dart';
