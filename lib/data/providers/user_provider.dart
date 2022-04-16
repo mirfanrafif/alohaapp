@@ -1,5 +1,6 @@
 import 'package:aloha/data/models/agent.dart';
 import 'package:aloha/data/preferences/user_preferences.dart';
+import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/user.dart';
 import 'package:aloha/data/service/user_service.dart';
 import 'package:aloha/utils/api_response.dart';
@@ -43,4 +44,23 @@ class UserProvider with ChangeNotifier {
   String get token => _token;
 
   AgentEntity get user => _agentEntity;
+
+  Future<ApiResponse<Agent?>> updateUser(String fullname) async {
+    var response = await _service.updateProfile(fullname, token);
+    if (response.success) {
+      _agentEntity = AgentEntity(
+          id: response.data!.id,
+          fullName: response.data!.fullName,
+          username: response.data!.username,
+          email: response.data!.email,
+          role: response.data!.role,
+          profilePhoto: response.data!.profilePhoto);
+      //set preferences
+      _preferences.setUser(_agentEntity);
+    }
+
+    notifyListeners();
+
+    return response;
+  }
 }
