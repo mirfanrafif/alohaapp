@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/service/message_service.dart';
+import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,13 +35,27 @@ class MessageProvider extends ChangeNotifier {
     setupSocket();
   }
 
+  var _searchKeyword = "";
+
+  String get searchKeyword => _searchKeyword;
+  set searchKeyword(String newValue) {
+    _searchKeyword = newValue;
+    getAllContact();
+    notifyListeners();
+  }
+
+  Future<ApiResponse<List<Customer>?>> searchNewCustomer(String keyword) async {
+    return await _messageService.searchCustomerFromCrm(keyword, _token);
+  }
+
   var chatLoading = false;
 
   List<Message> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
 
   void getAllContact() async {
-    var value = await _messageService.getAllContact(_token);
+    _customerMessage.clear();
+    var value = await _messageService.getAllContact(_token, _searchKeyword);
     mapContactToCustomerMessage(value);
   }
 
@@ -202,5 +217,15 @@ class MessageProvider extends ChangeNotifier {
         message: message,
         customerNumber: customerNumber,
         token: _token);
+  }
+
+  Future<ApiResponse<Customer?>> startConversation(int customerId) async {
+    var response = await _messageService.startConversation(customerId, _token);
+    if (response.success && response.data != null) {
+      _customerMessage.add(
+          CustomerMessage(customer: response.data!, message: [], unread: 0));
+    }
+    notifyListeners();
+    return response;
   }
 }

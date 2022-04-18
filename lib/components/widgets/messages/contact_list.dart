@@ -11,8 +11,6 @@ class ContactList extends StatefulWidget {
 }
 
 class _ContactListState extends State<ContactList> {
-  final _searchController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -20,13 +18,11 @@ class _ContactListState extends State<ContactList> {
     if (!provider.initDone) {
       provider.init();
     }
-    _searchController.addListener(() {});
   }
 
   @override
   void dispose() {
     super.dispose();
-    _searchController.dispose();
   }
 
   @override
@@ -35,18 +31,20 @@ class _ContactListState extends State<ContactList> {
       builder: (context, provider, child) {
         return Column(
           children: [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: TextField(
-            //     controller: _searchController,
-            //     decoration: const InputDecoration(
-            //       labelText: "Cari kontak...",
-            //       border: OutlineInputBorder(),
-            //       contentPadding: EdgeInsets.all(8),
-            //       suffixIcon: Icon(Icons.search),
-            //     ),
-            //   ),
-            // ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onSubmitted: (value) {
+                  provider.searchKeyword = value;
+                },
+                decoration: const InputDecoration(
+                  labelText: "Cari kontak...",
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.all(8),
+                  suffixIcon: Icon(Icons.search),
+                ),
+              ),
+            ),
             Expanded(
               child: ListView.builder(
                 itemBuilder: (context, index) => ContactItem(

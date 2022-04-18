@@ -121,6 +121,7 @@ class Customer {
     required this.phoneNumber,
     required this.createdAt,
     required this.updatedAt,
+    required this.customerCrmId,
   });
 
   int id;
@@ -128,6 +129,7 @@ class Customer {
   String phoneNumber;
   DateTime createdAt;
   DateTime updatedAt;
+  int? customerCrmId;
 
   factory Customer.fromJson(Map<String, dynamic> json) => Customer(
         id: json["id"],
@@ -135,6 +137,7 @@ class Customer {
         phoneNumber: json["phoneNumber"],
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
+        customerCrmId: json["customerCrmId"],
       );
 
   Map<String, dynamic> toJson() => {

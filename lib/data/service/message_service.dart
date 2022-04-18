@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
@@ -29,17 +30,20 @@ class MessageService {
     }
   }
 
-  Future<List<Contact>> getAllContact(String token) async {
+  Future<List<Contact>> getAllContact(String token, String search) async {
     try {
-      var response = await get(Uri.https(baseUrl, "/message"),
+      var response = await get(
+          Uri.https(baseUrl, "/message", {'search': search}),
           headers: {'Authorization': 'Bearer $token'});
-      if (response.statusCode == 200) {
+      if (response.statusCode < 400) {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
         return data.data;
       } else {
+        print(response.body);
         return [];
       }
     } catch (e) {
+      print(e.toString());
       return [];
     }
   }
@@ -99,6 +103,25 @@ class MessageService {
     }
   }
 
+  Future<ApiResponse<List<Customer>?>> searchCustomerFromCrm(
+      String keyword, String token) async {
+    var response = await get(
+        Uri.https(baseUrl, "/customer", {'search': keyword}),
+        headers: {'Authorization': 'Bearer $token'});
+    if (response.statusCode < 400) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      var customers = List<Customer>.from(
+          data['data'].map((item) => Customer.fromJson(item)));
+      return ApiResponse(
+          success: true,
+          data: customers,
+          message: 'Success searching customer from CRM');
+    } else {
+      var data = ApiErrorResponse.fromJson(jsonDecode(response.body));
+      return ApiResponse(success: false, data: null, message: data.message);
+    }
+  }
+
   Future<List<Message>> sendDocument(
       {required File file,
       required String customerNumber,
@@ -127,6 +150,33 @@ class MessageService {
       }
     } catch (e) {
       return [];
+    }
+  }
+
+  Future<ApiResponse<Customer?>> startConversation(
+      int customerId, String token) async {
+    try {
+      var response = await post(
+          Uri.https(baseUrl, '/customer/$customerId/start'),
+          headers: {'Authorization': 'Bearer $token'});
+
+      if (response.statusCode < 400) {
+        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        Map<String, dynamic> responseData = responseBody['data'];
+        var customer = Customer.fromJson(responseData['customer']);
+        return ApiResponse(
+            success: true,
+            data: customer,
+            message:
+                'Success start conversation with customer ${customer.name}');
+      } else {
+        var responseBody = ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: null, message: responseBody.message);
+      }
+    } catch (e) {
+      print(e.toString());
+      return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
 }

@@ -56,44 +56,48 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(30),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Login",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                  labelText: "Username", border: OutlineInputBorder()),
-              controller: _usernameController,
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            TextField(
-              obscureText: true,
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                  labelText: "Password", border: OutlineInputBorder()),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: login,
-                child: const Text("Login"),
+          padding: const EdgeInsets.all(30),
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: Image.asset(
+                  "assets\\image\\aloha_logo.png",
+                ),
               ),
-            )
-          ],
-        ),
-      ),
+              const Text(
+                "Login",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              TextField(
+                decoration: const InputDecoration(
+                    labelText: "Username", border: OutlineInputBorder()),
+                controller: _usernameController,
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              TextField(
+                obscureText: true,
+                controller: _passwordController,
+                decoration: const InputDecoration(
+                    labelText: "Password", border: OutlineInputBorder()),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: login,
+                  child: const Text("Login"),
+                ),
+              )
+            ],
+          )),
     );
   }
 }

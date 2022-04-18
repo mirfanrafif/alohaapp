@@ -1,6 +1,7 @@
 import 'package:aloha/components/pages/job_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/pages/profile_page.dart';
+import 'package:aloha/components/pages/start_message_page.dart';
 import 'package:aloha/components/widgets/messages/contact_list.dart';
 import 'package:aloha/components/widgets/agents/sales_list.dart';
 import 'package:aloha/data/providers/message_provider.dart';
@@ -81,8 +82,24 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         body: getBody(),
+        floatingActionButton: getFab(),
       ),
     );
+  }
+
+  FloatingActionButton? getFab() {
+    switch (_selectedIndex) {
+      case pesanLabel:
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const StartMessagePage()));
+          },
+          child: const Icon(Icons.message),
+        );
+      default:
+        return null;
+    }
   }
 
   List<Widget> getAdminMenus() {

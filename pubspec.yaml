@@ -70,6 +70,7 @@ flutter:
     - assets/image/user.png
     - assets\image\empty_message_bg.png
     - assets\image\under_contruction.png
+    - assets\image\aloha_logo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
