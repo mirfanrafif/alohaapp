@@ -30,21 +30,23 @@ class MessageService {
     }
   }
 
-  Future<List<Contact>> getAllContact(String token, String search) async {
+  Future<ApiResponse<List<Contact>>> getAllContact(
+      String token, String search) async {
     try {
       var response = await get(
           Uri.https(baseUrl, "/message", {'search': search}),
           headers: {'Authorization': 'Bearer $token'});
       if (response.statusCode < 400) {
         var data = ContactResponse.fromJson(jsonDecode(response.body));
-        return data.data;
+        return ApiResponse(
+            success: true, data: data.data, message: data.message);
       } else {
-        print(response.body);
-        return [];
+        var data = ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(success: false, data: [], message: data.message);
       }
     } catch (e) {
       print(e.toString());
-      return [];
+      return ApiResponse(success: false, data: [], message: e.toString());
     }
   }
 
@@ -178,5 +180,22 @@ class MessageService {
       print(e.toString());
       return ApiResponse(success: false, data: null, message: e.toString());
     }
+  }
+
+  Future<void> downloadFile(String url) async {
+    List<int> downloadData = [];
+
+    var httpClient = HttpClient();
+    var filename = url.split('/').last;
+    var fileSave = File('./$filename');
+
+    var request = await httpClient.getUrl(Uri.parse(url));
+    var response = await request.close();
+
+    response.listen((event) {
+      downloadData.addAll(event);
+    }, onDone: () {
+      fileSave.writeAsBytes(downloadData);
+    });
   }
 }

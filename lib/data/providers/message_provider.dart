@@ -26,13 +26,13 @@ class MessageProvider extends ChangeNotifier {
   int _id = 0;
   bool initDone = false;
 
-  void init() {
+  Future<ApiResponse<List<Contact>>> init() async {
     initDone = true;
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
-    getAllContact();
     setupSocket();
+    return await getAllContact();
   }
 
   var _searchKeyword = "";
@@ -53,10 +53,13 @@ class MessageProvider extends ChangeNotifier {
   List<Message> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
 
-  void getAllContact() async {
+  Future<ApiResponse<List<Contact>>> getAllContact() async {
     _customerMessage.clear();
     var value = await _messageService.getAllContact(_token, _searchKeyword);
-    mapContactToCustomerMessage(value);
+    if (value.success && value.data != null) {
+      mapContactToCustomerMessage(value.data!);
+    }
+    return value;
   }
 
   bool getIsAllLoaded(int customerId) {

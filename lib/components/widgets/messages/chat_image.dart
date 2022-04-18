@@ -1,3 +1,4 @@
+import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/response/message.dart';
@@ -40,7 +41,7 @@ class ChatImage extends StatelessWidget {
               );
             },
             image: NetworkImage(message.fromMe
-                ? "https://dev.mirfanrafif.me/message/image/${message.file}"
+                ? "https://" + baseUrl + "/message/image/${message.file}"
                 : "https://solo.wablas.com/image/${message.file}"),
             height: 200,
             width: 300,

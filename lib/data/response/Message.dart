@@ -63,8 +63,8 @@ class Message {
   String messageId;
   String status;
   String type;
-  DateTime createdAt;
-  DateTime updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   factory Message.fromJson(Map<String, dynamic> json) => Message(
         id: json["id"],
@@ -77,7 +77,9 @@ class Message {
         messageId: json["messageId"],
         status: json["status"],
         type: json["type"],
-        createdAt: DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"] != null
+            ? DateTime.parse(json["created_at"])
+            : null,
         updatedAt: DateTime.parse(json["updated_at"]),
       );
 
@@ -92,7 +94,7 @@ class Message {
         "messageId": messageId,
         "status": status,
         "type": type,
-        "created_at": createdAt.toIso8601String(),
-        "updated_at": updatedAt.toIso8601String(),
+        "created_at": createdAt != null ? createdAt!.toIso8601String() : null,
+        "updated_at": updatedAt != null ? updatedAt!.toIso8601String() : null,
       };
 }
