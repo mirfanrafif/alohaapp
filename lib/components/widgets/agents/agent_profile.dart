@@ -205,7 +205,8 @@ class _SalesJobDropdownState extends State<SalesJobDropdown> {
                                     -1,
                                 onChanged: (newValue) {
                                   if (newValue != null) {
-                                    provider.setSelectedAgentJob(newValue, job);
+                                    provider.setSelectedAgentJob(
+                                        newValue, job, context);
                                   }
                                 }),
                             Expanded(

@@ -62,12 +62,46 @@ class SalesService {
     }
   }
 
-  Future<ApiResponse<User?>> updateUserJob(
+  Future<ApiResponse<User?>> assignUserJob(
       int agentId, int jobId, String token) async {
     Map<String, dynamic> requestData = {'agentId': agentId, 'jobId': jobId};
     var requestJson = jsonEncode(requestData);
     try {
       var response = await post(Uri.https(baseUrl, '/user/job/assign'),
+          body: requestJson,
+          headers: {
+            'Authorization': 'Bearer $token',
+            "content-type": "application/json"
+          });
+      if (response.statusCode < 400) {
+        var responseData =
+            UpdateUserResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true,
+            data: responseData.data,
+            message: 'Sukses mengubah data sales');
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false,
+            data: null,
+            message: 'Gagal mengupdate data sales: ${errorResponse.message}');
+      }
+    } catch (e) {
+      return ApiResponse(
+          success: false,
+          data: null,
+          message: 'Gagal mengupdate data sales: ${e.toString()}');
+    }
+  }
+
+  Future<ApiResponse<User?>> unassignUserJob(
+      int agentId, int jobId, String token) async {
+    Map<String, dynamic> requestData = {'agentId': agentId, 'jobId': jobId};
+    var requestJson = jsonEncode(requestData);
+    try {
+      var response = await post(Uri.https(baseUrl, '/user/job/unassign'),
           body: requestJson,
           headers: {
             'Authorization': 'Bearer $token',

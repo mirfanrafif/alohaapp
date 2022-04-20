@@ -38,22 +38,32 @@ class SalesProvider with ChangeNotifier {
 
   List<Job> _selectedAgentJob = [];
   List<Job> get selectedAgentJob => _selectedAgentJob;
-  Future<void> setSelectedAgentJob(bool assign, Job job) async {
+  Future<void> setSelectedAgentJob(
+      bool assign, Job job, BuildContext context) async {
     if (assign) {
       var response =
-          await _salesService.updateUserJob(_selectedAgent!.id, job.id, _token);
+          await _salesService.assignUserJob(_selectedAgent!.id, job.id, _token);
 
       if (response.success) {
-        // _selectedAgentJob = response.data!.job?.id ?? 0;
+        _selectedAgentJob =
+            _selectedAgentJob = response.data!.job!.map((e) => e.job).toList();
         var agentIndex = findAgentIndex(response.data!.id);
         _agents[agentIndex].job = response.data!.job;
       }
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(response.message)));
     } else {
-      var jobIndex =
-          _selectedAgentJob.indexWhere((element) => element.id == job.id);
-      if (jobIndex > -1) {
-        _selectedAgentJob.removeAt(jobIndex);
+      var response = await _salesService.unassignUserJob(
+          _selectedAgent!.id, job.id, _token);
+
+      if (response.success) {
+        _selectedAgentJob = response.data!.job!.map((e) => e.job).toList();
+        var agentIndex = findAgentIndex(response.data!.id);
+        _agents[agentIndex].job = response.data!.job;
       }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
     }
     notifyListeners();
   }
