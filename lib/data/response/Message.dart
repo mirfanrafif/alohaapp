@@ -58,7 +58,7 @@ class Message {
   bool fromMe;
   String? file;
   String message;
-  Agent? agent;
+  User? agent;
   String senderName;
   String messageId;
   String status;
@@ -72,7 +72,7 @@ class Message {
         fromMe: json["fromMe"],
         file: json["file"],
         message: json["message"],
-        agent: json['agent'] != null ? Agent.fromJson(json["agent"]) : null,
+        agent: json['agent'] != null ? User.fromJson(json["agent"]) : null,
         senderName: json["sender_name"],
         messageId: json["messageId"],
         status: json["status"],

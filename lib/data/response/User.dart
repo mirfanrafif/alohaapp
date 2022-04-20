@@ -36,11 +36,11 @@ class LoginData {
     required this.token,
   });
 
-  Agent user;
+  User user;
   String token;
 
   factory LoginData.fromJson(Map<String, dynamic> json) => LoginData(
-        user: Agent.fromJson(json["user"]),
+        user: User.fromJson(json["user"]),
         token: json["token"],
       );
 
@@ -64,13 +64,13 @@ class GetAllUserResponse {
   });
 
   final bool success;
-  final List<Agent> data;
+  final List<User> data;
   final String message;
 
   factory GetAllUserResponse.fromJson(Map<String, dynamic> json) =>
       GetAllUserResponse(
         success: json["success"],
-        data: List<Agent>.from(json["data"].map((x) => Agent.fromJson(x))),
+        data: List<User>.from(json["data"].map((x) => User.fromJson(x))),
         message: json["message"],
       );
 
@@ -89,13 +89,13 @@ class UpdateUserResponse {
   });
 
   bool success;
-  Agent data;
+  User data;
   String message;
 
   factory UpdateUserResponse.fromJson(Map<String, dynamic> json) =>
       UpdateUserResponse(
         success: json["success"],
-        data: Agent.fromJson(json["data"]),
+        data: User.fromJson(json["data"]),
         message: json["message"],
       );
 

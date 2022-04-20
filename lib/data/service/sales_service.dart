@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:aloha/data/response/contact.dart';
-import 'package:aloha/data/response/job.dart';
 import 'package:aloha/data/response/statistics.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
@@ -9,52 +8,22 @@ import 'package:http/http.dart';
 
 import '../response/user.dart';
 
-class UserJobService {
-  Future<List<Job>> getAllJobs(String token) async {
-    try {
-      var response = await get(Uri.https(baseUrl, '/user/job'),
-          headers: {'Authorization': 'Bearer $token'});
+class SalesService {
+  Future<ApiResponse<List<User>?>> getAllUsers(String token) async {
+    var response = await get(Uri.https(baseUrl, '/user'),
+        headers: {'Authorization': 'Bearer $token'});
 
-      var jobs = jobFromJson(response.body);
-      return jobs;
-    } catch (e) {
-      return [];
+    if (response.statusCode < 400) {
+      var data = GetAllUserResponse.fromJson(jsonDecode(response.body));
+      return ApiResponse(success: true, data: data.data, message: data.message);
+    } else {
+      var errorResponse = ApiErrorResponse.fromJson(jsonDecode(response.body));
+      return ApiResponse(
+          success: false, data: [], message: errorResponse.message);
     }
   }
 
-  Future<List<Agent>> getAgentFromJobId(int jobId, String token) async {
-    try {
-      var response = await get(Uri.https(baseUrl, '/user/job/$jobId'),
-          headers: {'Authorization': 'Bearer $token'});
-
-      var job = JobResponse.fromJson(jsonDecode(response.body));
-      if (job.data.agents != null) {
-        return job.data.agents!;
-      } else {
-        return [];
-      }
-    } catch (e) {
-      return [];
-    }
-  }
-
-  Future<List<Agent>> getAllUsers(String token) async {
-    try {
-      var response = await get(Uri.https(baseUrl, '/user'),
-          headers: {'Authorization': 'Bearer $token'});
-
-      if (response.statusCode < 400) {
-        var data = GetAllUserResponse.fromJson(jsonDecode(response.body));
-        return data.data;
-      } else {
-        return [];
-      }
-    } catch (e) {
-      return [];
-    }
-  }
-
-  Future<ApiResponse<Agent?>> updateUser(
+  Future<ApiResponse<User?>> updateUser(
       {required int id,
       required String nama,
       required String username,
@@ -93,7 +62,7 @@ class UserJobService {
     }
   }
 
-  Future<ApiResponse<Agent?>> updateUserJob(
+  Future<ApiResponse<User?>> updateUserJob(
       int agentId, int jobId, String token) async {
     Map<String, dynamic> requestData = {'agentId': agentId, 'jobId': jobId};
     var requestJson = jsonEncode(requestData);

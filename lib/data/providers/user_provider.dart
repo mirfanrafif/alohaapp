@@ -45,7 +45,7 @@ class UserProvider with ChangeNotifier {
 
   AgentEntity get user => _agentEntity;
 
-  Future<ApiResponse<Agent?>> updateUser(String fullname) async {
+  Future<ApiResponse<User?>> updateUser(String fullname) async {
     var response = await _service.updateProfile(fullname, token);
     if (response.success) {
       _agentEntity = AgentEntity(

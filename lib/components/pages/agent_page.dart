@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../data/response/contact.dart';
 
 class AgentPage extends StatefulWidget {
-  final Agent agent;
+  final User agent;
   const AgentPage({Key? key, required this.agent}) : super(key: key);
 
   @override

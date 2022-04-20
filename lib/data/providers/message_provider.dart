@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
+import 'package:aloha/data/response/customer_categories.dart';
+import 'package:aloha/data/service/broadcast_message_service.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
@@ -18,6 +20,9 @@ class MessageProvider extends ChangeNotifier {
 
   final MessageService _messageService = MessageService();
   final UserPreferences _preferences = UserPreferences();
+  final BroadcastMessageService _broadcastMessageService =
+      BroadcastMessageService();
+  late Socket socketClient;
 
   List<CustomerMessage> get customerMessage =>
       List.unmodifiable(_customerMessage);
@@ -81,12 +86,13 @@ class MessageProvider extends ChangeNotifier {
     _customerMessage.clear();
     _preferences.logout();
     initDone = false;
+    socketClient.disconnect();
     notifyListeners();
   }
 
   void setupSocket() {
     try {
-      var socketClient = io(
+      socketClient = io(
           "https://" + baseUrl + "/messages",
           OptionBuilder()
               .setTransports(['websocket'])
@@ -103,47 +109,49 @@ class MessageProvider extends ChangeNotifier {
         socketClient.emit("join", jsonEncode(data));
 
         socketClient.on("message", (data) {
-          var incomingMessage = Message.fromJson(jsonDecode(data as String));
-          var customerIndex =
-              findCustomerIndexById(incomingMessage.customer.id);
-          if (customerIndex == -1) {
-            _customerMessage = [
-              CustomerMessage(
-                  customer: incomingMessage.customer,
-                  message: [incomingMessage],
-                  unread: 1),
-              ..._customerMessage
-            ];
-          } else {
-            //mencari index pesan
-            var messageIndex = customerMessage[customerIndex]
-                .message
-                .indexWhere((element) => element.id == incomingMessage.id);
-            if (messageIndex == -1) {
-              //menerima pesan baru
-              customerMessage[customerIndex].message = [
-                incomingMessage,
-                ...customerMessage[customerIndex].message
-              ];
-
-              //update unread nya
-              if (incomingMessage.fromMe) {
-                customerMessage[customerIndex].unread = 0;
-              } else {
-                customerMessage[customerIndex].unread++;
-              }
-            } else {
-              //bagian ini cuma buat update tracking
-              customerMessage[customerIndex].message[messageIndex] =
-                  incomingMessage;
-            }
-          }
-
-          notifyListeners();
-          return data;
+          processIncomingMessage(data);
         });
       });
     } catch (e) {}
+  }
+
+  processIncomingMessage(String data) {
+    var incomingMessage = Message.fromJson(jsonDecode(data));
+    var customerIndex = findCustomerIndexById(incomingMessage.customer.id);
+    if (customerIndex == -1) {
+      _customerMessage = [
+        CustomerMessage(
+            customer: incomingMessage.customer,
+            message: [incomingMessage],
+            unread: 1),
+        ..._customerMessage
+      ];
+    } else {
+      //mencari index pesan
+      var messageIndex = customerMessage[customerIndex]
+          .message
+          .indexWhere((element) => element.id == incomingMessage.id);
+      if (messageIndex == -1) {
+        //menerima pesan baru
+        customerMessage[customerIndex].message = [
+          incomingMessage,
+          ...customerMessage[customerIndex].message
+        ];
+
+        //update unread nya
+        if (incomingMessage.fromMe) {
+          customerMessage[customerIndex].unread = 0;
+        } else {
+          customerMessage[customerIndex].unread++;
+        }
+      } else {
+        //bagian ini cuma buat update tracking
+        customerMessage[customerIndex].message[messageIndex] = incomingMessage;
+      }
+    }
+
+    notifyListeners();
+    return data;
   }
 
   bool getIsFirstLoad(int customerId) {
@@ -230,5 +238,31 @@ class MessageProvider extends ChangeNotifier {
     }
     notifyListeners();
     return response;
+  }
+
+  List<CustomerCategories> categories = [];
+  List<CustomerInterests> interests = [];
+  List<CustomerTypes> types = [];
+
+  void getCategoriesTypesInterests() async {
+    var customerCategories =
+        await _broadcastMessageService.getCustomerCategories(_token);
+
+    if (customerCategories.success && customerCategories.data != null) {
+      categories = customerCategories.data!;
+    }
+
+    var customerInterests =
+        await _broadcastMessageService.getCustomerInterests(_token);
+
+    if (customerInterests.success && customerInterests.data != null) {
+      interests = customerInterests.data!;
+    }
+
+    var customerTypes = await _broadcastMessageService.getCustomerTypes(_token);
+
+    if (customerTypes.success && customerTypes.data != null) {
+      types = customerTypes.data!;
+    }
   }
 }

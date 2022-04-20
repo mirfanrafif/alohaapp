@@ -17,23 +17,6 @@ class JobProvider extends ChangeNotifier {
     getAllJobs();
   }
 
-  int? _selectedJobId;
-  int? get selectedJobId => _selectedJobId;
-  set selectedJobId(int? id) {
-    _selectedJobId = id;
-    notifyListeners();
-  }
-
-  Job? getJob() {
-    if (_selectedJobId != null) {
-      var jobIndex =
-          jobs!.indexWhere((element) => element.id == _selectedJobId!);
-      return jobs?[jobIndex];
-    } else {
-      return null;
-    }
-  }
-
   Future<ApiResponse<List<Job>?>> getAllJobs() async {
     var response = await _jobService.getAllJobs(token);
     if (response.success) {
@@ -44,11 +27,10 @@ class JobProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<ApiResponse<Job?>> saveJob(String name, String desc) async {
+  Future<ApiResponse<Job?>> saveJob(String name, String desc, int? id) async {
     late ApiResponse<Job?> response;
-    if (_selectedJobId != null) {
-      response =
-          await _jobService.updateJob(_selectedJobId!, name, desc, token);
+    if (id != null) {
+      response = await _jobService.updateJob(id, name, desc, token);
     } else {
       response = await _jobService.addJob(name, desc, token);
     }
@@ -68,9 +50,8 @@ class JobProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<ApiResponse<Job?>> deleteJob() async {
-    ApiResponse<Job?> response =
-        await _jobService.deleteJob(_selectedJobId!, token);
+  Future<ApiResponse<Job?>> deleteJob(int? id) async {
+    ApiResponse<Job?> response = await _jobService.deleteJob(id!, token);
 
     if (response.success) {
       var jobIndex =

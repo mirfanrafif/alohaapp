@@ -31,7 +31,7 @@ class UserService {
     }
   }
 
-  Future<ApiResponse<Agent?>> updateProfile(
+  Future<ApiResponse<User?>> updateProfile(
       String fullName, String token) async {
     try {
       var response =
@@ -42,7 +42,7 @@ class UserService {
       });
       if (response.statusCode < 400) {
         var data = jsonDecode(response.body);
-        var user = Agent.fromJson(data);
+        var user = User.fromJson(data);
         return ApiResponse(
             success: true, data: user, message: "Success update profile");
       } else {

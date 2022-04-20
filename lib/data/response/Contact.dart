@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:aloha/data/response/message.dart';
 import 'package:aloha/data/response/job.dart';
 
@@ -41,7 +43,7 @@ class Contact {
   Customer customer;
   DateTime createdAt;
   int unread;
-  List<Agent> agent;
+  List<User> agent;
   Message? lastMessage;
   DateTime updatedAt;
 
@@ -50,7 +52,7 @@ class Contact {
         customer: Customer.fromJson(json["customer"]),
         createdAt: DateTime.parse(json["created_at"]),
         unread: json['unread'],
-        agent: List<Agent>.from(json["agent"].map((x) => Agent.fromJson(x))),
+        agent: List<User>.from(json["agent"].map((x) => User.fromJson(x))),
         lastMessage: json["lastMessage"] != null
             ? Message.fromJson(json["lastMessage"])
             : null,
@@ -68,8 +70,8 @@ class Contact {
       };
 }
 
-class Agent {
-  Agent({
+class User {
+  User({
     required this.id,
     required this.fullName,
     required this.username,
@@ -89,9 +91,9 @@ class Agent {
   String? profilePhoto;
   DateTime createdAt;
   DateTime updatedAt;
-  Job? job;
+  List<UserJob>? job;
 
-  factory Agent.fromJson(Map<String, dynamic> json) => Agent(
+  factory User.fromJson(Map<String, dynamic> json) => User(
       id: json["id"],
       fullName: json["full_name"],
       username: json["username"],
@@ -100,7 +102,10 @@ class Agent {
       profilePhoto: json["profile_photo"],
       createdAt: DateTime.parse(json["created_at"]),
       updatedAt: DateTime.parse(json["updated_at"]),
-      job: json['job'] != null ? Job.fromJson(json['job']) : null);
+      job: json['job'] != null
+          ? List<UserJob>.from(
+              json['job'].map((element) => UserJob.fromJson(element)))
+          : null);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -111,6 +116,46 @@ class Agent {
         "profile_photo": profilePhoto,
         "created_at": createdAt.toIso8601String(),
         "updated_at": updatedAt.toIso8601String(),
+      };
+}
+
+// To parse this JSON data, do
+//
+//     final userJob = userJobFromJson(jsonString);
+
+UserJob userJobFromJson(String str) => UserJob.fromJson(json.decode(str));
+
+String userJobToJson(UserJob data) => json.encode(data.toJson());
+
+class UserJob {
+  UserJob({
+    required this.id,
+    required this.priority,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.job,
+  });
+
+  int id;
+  int priority;
+  DateTime createdAt;
+  DateTime updatedAt;
+  Job job;
+
+  factory UserJob.fromJson(Map<String, dynamic> json) => UserJob(
+        id: json["id"],
+        priority: json["priority"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        job: Job.fromJson(json["job"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "priority": priority,
+        "created_at": createdAt.toIso8601String(),
+        "updated_at": updatedAt.toIso8601String(),
+        "job": job.toJson(),
       };
 }
 

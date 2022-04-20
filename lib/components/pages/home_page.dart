@@ -1,3 +1,5 @@
+import 'package:aloha/components/pages/broadcast_page.dart';
+import 'package:aloha/components/pages/job_details_page.dart';
 import 'package:aloha/components/pages/job_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/pages/profile_page.dart';
@@ -17,14 +19,22 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-const String pesanLabel = "Pesan";
-const String salesLabel = "Sales";
-const String jobLabel = "Job";
-const String profilLabel = "Profil";
+const String _pesanLabel = "Pesan";
+const String _salesLabel = "Sales";
+const String _jobLabel = "Job";
+const String _profilLabel = "Profil";
+const String _openBroadcastPage = "openBroadcast";
 
 class _HomePageState extends State<HomePage> {
-  String _selectedIndex = pesanLabel;
-  String _title = pesanLabel;
+  String _selectedIndex = _pesanLabel;
+  String _title = _pesanLabel;
+  late UserProvider _provider;
+
+  @override
+  void initState() {
+    super.initState();
+    _provider = Provider.of<UserProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +42,7 @@ class _HomePageState extends State<HomePage> {
       builder: (context, provider, child) => Scaffold(
         appBar: AppBar(
           title: Text(_title),
+          actions: getAppBarActions(),
         ),
         drawer: Drawer(
           child: Column(
@@ -44,11 +55,11 @@ class _HomePageState extends State<HomePage> {
               ),
               ListTile(
                 leading: const Icon(Icons.message),
-                title: const Text(pesanLabel),
+                title: const Text(_pesanLabel),
                 onTap: () {
                   setState(() {
-                    _selectedIndex = pesanLabel;
-                    _title = pesanLabel;
+                    _selectedIndex = _pesanLabel;
+                    _title = _pesanLabel;
                   });
                   Navigator.pop(context);
                 },
@@ -57,11 +68,11 @@ class _HomePageState extends State<HomePage> {
               if (provider.user.role == "admin") ...getAdminMenus(),
               ListTile(
                 leading: const Icon(Icons.account_circle),
-                title: const Text(profilLabel),
+                title: const Text(_profilLabel),
                 onTap: () {
                   setState(() {
-                    _selectedIndex = profilLabel;
-                    _title = profilLabel;
+                    _selectedIndex = _profilLabel;
+                    _title = _profilLabel;
                   });
                   Navigator.pop(context);
                 },
@@ -89,7 +100,7 @@ class _HomePageState extends State<HomePage> {
 
   FloatingActionButton? getFab() {
     switch (_selectedIndex) {
-      case pesanLabel:
+      case _pesanLabel:
         return FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(
@@ -97,6 +108,47 @@ class _HomePageState extends State<HomePage> {
           },
           child: const Icon(Icons.message),
         );
+      case _jobLabel:
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => JobDetailsPage(),
+            ));
+          },
+          child: Icon(Icons.add),
+        );
+      default:
+        return null;
+    }
+  }
+
+  List<Widget>? getAppBarActions() {
+    switch (_selectedIndex) {
+      case _pesanLabel:
+        return [
+          if (_provider.user.role == "admin")
+            PopupMenuButton(
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  child: Text("Broadcast Message"),
+                  value: _openBroadcastPage,
+                ),
+              ],
+              onSelected: (result) {
+                if (result != null) {
+                  switch (result) {
+                    case _openBroadcastPage:
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const BroadcastPage(),
+                      ));
+                      break;
+                    default:
+                      break;
+                  }
+                }
+              },
+            )
+        ];
       default:
         return null;
     }
@@ -106,22 +158,22 @@ class _HomePageState extends State<HomePage> {
     return [
       ListTile(
         leading: const Icon(Icons.people),
-        title: const Text(salesLabel),
+        title: const Text(_salesLabel),
         onTap: () {
           setState(() {
-            _selectedIndex = salesLabel;
-            _title = salesLabel;
+            _selectedIndex = _salesLabel;
+            _title = _salesLabel;
           });
           Navigator.pop(context);
         },
       ),
       ListTile(
         leading: const Icon(Icons.work),
-        title: const Text(jobLabel),
+        title: const Text(_jobLabel),
         onTap: () {
           setState(() {
-            _selectedIndex = jobLabel;
-            _title = jobLabel;
+            _selectedIndex = _jobLabel;
+            _title = _jobLabel;
           });
           Navigator.pop(context);
         },
@@ -132,13 +184,13 @@ class _HomePageState extends State<HomePage> {
 
   Widget getBody() {
     switch (_selectedIndex) {
-      case pesanLabel:
+      case _pesanLabel:
         return const ContactList();
-      case salesLabel:
+      case _salesLabel:
         return const SalesList();
-      case jobLabel:
+      case _jobLabel:
         return const JobPage();
-      case profilLabel:
+      case _profilLabel:
         return const ProfilePage();
       default:
         return Container(

@@ -1,3 +1,4 @@
+import 'package:aloha/data/response/job.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,6 +72,13 @@ class _SalesEditFormState extends State<SalesEditForm> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text(
+                  "Data diri",
+                  style: TextStyle(fontSize: 24),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
                 TextField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: "Nama"),
@@ -172,44 +180,45 @@ class _SalesJobDropdownState extends State<SalesJobDropdown> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SalesProvider>(
-      builder: (context, provider, child) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Job"),
-              SizedBox(
-                width: double.infinity,
-                child: DropdownButton<int>(
-                  isExpanded: true,
-                  value: provider.selectedAgentJob,
-                  items: [
-                    const DropdownMenuItem<int>(
-                      child: Text("Pilih job dibawah..."),
-                      value: 0,
-                    ),
-                    ...provider.jobs
-                        .map((job) => DropdownMenuItem<int>(
-                              child: Text(job.name),
-                              value: job.id,
-                            ))
-                        .toList()
-                  ],
-                  onChanged: (selectedItem) {
-                    if (selectedItem != null) {
-                      provider.setSelectedAgentJob(selectedItem).then((value) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(value.message)));
-                      });
-                    }
-                  },
+      builder: (context, provider, child) {
+        var jobs = provider.selectedAgentJob;
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Job",
+                  style: TextStyle(fontSize: 24),
                 ),
-              )
-            ],
+                const SizedBox(
+                  height: 16,
+                ),
+                ...provider.jobs
+                    .map((job) => Row(
+                          children: [
+                            Checkbox(
+                                value: jobs.indexWhere(
+                                        (element) => element.id == job.id) >
+                                    -1,
+                                onChanged: (newValue) {
+                                  if (newValue != null) {
+                                    provider.setSelectedAgentJob(newValue, job);
+                                  }
+                                }),
+                            Expanded(
+                              child: Text(job.name),
+                            )
+                          ],
+                        ))
+                    .toList()
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

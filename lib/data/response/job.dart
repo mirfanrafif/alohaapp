@@ -47,7 +47,7 @@ class Job {
   final String description;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final List<Agent>? agents;
+  final List<User>? agents;
 
   factory Job.fromJson(Map<String, dynamic> json) => Job(
         id: json["id"],
@@ -56,8 +56,8 @@ class Job {
         createdAt: DateTime.parse(json["created_at"]),
         updatedAt: DateTime.parse(json["updated_at"]),
         agents: json['agents'] != null
-            ? List<Agent>.from(
-                json['agents'].map((element) => Agent.fromJson(element)))
+            ? List<User>.from(
+                json['agents'].map((element) => User.fromJson(element)))
             : null,
       );
 

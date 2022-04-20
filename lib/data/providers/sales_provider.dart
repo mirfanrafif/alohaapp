@@ -2,25 +2,27 @@ import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/job.dart';
 import 'package:aloha/data/response/statistics.dart';
+import 'package:aloha/data/service/job_service.dart';
 import 'package:aloha/data/service/sales_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SalesProvider with ChangeNotifier {
-  final UserJobService _jobService = UserJobService();
+  final SalesService _salesService = SalesService();
+  final JobService _jobService = JobService();
 
   final List<Job> _jobs = [];
   List<Job> get jobs => List.unmodifiable(_jobs);
 
-  final List<Agent> _agents = [];
-  List<Agent> get agents => List.unmodifiable(_agents);
+  final List<User> _agents = [];
+  List<User> get agents => List.unmodifiable(_agents);
 
-  Agent? _selectedAgent;
-  Agent? get selectedAgent => _selectedAgent;
-  set selectedAgent(Agent? agent) {
+  User? _selectedAgent;
+  User? get selectedAgent => _selectedAgent;
+  set selectedAgent(User? agent) {
     _selectedAgent = agent;
-    _selectedAgentJob = agent!.job?.id ?? 0;
+    _selectedAgentJob = agent!.job?.map((e) => e.job).toList() ?? [];
     _selectedDate = null;
     _dailyReport = null;
     statisticsResponse = null;
@@ -34,52 +36,70 @@ class SalesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  int _selectedAgentJob = 0;
-  int get selectedAgentJob => _selectedAgentJob;
-  Future<ApiResponse<Agent?>> setSelectedAgentJob(int newJob) async {
-    _selectedAgentJob = newJob;
-    var response = await _jobService.updateUserJob(
-        _selectedAgent!.id, _selectedAgentJob, _token);
+  List<Job> _selectedAgentJob = [];
+  List<Job> get selectedAgentJob => _selectedAgentJob;
+  Future<void> setSelectedAgentJob(bool assign, Job job) async {
+    if (assign) {
+      var response =
+          await _salesService.updateUserJob(_selectedAgent!.id, job.id, _token);
 
-    if (response.success) {
-      _selectedAgentJob = response.data!.job?.id ?? 0;
-      var agentIndex = findAgentIndex(response.data!.id);
-      _agents[agentIndex].job = response.data!.job;
-      notifyListeners();
+      if (response.success) {
+        // _selectedAgentJob = response.data!.job?.id ?? 0;
+        var agentIndex = findAgentIndex(response.data!.id);
+        _agents[agentIndex].job = response.data!.job;
+      }
+    } else {
+      var jobIndex =
+          _selectedAgentJob.indexWhere((element) => element.id == job.id);
+      if (jobIndex > -1) {
+        _selectedAgentJob.removeAt(jobIndex);
+      }
     }
-    return response;
+    notifyListeners();
   }
 
   late UserPreferences _preferences;
   String _token = "";
 
-  SalesProvider() {
+  void init(BuildContext context) {
     _preferences = UserPreferences();
     _token = _preferences.getToken();
     getAllJobs();
-    getAllAgents();
+    getAllAgents().then((value) {
+      if (!value.success) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(value.message)));
+      }
+    });
   }
 
   void getAllJobs() async {
+    _jobs.clear();
     var jobResponse = await _jobService.getAllJobs(_token);
-    _jobs.addAll(jobResponse);
+    if (jobResponse.success && jobResponse.data != null) {
+      _jobs.addAll(jobResponse.data!);
+    }
     notifyListeners();
   }
 
-  void getAllAgents() async {
-    var users = await _jobService.getAllUsers(_token);
-    _agents.addAll(users);
+  Future<ApiResponse<List<User>?>> getAllAgents() async {
+    _agents.clear();
+    var users = await _salesService.getAllUsers(_token);
+    if (users.success && users.data != null) {
+      _agents.addAll(users.data!);
+    }
     notifyListeners();
+    return users;
   }
 
   int findAgentIndex(int agentId) {
     return _agents.indexWhere((element) => element.id == agentId);
   }
 
-  Future<ApiResponse<Agent?>> updateAgents(
+  Future<ApiResponse<User?>> updateAgents(
       String nama, String username, String email) async {
     var role = _selectedAgent!.role;
-    var response = await _jobService.updateUser(
+    var response = await _salesService.updateUser(
         id: _selectedAgent!.id,
         nama: nama,
         username: username,
@@ -126,7 +146,7 @@ class SalesProvider with ChangeNotifier {
     statisticsResponse = null;
     statistics = null;
     _selectedCustomerId = null;
-    var response = await _jobService.getStatistics(
+    var response = await _salesService.getStatistics(
         agentId: _selectedAgent!.id,
         token: _token,
         startDate: getFormattedStartDate(),

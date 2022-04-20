@@ -22,27 +22,15 @@ class _JobPageState extends State<JobPage> {
                 title: Text(value.jobs?[index].name ?? ""),
                 subtitle: Text(value.jobs?[index].description ?? ""),
                 onTap: () {
-                  value.selectedJobId = value.jobs?[index].id;
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const JobDetailsPage(),
+                    builder: (context) =>
+                        JobDetailsPage(job: value.jobs?[index]),
                   ));
                 },
               ),
               itemCount: value.jobs?.length ?? 0,
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(16),
-            width: double.infinity,
-            child: ElevatedButton(
-                onPressed: () {
-                  value.selectedJobId = null;
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const JobDetailsPage(),
-                  ));
-                },
-                child: const Text('Tambah Job')),
-          )
         ],
       );
     });

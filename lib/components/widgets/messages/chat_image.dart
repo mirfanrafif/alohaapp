@@ -22,30 +22,16 @@ class ChatImage extends StatelessWidget {
               builder: (context) => ImagePage(message: message),
             ));
           },
-          child: Image(
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) {
-                return child;
-              }
-              return SizedBox(
-                height: 200,
-                width: 300,
-                child: Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes!
-                        : null,
-                  ),
-                ),
-              );
-            },
-            image: NetworkImage(message.fromMe
+          child: Image.network(
+            message.fromMe
                 ? "https://" + baseUrl + "/message/image/${message.file}"
-                : "https://solo.wablas.com/image/${message.file}"),
-            height: 200,
+                : "https://solo.wablas.com/image/${message.file}",
             width: 300,
+            height: 200,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => const Center(
+              child: const Text("Tidak dapat memuat gambar"),
+            ),
           ),
         ),
       ),
