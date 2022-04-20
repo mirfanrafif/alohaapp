@@ -1,6 +1,8 @@
 import 'package:aloha/components/widgets/profile_picture.dart';
 import 'package:aloha/data/providers/user_provider.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,7 +18,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _provider = Provider.of<UserProvider>(context, listen: false);
     _nameController.text = _provider.user.fullName;
@@ -42,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: updateProfilePicture,
                   icon: const Icon(
                     Icons.camera_alt,
                     color: Colors.white,
@@ -77,5 +78,16 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
+  }
+
+  void updateProfilePicture() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      //tutup bottom sheet
+      _provider.updateProfilePicture(image, context);
+    }
   }
 }

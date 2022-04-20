@@ -5,6 +5,7 @@ import 'package:aloha/data/response/user.dart';
 import 'package:aloha/data/service/user_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UserProvider with ChangeNotifier {
   late UserService _service;
@@ -62,5 +63,24 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
 
     return response;
+  }
+
+  void updateProfilePicture(XFile file, BuildContext context) async {
+    var response = await _service.updateProfilePicture(file, _token);
+    if (response.success && response.data != null) {
+      _agentEntity = AgentEntity(
+          id: response.data!.id,
+          fullName: response.data!.fullName,
+          username: response.data!.username,
+          email: response.data!.email,
+          role: response.data!.role,
+          profilePhoto: response.data!.profilePhoto);
+      //set preferences
+      _preferences.setUser(_agentEntity);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
+    }
+    notifyListeners();
   }
 }

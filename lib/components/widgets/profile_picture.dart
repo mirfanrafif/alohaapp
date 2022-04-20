@@ -17,11 +17,10 @@ class ProfilePicture extends StatelessWidget {
             color: Colors.black12,
             width: 40,
             height: 40,
-            child: Image.network(
-              imageUrl,
-              errorBuilder: (context, error, stackTrace) =>
-                  Image.asset('assets/image/user.png'),
-            ),
+            child: Image.network(imageUrl,
+                errorBuilder: (context, error, stackTrace) =>
+                    Image.asset('assets/image/user.png', fit: BoxFit.cover),
+                fit: BoxFit.cover),
           ),
         );
       } catch (e) {
@@ -30,7 +29,7 @@ class ProfilePicture extends StatelessWidget {
               color: Colors.black12,
               width: 40,
               height: 40,
-              child: Image.asset('assets/image/user.png')),
+              child: Image.asset('assets/image/user.png', fit: BoxFit.cover)),
         );
       }
     } else {
@@ -39,7 +38,7 @@ class ProfilePicture extends StatelessWidget {
               color: Colors.black12,
               width: 40,
               height: 40,
-              child: Image.asset('assets/image/user.png')));
+              child: Image.asset('assets/image/user.png', fit: BoxFit.cover)));
     }
   }
 }

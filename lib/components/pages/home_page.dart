@@ -229,6 +229,7 @@ class _HomePageState extends State<HomePage> {
           "https://" + baseUrl + "/user/profile_image/" + profilePhoto;
       return ClipOval(
         child: Image(
+            fit: BoxFit.cover,
             image: NetworkImage(imageUrl),
             errorBuilder: (context, object, e) {
               return const CircleAvatar(
