@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/customer_categories.dart';
+import 'package:aloha/data/response/message_template.dart';
 import 'package:aloha/data/service/broadcast_message_service.dart';
 import 'package:aloha/data/service/message_service.dart';
+import 'package:aloha/data/service/message_template_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class MessageProvider extends ChangeNotifier {
   final UserPreferences _preferences = UserPreferences();
   final BroadcastMessageService _broadcastMessageService =
       BroadcastMessageService();
+  final MessageTemplateService _messageTemplateService =
+      MessageTemplateService();
   late Socket socketClient;
 
   List<CustomerMessage> get customerMessage =>
@@ -37,6 +41,7 @@ class MessageProvider extends ChangeNotifier {
     var user = _preferences.getUser();
     _id = user.id;
     setupSocket();
+    getTemplates();
     return await getAllContact();
   }
 
@@ -264,5 +269,19 @@ class MessageProvider extends ChangeNotifier {
     if (customerTypes.success && customerTypes.data != null) {
       types = customerTypes.data!;
     }
+  }
+
+  final List<MessageTemplate> _templates = [];
+  List<MessageTemplate> get templates => List.unmodifiable(_templates);
+
+  Future<ApiResponse<List<MessageTemplate>>> getTemplates() async {
+    var response = await _messageTemplateService.getTemplates();
+
+    if (response.success && response.data != null) {
+      _templates.clear();
+      _templates.addAll(response.data!);
+    }
+    notifyListeners();
+    return response;
   }
 }

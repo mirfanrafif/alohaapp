@@ -20,17 +20,11 @@ class ChatInput extends StatefulWidget {
 
 class _ChatInputState extends State<ChatInput> {
   var chatController = TextEditingController();
-  var _currentChat = '';
   late MessageProvider provider;
 
   @override
   void initState() {
     super.initState();
-    chatController.addListener(() {
-      setState(() {
-        _currentChat = chatController.text;
-      });
-    });
     provider = Provider.of<MessageProvider>(context, listen: false);
   }
 
@@ -128,6 +122,12 @@ class _ChatInputState extends State<ChatInput> {
                   icon: const Icon(Icons.upload_file),
                   label: "Document",
                 ),
+                AttachmentButton(
+                  color: Colors.amber,
+                  onTap: openTemplateDialog,
+                  icon: const Icon(Icons.abc),
+                  label: "Template",
+                ),
               ],
             ),
           ],
@@ -142,6 +142,27 @@ class _ChatInputState extends State<ChatInput> {
     );
   }
 
+  void openTemplateDialog() {
+    Navigator.pop(context);
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => SizedBox(
+              height: 300,
+              child: ListView.builder(
+                itemBuilder: (context, index) => ListTile(
+                  title: Text(provider.templates[index].name ?? ""),
+                  subtitle: Text(provider.templates[index].template ?? ""),
+                  onTap: () {
+                    chatController.text =
+                        provider.templates[index].template ?? "";
+                    Navigator.pop(context);
+                  },
+                ),
+                itemCount: provider.templates.length,
+              ),
+            ));
+  }
+
   void pickFromGallery() async {
     final ImagePicker _picker = ImagePicker();
     // Pick an image
@@ -154,7 +175,7 @@ class _ChatInputState extends State<ChatInput> {
         builder: (context) => SendImagePage(
           file: image,
           customer: widget.customer,
-          message: _currentChat,
+          message: chatController.text,
         ),
       ));
     }
@@ -172,7 +193,7 @@ class _ChatInputState extends State<ChatInput> {
         builder: (context) => SendImagePage(
           file: image,
           customer: widget.customer,
-          message: _currentChat,
+          message: chatController.text,
         ),
       ));
     }
@@ -195,7 +216,8 @@ class _ChatInputState extends State<ChatInput> {
 
   void sendMessage() {
     Provider.of<MessageProvider>(context, listen: false).sendMessage(
-        customerNumber: widget.customer.phoneNumber, message: _currentChat);
+        customerNumber: widget.customer.phoneNumber,
+        message: chatController.text);
     chatController.clear();
   }
 }

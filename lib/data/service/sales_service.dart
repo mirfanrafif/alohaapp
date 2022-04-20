@@ -10,16 +10,22 @@ import '../response/user.dart';
 
 class SalesService {
   Future<ApiResponse<List<User>?>> getAllUsers(String token) async {
-    var response = await get(Uri.https(baseUrl, '/user'),
-        headers: {'Authorization': 'Bearer $token'});
+    try {
+      var response = await get(Uri.https(baseUrl, '/user'),
+          headers: {'Authorization': 'Bearer $token'});
 
-    if (response.statusCode < 400) {
-      var data = GetAllUserResponse.fromJson(jsonDecode(response.body));
-      return ApiResponse(success: true, data: data.data, message: data.message);
-    } else {
-      var errorResponse = ApiErrorResponse.fromJson(jsonDecode(response.body));
-      return ApiResponse(
-          success: false, data: [], message: errorResponse.message);
+      if (response.statusCode < 400) {
+        var data = GetAllUserResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true, data: data.data, message: data.message);
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: [], message: errorResponse.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: [], message: e.toString());
     }
   }
 
