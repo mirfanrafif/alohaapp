@@ -1,9 +1,6 @@
 import 'package:aloha/data/providers/message_provider.dart';
-import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/customer_categories.dart';
-import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
-import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -69,6 +66,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 ],
               ),
               MultiSelectChipDisplay<CustomerCategories>(
+                chipColor: Colors.blue.shade100,
+                textStyle: TextStyle(color: Colors.black),
                 items: _selectedCategories
                     .map((e) =>
                         MultiSelectItem<CustomerCategories>(e, e.name ?? ""))
@@ -115,6 +114,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
                     .map((e) =>
                         MultiSelectItem<CustomerInterests>(e, e.name ?? ""))
                     .toList(),
+                chipColor: Colors.orange.shade100,
+                textStyle: TextStyle(color: Colors.black),
               ),
               const SizedBox(
                 height: 16,
@@ -155,6 +156,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 items: _selectedTypes
                     .map((e) => MultiSelectItem<CustomerTypes>(e, e.name ?? ""))
                     .toList(),
+                chipColor: Colors.green.shade100,
+                textStyle: TextStyle(color: Colors.black),
               ),
               const SizedBox(
                 height: 16,
@@ -168,6 +171,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 minLines: 1,
                 maxLines: 8,
               ),
+              const SizedBox(
+                height: 16,
+              ),
+              ElevatedButton(
+                  onPressed: () {}, child: const Text("Kirim Broadcast"))
             ],
           ),
         );
