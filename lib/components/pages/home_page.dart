@@ -4,6 +4,7 @@ import 'package:aloha/components/pages/job_page.dart';
 import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/pages/profile_page.dart';
 import 'package:aloha/components/pages/start_message_page.dart';
+import 'package:aloha/components/pages/template_page.dart';
 import 'package:aloha/components/widgets/messages/contact_list.dart';
 import 'package:aloha/components/widgets/agents/sales_list.dart';
 import 'package:aloha/data/providers/message_provider.dart';
@@ -24,6 +25,7 @@ const String _salesLabel = "Sales";
 const String _jobLabel = "Job";
 const String _profilLabel = "Profil";
 const String _openBroadcastPage = "openBroadcast";
+const String _openTemplatePage = "openTemplate";
 
 class _HomePageState extends State<HomePage> {
   String _selectedIndex = _pesanLabel;
@@ -112,10 +114,10 @@ class _HomePageState extends State<HomePage> {
         return FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => JobDetailsPage(),
+              builder: (context) => const JobDetailsPage(),
             ));
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         );
       default:
         return null;
@@ -126,28 +128,37 @@ class _HomePageState extends State<HomePage> {
     switch (_selectedIndex) {
       case _pesanLabel:
         return [
-          if (_provider.user.role == "admin")
-            PopupMenuButton(
-              itemBuilder: (context) => [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              if (_provider.user.role == "admin")
                 const PopupMenuItem(
                   child: Text("Broadcast Message"),
                   value: _openBroadcastPage,
                 ),
-              ],
-              onSelected: (result) {
-                if (result != null) {
-                  switch (result) {
-                    case _openBroadcastPage:
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const BroadcastPage(),
-                      ));
-                      break;
-                    default:
-                      break;
-                  }
+              const PopupMenuItem(
+                child: Text("Template Pesan"),
+                value: _openTemplatePage,
+              ),
+            ],
+            onSelected: (result) {
+              if (result != null) {
+                switch (result) {
+                  case _openBroadcastPage:
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const BroadcastPage(),
+                    ));
+                    break;
+                  case _openTemplatePage:
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const TemplatePage(),
+                    ));
+                    break;
+                  default:
+                    break;
                 }
-              },
-            )
+              }
+            },
+          )
         ];
       default:
         return null;

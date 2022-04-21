@@ -302,4 +302,62 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
     return response;
   }
+
+  Future<ApiResponse<List<Message>?>> sendBroadcastMessage(
+      List<CustomerCategories> categories,
+      List<CustomerInterests> interests,
+      List<CustomerTypes> types,
+      String message) async {
+    var response = await _broadcastMessageService.sendBroadcastMessage(
+        categories: categories.map((e) => e.name ?? "").toList(),
+        types: types.map((e) => e.name ?? "").toList(),
+        interests: interests.map((e) => e.name ?? "").toList(),
+        message: message,
+        token: _token);
+    notifyListeners();
+    return response;
+  }
+
+  Future<ApiResponse<MessageTemplate?>> saveTemplate(
+      int? id, String name, String template) async {
+    late ApiResponse<MessageTemplate?> response;
+    if (id != null) {
+      response = await _messageTemplateService.editTemplate(
+          id, name, template, _token);
+    } else {
+      response =
+          await _messageTemplateService.addTemplate(name, template, _token);
+    }
+
+    if (response.success) {
+      var templatesIndex =
+          _templates.indexWhere((element) => element.id == response.data!.id);
+      if (templatesIndex > -1) {
+        _templates[templatesIndex] = response.data!;
+      } else {
+        _templates.add(response.data!);
+      }
+    }
+
+    notifyListeners();
+
+    return response;
+  }
+
+  Future<ApiResponse<MessageTemplate?>> deleteTemplate(int id) async {
+    ApiResponse<MessageTemplate?> response =
+        await _messageTemplateService.deleteTemplate(id, _token);
+
+    if (response.success) {
+      var templatesIndex =
+          _templates.indexWhere((element) => element.id == response.data!.id);
+      if (templatesIndex > -1) {
+        _templates.removeAt(templatesIndex);
+      }
+    }
+
+    notifyListeners();
+
+    return response;
+  }
 }

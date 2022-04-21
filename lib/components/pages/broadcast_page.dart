@@ -115,7 +115,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         MultiSelectItem<CustomerInterests>(e, e.name ?? ""))
                     .toList(),
                 chipColor: Colors.orange.shade100,
-                textStyle: TextStyle(color: Colors.black),
+                textStyle: const TextStyle(color: Colors.black),
               ),
               const SizedBox(
                 height: 16,
@@ -157,7 +157,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                     .map((e) => MultiSelectItem<CustomerTypes>(e, e.name ?? ""))
                     .toList(),
                 chipColor: Colors.green.shade100,
-                textStyle: TextStyle(color: Colors.black),
+                textStyle: const TextStyle(color: Colors.black),
               ),
               const SizedBox(
                 height: 16,
@@ -175,7 +175,24 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 height: 16,
               ),
               ElevatedButton(
-                  onPressed: () {}, child: const Text("Kirim Broadcast"))
+                  onPressed: () {
+                    provider
+                        .sendBroadcastMessage(
+                      _selectedCategories,
+                      _selectedInterests,
+                      _selectedTypes,
+                      _messageController.text,
+                    )
+                        .then((value) {
+                      if (value.success) {
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(value.message)));
+                      }
+                    });
+                  },
+                  child: const Text("Kirim Broadcast"))
             ],
           ),
         );
