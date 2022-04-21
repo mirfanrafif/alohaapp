@@ -70,7 +70,7 @@ class MessageService {
     }
   }
 
-  Future<List<Message>> sendImage(
+  Future<ApiResponse<List<Message>?>> sendImage(
       {required XFile file,
       required String message,
       required String customerNumber,
@@ -96,12 +96,55 @@ class MessageService {
       var response = utf8.decode(responseBytes.toList());
       if (streamedResponse.statusCode < 400) {
         var data = messageResponseFromJson(response);
-        return data.data;
+        return ApiResponse(
+            success: true,
+            data: data.data,
+            message: 'Success sending video to customer');
       } else {
-        return [];
+        var data = ApiErrorResponse.fromJson(jsonDecode(response));
+        return ApiResponse(success: false, data: null, message: data.message);
       }
     } catch (e) {
-      return [];
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
+
+  Future<ApiResponse<List<Message>?>> sendVideo(
+      {required XFile file,
+      required String message,
+      required String customerNumber,
+      required String token}) async {
+    try {
+      var request =
+          MultipartRequest('POST', Uri.https(baseUrl, "/message/video"));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+
+      //add file request
+      request.files.add(MultipartFile.fromBytes(
+          'video', await file.readAsBytes(),
+          filename: file.path.split('/').last));
+
+      //add customer number to request
+      request.fields['customerNumber'] = customerNumber;
+
+      //add message to request
+      request.fields['message'] = message;
+
+      var streamedResponse = await request.send();
+      var responseBytes = await streamedResponse.stream.toBytes();
+      var response = utf8.decode(responseBytes.toList());
+      if (streamedResponse.statusCode < 400) {
+        var data = messageResponseFromJson(response);
+        return ApiResponse(
+            success: true,
+            data: data.data,
+            message: 'Success sending video to customer');
+      } else {
+        var data = ApiErrorResponse.fromJson(jsonDecode(response));
+        return ApiResponse(success: false, data: null, message: data.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
 

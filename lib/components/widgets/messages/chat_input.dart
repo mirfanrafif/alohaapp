@@ -117,6 +117,12 @@ class _ChatInputState extends State<ChatInput> {
                   label: "Gallery",
                 ),
                 AttachmentButton(
+                  color: Colors.cyan.shade400,
+                  onTap: pickVideoFromGallery,
+                  icon: const Icon(Icons.video_camera_back),
+                  label: "Video",
+                ),
+                AttachmentButton(
                   color: Colors.lightGreen,
                   onTap: uploadDocument,
                   icon: const Icon(Icons.upload_file),
@@ -176,6 +182,26 @@ class _ChatInputState extends State<ChatInput> {
           file: image,
           customer: widget.customer,
           message: chatController.text,
+          type: "image",
+        ),
+      ));
+    }
+  }
+
+  void pickVideoFromGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickVideo(source: ImageSource.gallery);
+
+    if (image != null) {
+      //tutup bottom sheet
+      Navigator.pop(context);
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => SendImagePage(
+          file: image,
+          customer: widget.customer,
+          message: chatController.text,
+          type: "video",
         ),
       ));
     }
@@ -194,6 +220,7 @@ class _ChatInputState extends State<ChatInput> {
           file: image,
           customer: widget.customer,
           message: chatController.text,
+          type: "image",
         ),
       ));
     }

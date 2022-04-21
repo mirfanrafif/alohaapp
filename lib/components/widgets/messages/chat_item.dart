@@ -1,3 +1,4 @@
+import 'package:aloha/components/widgets/messages/chat_video.dart';
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -39,6 +40,7 @@ class ChatItem extends StatelessWidget {
                     : CrossAxisAlignment.start,
                 children: [
                   if (message.type == "image") ChatImage(message: message),
+                  if (message.type == "video") ChatVideo(message: message),
                   if (message.type == "document") buildDocumentView(),
                   if (message.message.isNotEmpty)
                     Text(

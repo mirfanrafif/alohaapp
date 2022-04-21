@@ -26,11 +26,11 @@ class ChatImage extends StatelessWidget {
             message.fromMe
                 ? "https://" + baseUrl + "/message/image/${message.file}"
                 : "https://solo.wablas.com/image/${message.file}",
-            width: 300,
+            // width: 300,
             height: 200,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => const Center(
-              child: const Text("Tidak dapat memuat gambar"),
+              child: Text("Tidak dapat memuat gambar"),
             ),
           ),
         ),

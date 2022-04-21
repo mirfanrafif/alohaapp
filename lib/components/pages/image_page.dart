@@ -10,15 +10,20 @@ class ImagePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.white,
         backgroundColor: Colors.black,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(message.customer.name),
+            Text(
+              message.customer.name,
+            ),
             Text(
               message.customer.phoneNumber,
-              style:
-                  const TextStyle(fontSize: 14, fontWeight: FontWeight.normal),
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ],
         ),

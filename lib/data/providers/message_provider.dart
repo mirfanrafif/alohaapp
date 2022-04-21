@@ -224,15 +224,24 @@ class MessageProvider extends ChangeNotifier {
         file: file, customerNumber: customerNumber, token: _token);
   }
 
-  Future<void> sendImage(
+  Future<ApiResponse<List<Message>?>> sendImage(
       {required XFile file,
       required String customerNumber,
-      required String message}) async {
-    await _messageService.sendImage(
-        file: file,
-        message: message,
-        customerNumber: customerNumber,
-        token: _token);
+      required String message,
+      required String type}) async {
+    if (type == "video") {
+      return await _messageService.sendVideo(
+          file: file,
+          message: message,
+          customerNumber: customerNumber,
+          token: _token);
+    } else {
+      return await _messageService.sendImage(
+          file: file,
+          message: message,
+          customerNumber: customerNumber,
+          token: _token);
+    }
   }
 
   Future<ApiResponse<Customer?>> startConversation(int customerId) async {
