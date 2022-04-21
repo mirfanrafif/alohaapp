@@ -155,7 +155,8 @@ class MessageProvider extends ChangeNotifier {
         }
       } else {
         //bagian ini cuma buat update tracking
-        customerMessage[customerIndex].message[messageIndex] = incomingMessage;
+        customerMessage[customerIndex].message[messageIndex].status =
+            incomingMessage.status;
       }
     }
 

@@ -178,7 +178,7 @@ class _SendImagePageState extends State<SendImagePage> {
         .sendImage(
       file: widget.file,
       customerNumber: widget.customer.phoneNumber,
-      message: _currentChat,
+      message: chatController.text,
       type: widget.type,
     )
         .then((response) {

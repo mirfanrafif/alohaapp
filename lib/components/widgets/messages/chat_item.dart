@@ -1,3 +1,4 @@
+import 'package:aloha/components/widgets/messages/chat_document.dart';
 import 'package:aloha/components/widgets/messages/chat_video.dart';
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +42,8 @@ class ChatItem extends StatelessWidget {
                 children: [
                   if (message.type == "image") ChatImage(message: message),
                   if (message.type == "video") ChatVideo(message: message),
-                  if (message.type == "document") buildDocumentView(),
+                  if (message.type == "document")
+                    ChatDocument(message: message),
                   if (message.message.isNotEmpty)
                     Text(
                       message.message,
@@ -112,32 +114,5 @@ class ChatItem extends StatelessWidget {
           size: 12,
         );
     }
-  }
-
-  Widget buildDocumentView() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: const Color.fromARGB(35, 0, 0, 0)),
-        borderRadius: const BorderRadius.all(Radius.circular(8)),
-      ),
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              message.file ?? "",
-              style: const TextStyle(color: Colors.black54),
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.download,
-              color: Colors.black54,
-            ),
-          )
-        ],
-      ),
-    );
   }
 }

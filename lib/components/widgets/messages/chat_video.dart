@@ -21,9 +21,7 @@ class _ChatVideoState extends State<ChatVideo> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-      widget.message.fromMe
-          ? "https://" + baseUrl + "/message/video/${widget.message.file}"
-          : "https://solo.wablas.com/video/${widget.message.file}",
+      widget.message.file ?? "",
     )..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});

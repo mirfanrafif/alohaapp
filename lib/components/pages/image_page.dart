@@ -36,9 +36,7 @@ class ImagePage extends StatelessWidget {
             Expanded(
               child: PinchZoom(
                 child: Image(
-                  image: NetworkImage(message.fromMe
-                      ? "https://dev.mirfanrafif.me/message/image/${message.file}"
-                      : "https://solo.wablas.com/image/${message.file}"),
+                  image: NetworkImage(message.file ?? ""),
                 ),
                 maxScale: 2.5,
               ),
