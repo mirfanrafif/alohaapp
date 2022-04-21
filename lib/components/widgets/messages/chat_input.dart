@@ -33,47 +33,74 @@ class _ChatInputState extends State<ChatInput> {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
         children: [
-          Expanded(
-            child: TextField(
-              controller: chatController,
-              decoration: InputDecoration(
-                  hintText: "Tulis pesan disini...",
-                  contentPadding: const EdgeInsets.all(8),
-                  prefixIcon: IconButton(
-                    onPressed: showDialog,
-                    icon: const Icon(Icons.attachment),
-                  ),
-                  enabledBorder: inputBorder,
-                  focusedBorder: inputBorder,
-                  fillColor: Colors.white),
-              minLines: 1,
-              maxLines: 5,
-            ),
-          ),
-          const SizedBox(
-            width: 8,
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(32),
-              ),
-              color: Colors.green,
-              boxShadow: [
-                BoxShadow(color: Colors.black12, blurRadius: 4),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                ...provider.templates
+                    .map((e) => Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              chatController.text = e.template ?? "";
+                            },
+                            child: Chip(
+                              backgroundColor: Colors.amber.shade300,
+                              label: Text(e.name ?? ""),
+                            ),
+                          ),
+                        ))
+                    .toList()
               ],
             ),
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: const Icon(
-                Icons.send,
-                color: Colors.white,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: chatController,
+                  decoration: InputDecoration(
+                      hintText: "Tulis pesan disini...",
+                      contentPadding: const EdgeInsets.all(8),
+                      prefixIcon: IconButton(
+                        onPressed: showDialog,
+                        icon: const Icon(Icons.attachment),
+                      ),
+                      enabledBorder: inputBorder,
+                      focusedBorder: inputBorder,
+                      fillColor: Colors.white),
+                  minLines: 1,
+                  maxLines: 5,
+                ),
               ),
-            ),
-          )
+              const SizedBox(
+                width: 8,
+              ),
+              Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(32),
+                  ),
+                  color: Colors.green,
+                  boxShadow: [
+                    BoxShadow(color: Colors.black12, blurRadius: 4),
+                  ],
+                ),
+                child: IconButton(
+                  onPressed: sendMessage,
+                  icon: const Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
