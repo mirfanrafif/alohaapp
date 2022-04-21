@@ -22,7 +22,7 @@ class SalesProvider with ChangeNotifier {
   User? get selectedAgent => _selectedAgent;
   set selectedAgent(User? agent) {
     _selectedAgent = agent;
-    _selectedAgentJob = agent!.job?.map((e) => e.job).toList() ?? [];
+    _selectedAgentJob = agent?.job?.map((e) => e.job).toList() ?? [];
     _selectedDate = null;
     _dailyReport = null;
     statisticsResponse = null;
@@ -128,6 +128,23 @@ class SalesProvider with ChangeNotifier {
       }
       notifyListeners();
     }
+    return response;
+  }
+
+  Future<ApiResponse<User?>> addAgent(String nama, String username,
+      String email, String role, String password) async {
+    var response = await _salesService.addUser(
+        nama: nama,
+        username: username,
+        email: email,
+        role: role,
+        password: password,
+        token: _token);
+    if (response.data != null) {
+      var newAgent = response.data!;
+      _agents.add(newAgent);
+    }
+    notifyListeners();
     return response;
   }
 

@@ -1,3 +1,4 @@
+import 'package:aloha/components/pages/add_sales_page.dart';
 import 'package:aloha/components/pages/broadcast_page.dart';
 import 'package:aloha/components/pages/job_details_page.dart';
 import 'package:aloha/components/pages/job_page.dart';
@@ -8,6 +9,7 @@ import 'package:aloha/components/pages/template_page.dart';
 import 'package:aloha/components/widgets/messages/contact_list.dart';
 import 'package:aloha/components/widgets/agents/sales_list.dart';
 import 'package:aloha/data/providers/message_provider.dart';
+import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +117,17 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => const JobDetailsPage(),
+            ));
+          },
+          child: const Icon(Icons.add),
+        );
+      case _salesLabel:
+        return FloatingActionButton(
+          onPressed: () {
+            var provider = Provider.of<SalesProvider>(context, listen: false);
+            provider.selectedAgent = null;
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const AddSalesPage(),
             ));
           },
           child: const Icon(Icons.add),

@@ -162,6 +162,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
               const SizedBox(
                 height: 16,
               ),
+
+              //Text
               TextField(
                 controller: _messageController,
                 decoration: const InputDecoration(
