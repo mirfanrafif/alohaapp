@@ -67,7 +67,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
               ),
               MultiSelectChipDisplay<CustomerCategories>(
                 chipColor: Colors.blue.shade100,
-                textStyle: TextStyle(color: Colors.black),
+                textStyle: const TextStyle(color: Colors.black),
                 items: _selectedCategories
                     .map((e) =>
                         MultiSelectItem<CustomerCategories>(e, e.name ?? ""))
