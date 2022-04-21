@@ -35,14 +35,18 @@ class MessageProvider extends ChangeNotifier {
   int _id = 0;
   bool initDone = false;
 
-  Future<ApiResponse<List<Contact>>> init() async {
+  Future<void> init(BuildContext context) async {
     initDone = true;
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
     setupSocket();
-    getTemplates();
-    return await getAllContact();
+    getTemplates(context);
+    var response = await getAllContact();
+    if (!response.success) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
+    }
   }
 
   var _searchKeyword = "";
@@ -283,12 +287,16 @@ class MessageProvider extends ChangeNotifier {
   final List<MessageTemplate> _templates = [];
   List<MessageTemplate> get templates => List.unmodifiable(_templates);
 
-  Future<ApiResponse<List<MessageTemplate>>> getTemplates() async {
-    var response = await _messageTemplateService.getTemplates();
+  Future<ApiResponse<List<MessageTemplate>>> getTemplates(
+      BuildContext context) async {
+    var response = await _messageTemplateService.getTemplates(_token);
 
     if (response.success && response.data != null) {
       _templates.clear();
       _templates.addAll(response.data!);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
     }
     notifyListeners();
     return response;

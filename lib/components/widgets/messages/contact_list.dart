@@ -16,12 +16,7 @@ class _ContactListState extends State<ContactList> {
     super.initState();
     var provider = Provider.of<MessageProvider>(context, listen: false);
     if (!provider.initDone) {
-      provider.init().then((value) {
-        if (!value.success) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(value.message)));
-        }
-      });
+      provider.init(context);
     }
   }
 
