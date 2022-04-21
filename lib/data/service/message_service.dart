@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:aloha/data/response/start_conversation_response.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
@@ -198,7 +199,7 @@ class MessageService {
     }
   }
 
-  Future<ApiResponse<Customer?>> startConversation(
+  Future<ApiResponse<StartConversationResponse?>> startConversation(
       int customerId, String token) async {
     try {
       var response = await post(
@@ -206,14 +207,13 @@ class MessageService {
           headers: {'Authorization': 'Bearer $token'});
 
       if (response.statusCode < 400) {
-        Map<String, dynamic> responseBody = jsonDecode(response.body);
-        Map<String, dynamic> responseData = responseBody['data'];
-        var customer = Customer.fromJson(responseData['customer']);
+        var data =
+            StartConversationResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
             success: true,
-            data: customer,
+            data: data,
             message:
-                'Success start conversation with customer ${customer.name}');
+                'Success start conversation with customer ${data.data?.customer?.name}');
       } else {
         var responseBody = ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(

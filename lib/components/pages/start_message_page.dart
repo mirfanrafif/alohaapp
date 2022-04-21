@@ -91,11 +91,10 @@ class _StartMessagePageState extends State<StartMessagePage> {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(response.message)));
     if (response.success) {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => ChatPage(customer: response.data!),
-          ),
-          (route) => false);
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) =>
+            ChatPage(customer: response.data!.data!.customer!),
+      ));
     }
   }
 }

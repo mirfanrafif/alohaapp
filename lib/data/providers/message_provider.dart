@@ -4,6 +4,7 @@ import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/customer_categories.dart';
 import 'package:aloha/data/response/message_template.dart';
+import 'package:aloha/data/response/start_conversation_response.dart';
 import 'package:aloha/data/service/broadcast_message_service.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/data/service/message_template_service.dart';
@@ -84,9 +85,11 @@ class MessageProvider extends ChangeNotifier {
   void mapContactToCustomerMessage(List<Contact> contactList) {
     for (var contact in contactList) {
       _customerMessage.add(CustomerMessage(
-          customer: contact.customer,
-          message: contact.lastMessage != null ? [contact.lastMessage!] : [],
-          unread: contact.unread));
+        agents: contact.agent,
+        customer: contact.customer,
+        message: contact.lastMessage != null ? [contact.lastMessage!] : [],
+        unread: contact.unread,
+      ));
     }
     notifyListeners();
   }
@@ -130,6 +133,7 @@ class MessageProvider extends ChangeNotifier {
     if (customerIndex == -1) {
       _customerMessage = [
         CustomerMessage(
+            agents: [],
             customer: incomingMessage.customer,
             message: [incomingMessage],
             unread: 1),
@@ -249,11 +253,15 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<ApiResponse<Customer?>> startConversation(int customerId) async {
+  Future<ApiResponse<StartConversationResponse?>> startConversation(
+      int customerId) async {
     var response = await _messageService.startConversation(customerId, _token);
     if (response.success && response.data != null) {
-      _customerMessage.add(
-          CustomerMessage(customer: response.data!, message: [], unread: 0));
+      _customerMessage.add(CustomerMessage(
+          customer: response.data!.data!.customer!,
+          agents: [response.data!.data!.agent!],
+          message: [],
+          unread: 0));
     }
     notifyListeners();
     return response;
