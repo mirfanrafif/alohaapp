@@ -155,12 +155,6 @@ class _ChatInputState extends State<ChatInput> {
                   icon: const Icon(Icons.upload_file),
                   label: "Document",
                 ),
-                AttachmentButton(
-                  color: Colors.amber,
-                  onTap: openTemplateDialog,
-                  icon: const Icon(Icons.abc),
-                  label: "Template",
-                ),
               ],
             ),
           ],
@@ -173,27 +167,6 @@ class _ChatInputState extends State<ChatInput> {
         ),
       ),
     );
-  }
-
-  void openTemplateDialog() {
-    Navigator.pop(context);
-    showModalBottomSheet(
-        context: context,
-        builder: (context) => SizedBox(
-              height: 300,
-              child: ListView.builder(
-                itemBuilder: (context, index) => ListTile(
-                  title: Text(provider.templates[index].name ?? ""),
-                  subtitle: Text(provider.templates[index].template ?? ""),
-                  onTap: () {
-                    chatController.text =
-                        provider.templates[index].template ?? "";
-                    Navigator.pop(context);
-                  },
-                ),
-                itemCount: provider.templates.length,
-              ),
-            ));
   }
 
   void pickFromGallery() async {
