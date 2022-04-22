@@ -25,55 +25,93 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
-      builder: (context, value, child) => Container(
-        padding: const EdgeInsets.all(16),
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Stack(
-              alignment: Alignment.bottomCenter,
+      builder: (context, value, child) => Padding(
+        padding: EdgeInsets.all(16),
+        child: Card(
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          height: 100,
+                          child: ProfilePicture(
+                            profilePhoto: value.user.profilePhoto,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: updateProfilePicture,
+                          icon: const Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Email: " + value.user.email),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text("Username: " + value.user.username),
+                        const SizedBox(
+                          height: 8,
+                        ),
+                        Text("Role: " + value.user.role),
+                      ],
+                    ))
+                  ],
+                ),
+                const SizedBox(
+                  height: 24,
+                ),
+                TextField(
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Nama",
+                    ),
+                    controller: _nameController),
+                const SizedBox(
+                  height: 8,
+                ),
                 SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: ProfilePicture(
-                    profilePhoto: value.user.profilePhoto,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    child: const Text("Simpan"),
+                    onPressed: () async {
+                      var response =
+                          await value.updateUser(_nameController.text);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(response.message)));
+                    },
                   ),
                 ),
-                IconButton(
-                  onPressed: updateProfilePicture,
-                  icon: const Icon(
-                    Icons.camera_alt,
-                    color: Colors.white,
+                const SizedBox(
+                  height: 60,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    child: const Text("Ubah Password"),
+                    onPressed: () async {},
                   ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 24,
-            ),
-            TextField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Nama",
-                ),
-                controller: _nameController),
-            const SizedBox(
-              height: 24,
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                child: const Text("Simpan"),
-                onPressed: () async {
-                  var response = await value.updateUser(_nameController.text);
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(content: Text(response.message)));
-                },
-              ),
-            )
-          ],
+          ),
         ),
       ),
     );

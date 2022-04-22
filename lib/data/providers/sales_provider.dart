@@ -71,9 +71,12 @@ class SalesProvider with ChangeNotifier {
   late UserPreferences _preferences;
   String _token = "";
 
-  void init(BuildContext context) {
+  SalesProvider() {
     _preferences = UserPreferences();
     _token = _preferences.getToken();
+  }
+
+  void init(BuildContext context) {
     getAllJobs();
     getAllAgents().then((value) {
       if (!value.success) {

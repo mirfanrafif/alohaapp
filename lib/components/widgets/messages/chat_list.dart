@@ -6,8 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../data/response/contact.dart';
 
 class ChatList extends StatefulWidget {
-  const ChatList({Key? key, required this.customer}) : super(key: key);
-  final Customer customer;
+  const ChatList({Key? key}) : super(key: key);
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -16,28 +15,29 @@ class ChatList extends StatefulWidget {
 class _ChatListState extends State<ChatList> {
   var chatListController = ScrollController();
   late MessageProvider messageProvider;
+  late Customer customer;
 
   @override
   void initState() {
     super.initState();
     chatListController.addListener(_loadMore);
     messageProvider = Provider.of<MessageProvider>(context, listen: false);
-    if (messageProvider.getIsFirstLoad(widget.customer.id)) {
-      messageProvider.setFirstLoadDone(widget.customer.id);
-      messageProvider.getPastMessages(customerId: widget.customer.id);
+    customer = messageProvider.getSelectedCustomer().customer;
+    if (messageProvider.getIsFirstLoad()) {
+      messageProvider.setFirstLoadDone();
+      messageProvider.getPastMessages();
     }
   }
 
   void _loadMore() {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
-      if (messageProvider.getIsAllLoaded(widget.customer.id)) {
+      if (messageProvider.getIsAllLoaded(customer.id)) {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Sudah di pesan paling atas")));
         return;
       }
       messageProvider.getPastMessages(
-        customerId: widget.customer.id,
         loadMore: true,
       );
     }
@@ -53,7 +53,7 @@ class _ChatListState extends State<ChatList> {
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(
       builder: (context, provider, child) {
-        var messages = provider.getMessageByCustomerId(widget.customer.id);
+        var messages = provider.getMessageByCustomerId(customer.id);
         if (messages.isNotEmpty) {
           return Column(
             children: [

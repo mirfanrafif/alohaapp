@@ -10,9 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../data/response/contact.dart';
 
 class ChatInput extends StatefulWidget {
-  final Customer customer;
-
-  const ChatInput({Key? key, required this.customer}) : super(key: key);
+  const ChatInput({Key? key}) : super(key: key);
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -21,11 +19,13 @@ class ChatInput extends StatefulWidget {
 class _ChatInputState extends State<ChatInput> {
   var chatController = TextEditingController();
   late MessageProvider provider;
+  late Customer customer;
 
   @override
   void initState() {
     super.initState();
     provider = Provider.of<MessageProvider>(context, listen: false);
+    customer = provider.getSelectedCustomer().customer;
   }
 
   @override
@@ -180,7 +180,7 @@ class _ChatInputState extends State<ChatInput> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => SendImagePage(
           file: image,
-          customer: widget.customer,
+          customer: customer,
           message: chatController.text,
           type: "image",
         ),
@@ -199,7 +199,7 @@ class _ChatInputState extends State<ChatInput> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => SendImagePage(
           file: image,
-          customer: widget.customer,
+          customer: customer,
           message: chatController.text,
           type: "video",
         ),
@@ -218,7 +218,7 @@ class _ChatInputState extends State<ChatInput> {
       Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => SendImagePage(
           file: image,
-          customer: widget.customer,
+          customer: customer,
           message: chatController.text,
           type: "image",
         ),
@@ -234,8 +234,7 @@ class _ChatInputState extends State<ChatInput> {
       //tutup bottom sheet
       Navigator.pop(context);
 
-      provider.sendDocument(
-          file: file, customerNumber: widget.customer.phoneNumber);
+      provider.sendDocument(file: file, customerNumber: customer.phoneNumber);
     } else {
       // User canceled the picker
     }
@@ -243,8 +242,7 @@ class _ChatInputState extends State<ChatInput> {
 
   void sendMessage() {
     Provider.of<MessageProvider>(context, listen: false).sendMessage(
-        customerNumber: widget.customer.phoneNumber,
-        message: chatController.text);
+        customerNumber: customer.phoneNumber, message: chatController.text);
     chatController.clear();
   }
 }

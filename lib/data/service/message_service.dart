@@ -223,6 +223,36 @@ class MessageService {
     }
   }
 
+  Future<ApiResponse<StartConversationResponse?>> assignCustomerToSales(
+      int customerId, int salesId, String token) async {
+    try {
+      var request = jsonEncode({'customerId': customerId, 'agentId': salesId});
+      var response = await post(Uri.https(baseUrl, '/customer/delegate'),
+          body: request,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
+
+      if (response.statusCode < 400) {
+        var data =
+            StartConversationResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true,
+            data: data,
+            message:
+                'Success start conversation with customer ${data.data?.customer?.name}');
+      } else {
+        var responseBody = ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: null, message: responseBody.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
+
   Future<void> downloadFile(String url) async {
     List<int> downloadData = [];
 

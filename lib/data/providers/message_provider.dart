@@ -36,6 +36,18 @@ class MessageProvider extends ChangeNotifier {
   int _id = 0;
   bool initDone = false;
 
+  int? _selectedCustomerId;
+  int? get selectedCustomerId => _selectedCustomerId;
+  set selectedCustomerId(int? newValue) {
+    _selectedCustomerId = newValue;
+    notifyListeners();
+  }
+
+  CustomerMessage getSelectedCustomer() {
+    var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
+    return customerMessage[customerIndex];
+  }
+
   Future<void> init(BuildContext context) async {
     initDone = true;
     _token = _preferences.getToken();
@@ -171,21 +183,20 @@ class MessageProvider extends ChangeNotifier {
     return data;
   }
 
-  bool getIsFirstLoad(int customerId) {
-    var customerIndex = findCustomerIndexById(customerId);
+  bool getIsFirstLoad() {
+    var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     return _customerMessage[customerIndex].firstLoad;
   }
 
-  void setFirstLoadDone(int customerId) {
-    var customerIndex = _customerMessage
-        .indexWhere((element) => element.customer.id == customerId);
-    if (customerId > -1) {
+  void setFirstLoadDone() {
+    var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
+    if (customerIndex > -1) {
       _customerMessage[customerIndex].firstLoad = false;
     }
   }
 
-  void addPreviousMessage(int customerId, List<Message> messages) {
-    var customerIndex = findCustomerIndexById(customerId);
+  void addPreviousMessage(List<Message> messages) {
+    var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     for (var item in messages) {
       var sameId = customerMessage[customerIndex]
           .message
@@ -196,8 +207,8 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  void getPastMessages({required int customerId, bool loadMore = false}) async {
-    var customerIndex = findCustomerIndexById(customerId);
+  void getPastMessages({bool loadMore = false}) async {
+    var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     var messages = customerMessage[customerIndex].message;
     if (customerMessage[customerIndex].allLoaded) {
       return;
@@ -206,13 +217,13 @@ class MessageProvider extends ChangeNotifier {
       chatLoading = true;
       var lastMessageId = messages.last.id;
       var response = await _messageService.getPastMessages(
-          customerId: customerId,
+          customerId: _selectedCustomerId ?? 0,
           loadMore: loadMore,
           lastMessageId: lastMessageId,
           token: _token);
 
       if (response.isNotEmpty) {
-        addPreviousMessage(customerId, response);
+        addPreviousMessage(response);
       } else {
         customerMessage[customerIndex].allLoaded = true;
       }
@@ -256,18 +267,22 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  Future<ApiResponse<StartConversationResponse?>> startConversation(
+  Future<ApiResponse<CustomerMessage?>> startConversation(
       int customerId) async {
     var response = await _messageService.startConversation(customerId, _token);
+
     if (response.success && response.data != null) {
-      _customerMessage.add(CustomerMessage(
+      var newContact = CustomerMessage(
           customer: response.data!.data!.customer!,
           agents: [response.data!.data!.agent!],
           message: [],
-          unread: 0));
+          unread: 0);
+      _customerMessage.add(newContact);
+      return ApiResponse(
+          success: true, data: newContact, message: response.message);
     }
     notifyListeners();
-    return response;
+    return ApiResponse(success: false, data: null, message: response.message);
   }
 
   List<CustomerCategories> categories = [];
@@ -322,38 +337,41 @@ class MessageProvider extends ChangeNotifier {
       String broadcastType,
       File? file,
       BuildContext context) async {
+    var categoriesList = categories.map((e) => e.name ?? "").toList();
+    var typesList = types.map((e) => e.name ?? "").toList();
+    var interestList = interests.map((e) => e.name ?? "").toList();
     late ApiResponse<List<Message>?> response;
     switch (broadcastType) {
       case "text":
         response = await _broadcastMessageService.sendBroadcastMessage(
-            categories: categories.map((e) => e.name ?? "").toList(),
-            types: types.map((e) => e.name ?? "").toList(),
-            interests: interests.map((e) => e.name ?? "").toList(),
+            categories: categoriesList,
+            types: typesList,
+            interests: interestList,
             message: message,
             token: _token);
         break;
       case "image":
         response = await _broadcastMessageService.sendImage(
-            categories: categories.map((e) => e.name ?? "").toList(),
-            types: types.map((e) => e.name ?? "").toList(),
-            interests: interests.map((e) => e.name ?? "").toList(),
+            categories: categoriesList,
+            types: typesList,
+            interests: interestList,
             message: message,
             file: file!,
             token: _token);
         break;
       case "document":
         response = await _broadcastMessageService.sendDocument(
-            categories: categories.map((e) => e.name ?? "").toList(),
-            types: types.map((e) => e.name ?? "").toList(),
-            interests: interests.map((e) => e.name ?? "").toList(),
+            categories: categoriesList,
+            types: typesList,
+            interests: interestList,
             file: file!,
             token: _token);
         break;
       case "video":
         response = await _broadcastMessageService.sendVideo(
-            categories: categories.map((e) => e.name ?? "").toList(),
-            types: types.map((e) => e.name ?? "").toList(),
-            interests: interests.map((e) => e.name ?? "").toList(),
+            categories: categoriesList,
+            types: typesList,
+            interests: interestList,
             file: file!,
             message: message,
             token: _token);
@@ -409,5 +427,21 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
 
     return response;
+  }
+
+  Future<void> assignCustomerToSales(int salesId, BuildContext context) async {
+    var response = await _messageService.assignCustomerToSales(
+        getSelectedCustomer().customer.id, salesId, _token);
+
+    if (response.success) {
+      var customerIndex =
+          findCustomerIndexById(getSelectedCustomer().customer.id);
+      customerMessage[customerIndex].agents.add(response.data!.data!.agent!);
+    } else {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(response.message)));
+    }
+    notifyListeners();
   }
 }

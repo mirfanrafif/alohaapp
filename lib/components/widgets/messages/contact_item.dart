@@ -1,6 +1,8 @@
 import 'package:aloha/components/pages/chat_page.dart';
+import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../data/models/customer_message.dart';
 
@@ -21,7 +23,10 @@ class ContactItem extends StatelessWidget {
         foregroundImage: AssetImage('assets/image/user.png'),
       ),
       title: Text(customerMessage.customer.name),
-      subtitle: getLastMessage(lastMessage),
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [Expanded(child: getLastMessage(lastMessage))],
+      ),
       trailing: customerMessage.unread > 0
           ? ClipRRect(
               borderRadius: BorderRadius.circular(30),
@@ -41,10 +46,12 @@ class ContactItem extends StatelessWidget {
             )
           : null,
       onTap: () {
+        Provider.of<MessageProvider>(context, listen: false)
+            .selectedCustomerId = customerMessage.customer.id;
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ChatPage(
-              customer: customerMessage.customer,
+              contact: customerMessage,
             ),
           ),
         );
@@ -60,6 +67,8 @@ class ContactItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (lastMessage.fromMe) buildStatusIcon(lastMessage),
+        const SizedBox(width: 8),
         if (lastMessage.type != "text") ...[
           const Icon(
             Icons.attachment,
@@ -76,5 +85,38 @@ class ContactItem extends StatelessWidget {
                 : Text(lastMessage.type)),
       ],
     );
+  }
+
+  Icon buildStatusIcon(Message message) {
+    switch (message.status) {
+      case "pending":
+        return const Icon(
+          Icons.watch_later_outlined,
+          size: 12,
+        );
+      case "sent":
+        return const Icon(
+          Icons.check,
+          size: 12,
+          color: Colors.black38,
+        );
+      case "received":
+        return const Icon(
+          Icons.check,
+          color: Colors.green,
+          size: 12,
+        );
+      case "read":
+        return const Icon(
+          Icons.check,
+          color: Colors.blue,
+          size: 12,
+        );
+      default:
+        return const Icon(
+          Icons.watch_later_outlined,
+          size: 12,
+        );
+    }
   }
 }

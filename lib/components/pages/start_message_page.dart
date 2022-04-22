@@ -92,8 +92,7 @@ class _StartMessagePageState extends State<StartMessagePage> {
         .showSnackBar(SnackBar(content: Text(response.message)));
     if (response.success) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) =>
-            ChatPage(customer: response.data!.data!.customer!),
+        builder: (context) => ChatPage(contact: response.data!),
       ));
     }
   }
