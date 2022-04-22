@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:aloha/data/response/customer_categories.dart';
 import 'package:aloha/data/response/message.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
 
 class BroadcastMessageService {
   Future<ApiResponse<List<CustomerCategories>?>> getCustomerCategories(
@@ -106,6 +108,131 @@ class BroadcastMessageService {
             ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
             success: false, data: null, message: errorResponse.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
+
+  Future<ApiResponse<List<Message>?>> sendImage(
+      {required File file,
+      required String message,
+      required List<String> categories,
+      required List<String> types,
+      required List<String> interests,
+      required String token}) async {
+    try {
+      var request = MultipartRequest(
+          'POST', Uri.https(baseUrl, "/message/broadcast/image"));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+
+      //add file request
+      request.files.add(MultipartFile.fromBytes(
+          'image', await file.readAsBytes(),
+          filename: file.path.split('/').last));
+
+      //add customer number to request
+      request.fields['categories'] = jsonEncode(categories);
+      request.fields['interests'] = jsonEncode(interests);
+      request.fields['types'] = jsonEncode(types);
+
+      //add message to request
+      request.fields['message'] = message;
+
+      var streamedResponse = await request.send();
+      var responseBytes = await streamedResponse.stream.toBytes();
+      var response = utf8.decode(responseBytes.toList());
+      if (streamedResponse.statusCode < 400) {
+        var data = messageResponseFromJson(response);
+        return ApiResponse(
+            success: true,
+            data: data.data,
+            message: 'Success sending video to customer');
+      } else {
+        var data = ApiErrorResponse.fromJson(jsonDecode(response));
+        return ApiResponse(success: false, data: null, message: data.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
+
+  Future<ApiResponse<List<Message>?>> sendDocument(
+      {required File file,
+      required List<String> categories,
+      required List<String> types,
+      required List<String> interests,
+      required String token}) async {
+    try {
+      var request = MultipartRequest(
+          'POST', Uri.https(baseUrl, "/message/broadcast/document"));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+
+      //add file request
+      request.files.add(MultipartFile.fromBytes(
+          'document', await file.readAsBytes(),
+          filename: file.path.split('/').last));
+
+      //add customer number to request
+      request.fields['categories'] = jsonEncode(categories);
+      request.fields['interests'] = jsonEncode(interests);
+      request.fields['types'] = jsonEncode(types);
+
+      var streamedResponse = await request.send();
+      var responseBytes = await streamedResponse.stream.toBytes();
+      var response = utf8.decode(responseBytes.toList());
+      if (streamedResponse.statusCode < 400) {
+        var data = messageResponseFromJson(response);
+        return ApiResponse(
+            success: true,
+            data: data.data,
+            message: 'Success sending video to customer');
+      } else {
+        var data = ApiErrorResponse.fromJson(jsonDecode(response));
+        return ApiResponse(success: false, data: null, message: data.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
+
+  Future<ApiResponse<List<Message>?>> sendVideo(
+      {required File file,
+      required String message,
+      required List<String> categories,
+      required List<String> types,
+      required List<String> interests,
+      required String token}) async {
+    try {
+      var request = MultipartRequest(
+          'POST', Uri.https(baseUrl, "/message/broadcast/video"));
+      request.headers.addAll({'Authorization': 'Bearer $token'});
+
+      //add file request
+      request.files.add(MultipartFile.fromBytes(
+          'video', await file.readAsBytes(),
+          filename: file.path.split('/').last));
+
+      //add customer number to request
+      request.fields['categories'] = jsonEncode(categories);
+      request.fields['interests'] = jsonEncode(interests);
+      request.fields['types'] = jsonEncode(types);
+
+      //add message to request
+      request.fields['message'] = message;
+
+      var streamedResponse = await request.send();
+      var responseBytes = await streamedResponse.stream.toBytes();
+      var response = utf8.decode(responseBytes.toList());
+      if (streamedResponse.statusCode < 400) {
+        var data = messageResponseFromJson(response);
+        return ApiResponse(
+            success: true,
+            data: data.data,
+            message: 'Success sending video to customer');
+      } else {
+        var data = ApiErrorResponse.fromJson(jsonDecode(response));
+        return ApiResponse(success: false, data: null, message: data.message);
       }
     } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());

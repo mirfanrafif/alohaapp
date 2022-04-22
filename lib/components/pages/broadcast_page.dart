@@ -1,8 +1,15 @@
+import 'dart:io';
+
+import 'package:aloha/components/pages/send_image_page.dart';
+import 'package:aloha/components/widgets/messages/chat_input.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/response/customer_categories.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 
 class BroadcastPage extends StatefulWidget {
   const BroadcastPage({Key? key}) : super(key: key);
@@ -17,6 +24,11 @@ class _BroadcastPageState extends State<BroadcastPage> {
   final List<CustomerTypes> _selectedTypes = [];
   late MessageProvider _provider;
   final _messageController = TextEditingController();
+  File? file;
+  String type = "text";
+  VideoPlayerController? _controller;
+
+  bool messageEnabled = true;
 
   @override
   void initState() {
@@ -172,27 +184,26 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 ),
                 minLines: 1,
                 maxLines: 8,
+                enabled: messageEnabled,
               ),
               const SizedBox(
                 height: 16,
               ),
+              OutlinedButton(
+                  onPressed: showDialog,
+                  child:
+                      Text(file != null ? "Ubah Lampiran" : "Tambah Lampiran")),
+              getPreview(),
               ElevatedButton(
                   onPressed: () {
-                    provider
-                        .sendBroadcastMessage(
-                      _selectedCategories,
-                      _selectedInterests,
-                      _selectedTypes,
-                      _messageController.text,
-                    )
-                        .then((value) {
-                      if (value.success) {
-                        Navigator.pop(context);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(value.message)));
-                      }
-                    });
+                    provider.sendBroadcastMessage(
+                        _selectedCategories,
+                        _selectedInterests,
+                        _selectedTypes,
+                        _messageController.text,
+                        type,
+                        file,
+                        context);
                   },
                   child: const Text("Kirim Broadcast"))
             ],
@@ -200,5 +211,217 @@ class _BroadcastPageState extends State<BroadcastPage> {
         );
       }),
     );
+  }
+
+  Widget getPreview() {
+    switch (type) {
+      case "document":
+        return SizedBox(
+          height: 200,
+          width: 300,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: Text(file?.path.split('/').last ?? ""),
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    type = "text";
+                    file = null;
+                  });
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        );
+      case "image":
+        return SizedBox(
+          height: 200,
+          width: 300,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Image.file(
+                file!,
+              ),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    type = "text";
+                    file = null;
+                    messageEnabled = true;
+                  });
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        );
+      case "video":
+        return SizedBox(
+          height: 200,
+          width: 300,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              AspectRatio(
+                  aspectRatio: _controller!.value.aspectRatio,
+                  child: VideoPlayer(_controller!)),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    type = "text";
+                    file = null;
+                    messageEnabled = true;
+                  });
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              )
+            ],
+          ),
+        );
+      default:
+        return const SizedBox(
+          height: 200,
+          width: 300,
+          child: Center(
+            child: Text("Tidak ada lampiran"),
+          ),
+        );
+    }
+  }
+
+  void showDialog() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Upload Lampiran",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                AttachmentButton(
+                    color: Colors.orange,
+                    onTap: takePictureFromCamera,
+                    icon: const Icon(Icons.camera),
+                    label: "Camera"),
+                AttachmentButton(
+                  color: Colors.blue,
+                  onTap: pickFromGallery,
+                  icon: const Icon(Icons.photo),
+                  label: "Gallery",
+                ),
+                AttachmentButton(
+                  color: Colors.cyan.shade400,
+                  onTap: pickVideoFromGallery,
+                  icon: const Icon(Icons.video_camera_back),
+                  label: "Video",
+                ),
+                AttachmentButton(
+                  color: Colors.lightGreen,
+                  onTap: uploadDocument,
+                  icon: const Icon(Icons.upload_file),
+                  label: "Document",
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+    );
+  }
+
+  void pickFromGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      //tutup bottom sheet
+      Navigator.pop(context);
+      setState(() {
+        type = "image";
+        messageEnabled = true;
+        file = File(image.path);
+      });
+    }
+  }
+
+  void pickVideoFromGallery() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickVideo(source: ImageSource.gallery);
+
+    if (image != null) {
+      //tutup bottom sheet
+      Navigator.pop(context);
+      setState(() {
+        type = "video";
+        messageEnabled = true;
+        file = File(image.path);
+        _controller = VideoPlayerController.file(file!)
+          ..initialize().then((value) {});
+      });
+    }
+  }
+
+  void takePictureFromCamera() async {
+    final ImagePicker _picker = ImagePicker();
+    // Pick an image
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      //tutup bottom sheet
+      Navigator.pop(context);
+      setState(() {
+        type = "image";
+        messageEnabled = true;
+        file = File(image.path);
+      });
+    }
+  }
+
+  uploadDocument() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      //tutup bottom sheet
+      Navigator.pop(context);
+      setState(() {
+        type = "document";
+        messageEnabled = false;
+        file = File(result.files.single.path ?? "");
+      });
+    } else {
+      // User canceled the picker
+    }
   }
 }

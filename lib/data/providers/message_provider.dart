@@ -314,19 +314,58 @@ class MessageProvider extends ChangeNotifier {
     return response;
   }
 
-  Future<ApiResponse<List<Message>?>> sendBroadcastMessage(
+  Future<void> sendBroadcastMessage(
       List<CustomerCategories> categories,
       List<CustomerInterests> interests,
       List<CustomerTypes> types,
-      String message) async {
-    var response = await _broadcastMessageService.sendBroadcastMessage(
-        categories: categories.map((e) => e.name ?? "").toList(),
-        types: types.map((e) => e.name ?? "").toList(),
-        interests: interests.map((e) => e.name ?? "").toList(),
-        message: message,
-        token: _token);
+      String message,
+      String broadcastType,
+      File? file,
+      BuildContext context) async {
+    late ApiResponse<List<Message>?> response;
+    switch (broadcastType) {
+      case "text":
+        response = await _broadcastMessageService.sendBroadcastMessage(
+            categories: categories.map((e) => e.name ?? "").toList(),
+            types: types.map((e) => e.name ?? "").toList(),
+            interests: interests.map((e) => e.name ?? "").toList(),
+            message: message,
+            token: _token);
+        break;
+      case "image":
+        response = await _broadcastMessageService.sendImage(
+            categories: categories.map((e) => e.name ?? "").toList(),
+            types: types.map((e) => e.name ?? "").toList(),
+            interests: interests.map((e) => e.name ?? "").toList(),
+            message: message,
+            file: file!,
+            token: _token);
+        break;
+      case "document":
+        response = await _broadcastMessageService.sendDocument(
+            categories: categories.map((e) => e.name ?? "").toList(),
+            types: types.map((e) => e.name ?? "").toList(),
+            interests: interests.map((e) => e.name ?? "").toList(),
+            file: file!,
+            token: _token);
+        break;
+      case "video":
+        response = await _broadcastMessageService.sendVideo(
+            categories: categories.map((e) => e.name ?? "").toList(),
+            types: types.map((e) => e.name ?? "").toList(),
+            interests: interests.map((e) => e.name ?? "").toList(),
+            file: file!,
+            message: message,
+            token: _token);
+        break;
+    }
+    if (!response.success) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
+    } else {
+      Navigator.pop(context);
+    }
     notifyListeners();
-    return response;
   }
 
   Future<ApiResponse<MessageTemplate?>> saveTemplate(
