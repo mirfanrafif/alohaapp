@@ -1,4 +1,3 @@
-import 'package:aloha/components/widgets/agents/agent_profile.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

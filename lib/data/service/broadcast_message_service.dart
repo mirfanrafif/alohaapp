@@ -23,7 +23,7 @@ class BroadcastMessageService {
         var errorResponse =
             ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
-            success: true, data: null, message: errorResponse.message);
+            success: false, data: null, message: errorResponse.message);
       }
     } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());
@@ -46,7 +46,7 @@ class BroadcastMessageService {
         var errorResponse =
             ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
-            success: true, data: null, message: errorResponse.message);
+            success: false, data: null, message: errorResponse.message);
       }
     } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());
@@ -69,7 +69,7 @@ class BroadcastMessageService {
         var errorResponse =
             ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
-            success: true, data: null, message: errorResponse.message);
+            success: false, data: null, message: errorResponse.message);
       }
     } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());
@@ -83,9 +83,20 @@ class BroadcastMessageService {
       required String message,
       required String token}) async {
     try {
-      var response = await post(Uri.https(baseUrl, "/message"),
-          body: {'message': message},
-          headers: {'Authorization': 'Bearer $token'});
+      var request = jsonEncode({
+        'message': message,
+        'categories': categories,
+        'interests': interests,
+        'types': types
+      });
+
+      var response = await post(Uri.https(baseUrl, "/message/broadcast"),
+          body: request,
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
       if (response.statusCode < 400) {
         var data = messageResponseFromJson(response.body);
         return ApiResponse(
@@ -94,10 +105,10 @@ class BroadcastMessageService {
         var errorResponse =
             ApiErrorResponse.fromJson(jsonDecode(response.body));
         return ApiResponse(
-            success: true, data: null, message: errorResponse.message);
+            success: false, data: null, message: errorResponse.message);
       }
     } catch (e) {
-      return ApiResponse(success: true, data: null, message: e.toString());
+      return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
 }

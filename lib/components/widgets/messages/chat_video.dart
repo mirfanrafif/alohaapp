@@ -1,5 +1,4 @@
 import 'package:aloha/data/response/message.dart';
-import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 

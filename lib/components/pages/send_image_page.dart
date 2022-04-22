@@ -27,7 +27,6 @@ class SendImagePage extends StatefulWidget {
 
 class _SendImagePageState extends State<SendImagePage> {
   var chatController = TextEditingController();
-  var _currentChat = '';
   late MessageProvider provider;
 
   late VideoPlayerController _videoPlayerController;
@@ -35,12 +34,7 @@ class _SendImagePageState extends State<SendImagePage> {
   @override
   void initState() {
     super.initState();
-    _currentChat = widget.message;
-    chatController.addListener(() {
-      setState(() {
-        _currentChat = chatController.text;
-      });
-    });
+    chatController.text = widget.message;
     _videoPlayerController = VideoPlayerController.file(File(widget.file.path))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.

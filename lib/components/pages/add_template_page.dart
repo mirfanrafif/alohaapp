@@ -1,5 +1,4 @@
 import 'package:aloha/data/providers/message_provider.dart';
-import 'package:aloha/data/response/message.dart';
 import 'package:aloha/data/response/message_template.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +17,6 @@ class _AddTemplatePageState extends State<AddTemplatePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _nameController.text = widget.template?.name ?? "";
     _templateController.text = widget.template?.template ?? "";

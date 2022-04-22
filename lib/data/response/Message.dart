@@ -59,7 +59,7 @@ class Message {
   String? file;
   String message;
   User? agent;
-  String senderName;
+  String? senderName;
   String messageId;
   String status;
   String type;

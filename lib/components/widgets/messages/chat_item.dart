@@ -75,7 +75,7 @@ class ChatItem extends StatelessWidget {
             height: 8,
           ),
           Text(
-            message.senderName,
+            message.senderName ?? "",
             style: const TextStyle(color: Colors.black38),
           )
         ],

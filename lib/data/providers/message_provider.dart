@@ -41,7 +41,7 @@ class MessageProvider extends ChangeNotifier {
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
-    setupSocket();
+    setupSocket(context);
     getTemplates(context);
     var response = await getAllContact();
     if (!response.success) {
@@ -102,7 +102,7 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setupSocket() {
+  void setupSocket(BuildContext context) {
     try {
       socketClient = io(
           "https://" + baseUrl + "/messages",
@@ -124,7 +124,10 @@ class MessageProvider extends ChangeNotifier {
           processIncomingMessage(data);
         });
       });
-    } catch (e) {}
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 
   processIncomingMessage(String data) {
@@ -136,7 +139,7 @@ class MessageProvider extends ChangeNotifier {
             agents: [],
             customer: incomingMessage.customer,
             message: [incomingMessage],
-            unread: 1),
+            unread: incomingMessage.fromMe ? 0 : 1),
         ..._customerMessage
       ];
     } else {

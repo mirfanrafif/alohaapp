@@ -50,7 +50,6 @@ class JobService {
             message: 'Gagal mengambil data job : ' + errorResponse.message);
       }
     } catch (e) {
-      print(e.toString());
       return ApiResponse(
           success: false,
           data: null,
@@ -76,7 +75,6 @@ class JobService {
             message: 'Gagal mengambil data job : ' + errorResponse.message);
       }
     } catch (e) {
-      print(e.toString());
       return ApiResponse(
           success: false,
           data: null,

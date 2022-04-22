@@ -1,6 +1,5 @@
 import 'package:aloha/components/widgets/profile_picture.dart';
 import 'package:aloha/data/providers/user_provider.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';

@@ -46,7 +46,6 @@ class MessageService {
         return ApiResponse(success: false, data: [], message: data.message);
       }
     } catch (e) {
-      print(e.toString());
       return ApiResponse(success: false, data: [], message: e.toString());
     }
   }
@@ -220,7 +219,6 @@ class MessageService {
             success: false, data: null, message: responseBody.message);
       }
     } catch (e) {
-      print(e.toString());
       return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
