@@ -103,7 +103,20 @@ class MessageProvider extends ChangeNotifier {
         unread: contact.unread,
       ));
     }
+    sorting();
     notifyListeners();
+  }
+
+  sorting() {
+    List<CustomerMessage> customerMessageWithEmptyChat = [..._customerMessage];
+    customerMessageWithEmptyChat
+        .removeWhere((element) => element.message.isNotEmpty);
+
+    _customerMessage
+      ..removeWhere((element) => element.message.isEmpty)
+      ..sort(((a, b) => (b.message.first.createdAt?.millisecondsSinceEpoch ?? 0)
+          .compareTo((a.message.first.createdAt?.millisecondsSinceEpoch ?? 0))))
+      ..addAll(customerMessageWithEmptyChat);
   }
 
   void logout() {
@@ -178,6 +191,7 @@ class MessageProvider extends ChangeNotifier {
             incomingMessage.status;
       }
     }
+    sorting();
 
     notifyListeners();
     return data;
