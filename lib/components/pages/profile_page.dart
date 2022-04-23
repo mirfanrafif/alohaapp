@@ -106,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: double.infinity,
                   child: OutlinedButton(
                     child: const Text("Ubah Password"),
-                    onPressed: () async {},
+                    onPressed: showEditPasswordDialog,
                   ),
                 ),
               ],
@@ -126,5 +126,82 @@ class _ProfilePageState extends State<ProfilePage> {
       //tutup bottom sheet
       _provider.updateProfilePicture(image, context);
     }
+  }
+
+  final _oldPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmNewPasswordController = TextEditingController();
+
+  void showEditPasswordDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Ubah Password"),
+              content: SizedBox(
+                height: 300,
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Password lama"),
+                      controller: _oldPasswordController,
+                      obscureText: true,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Password baru"),
+                      controller: _newPasswordController,
+                      obscureText: true,
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Konfirmasi Password baru"),
+                      controller: _confirmNewPasswordController,
+                      obscureText: true,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Batal")),
+                ElevatedButton(
+                    onPressed: changePassword, child: const Text("Simpan")),
+              ],
+            ));
+  }
+
+  Future<void> changePassword() async {
+    if (_confirmNewPasswordController.text != _newPasswordController.text) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Konfirmasi password tidak sama")));
+      return;
+    }
+    _provider
+        .changePassword(
+            _oldPasswordController.text, _newPasswordController.text)
+        .then((value) {
+      if (value.success) {
+        Navigator.pop(context);
+        _newPasswordController.clear();
+        _oldPasswordController.clear();
+        _confirmNewPasswordController.clear();
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(value.message)));
+      }
+    });
   }
 }

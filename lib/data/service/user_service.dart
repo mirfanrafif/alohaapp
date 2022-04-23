@@ -89,4 +89,31 @@ class UserService {
       return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
+
+  Future<ApiResponse<User?>> changePassword(
+      String oldPassword, String newPassword, String token) async {
+    try {
+      var requestData = {
+        'oldPassword': oldPassword,
+        'newPassword': newPassword
+      };
+      var response = await put(Uri.https(baseUrl, '/user/password'),
+          body: requestData, headers: {'Authorization': 'Bearer ' + token});
+      if (response.statusCode < 400) {
+        var responseData =
+            UpdateUserResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true,
+            data: responseData.data,
+            message: 'Success change password');
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: null, message: errorResponse.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
 }

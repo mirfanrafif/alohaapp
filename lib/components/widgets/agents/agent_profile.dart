@@ -159,12 +159,64 @@ class _SalesEditFormState extends State<SalesEditForm> {
                     child: const Text('Simpan'),
                   ),
                 ),
+                const SizedBox(
+                  height: 32,
+                ),
+                OutlinedButton(
+                    onPressed: showEditPasswordDialog,
+                    child: const Text("Ubah Password sales"))
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  final _newPasswordController = TextEditingController();
+
+  void showEditPasswordDialog() {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Ubah Password"),
+              content: SizedBox(
+                height: 300,
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Password baru"),
+                      controller: _newPasswordController,
+                      obscureText: true,
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Batal")),
+                ElevatedButton(
+                    onPressed: changePassword, child: const Text("Simpan")),
+              ],
+            ));
+  }
+
+  Future<void> changePassword() async {
+    provider
+        .changePassword(provider.selectedAgent!.id, _newPasswordController.text)
+        .then((value) {
+      if (value.success) {
+        Navigator.pop(context);
+        _newPasswordController.clear();
+      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(value.message)));
+    });
   }
 }
 

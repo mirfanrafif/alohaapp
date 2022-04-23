@@ -224,4 +224,8 @@ class SalesProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<ApiResponse<User?>> changePassword(int salesId, String newPassword) {
+    return _salesService.changePassword(salesId, newPassword, _token);
+  }
 }

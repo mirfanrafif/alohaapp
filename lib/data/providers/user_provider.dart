@@ -83,4 +83,9 @@ class UserProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<ApiResponse<User?>> changePassword(
+      String oldPassword, String newPassword) async {
+    return await _service.changePassword(oldPassword, newPassword, token);
+  }
 }
