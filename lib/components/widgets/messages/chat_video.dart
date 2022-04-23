@@ -1,5 +1,6 @@
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 class ChatVideo extends StatefulWidget {
@@ -40,21 +41,36 @@ class _ChatVideoState extends State<ChatVideo> {
                   child: VideoPlayer(_controller),
                 )
               : const Center(),
-          Positioned(
-            child: IconButton(
-              onPressed: () {
-                setState(() {
-                  _controller.value.isPlaying
-                      ? _controller.pause()
-                      : _controller.play();
-                });
-              },
-              icon: Icon(
-                _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                color: Colors.white,
-              ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _controller.value.isPlaying
+                    ? _controller.pause()
+                    : _controller.play();
+              });
+            },
+            icon: Icon(
+              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+              color: Colors.white,
             ),
           ),
+          Positioned(
+              right: 0,
+              bottom: 0,
+              child: IconButton(
+                onPressed: () async {
+                  var _url = Uri.parse(widget.message.file ?? "");
+                  if (!await launchUrl(_url,
+                      mode: LaunchMode.externalApplication)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Could not launch $_url')));
+                  }
+                },
+                icon: Icon(
+                  _controller.value.isPlaying ? Icons.pause : Icons.download,
+                  color: Colors.white,
+                ),
+              ))
         ],
       ),
     );

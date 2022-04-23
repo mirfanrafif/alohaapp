@@ -1,6 +1,7 @@
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ImagePage extends StatelessWidget {
   final Message message;
@@ -27,6 +28,18 @@ class ImagePage extends StatelessWidget {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                var _url = Uri.parse(message.file ?? "");
+                if (!await launchUrl(_url,
+                    mode: LaunchMode.externalApplication)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Could not launch $_url')));
+                }
+              },
+              icon: const Icon(Icons.download))
+        ],
       ),
       body: Container(
         width: double.infinity,

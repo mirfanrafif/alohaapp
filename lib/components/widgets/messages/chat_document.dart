@@ -1,5 +1,6 @@
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatDocument extends StatelessWidget {
   final Message message;
@@ -22,7 +23,11 @@ class ChatDocument extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              var _url = Uri.parse(message.file ?? "");
+              if (!await launchUrl(_url, mode: LaunchMode.externalApplication))
+                throw 'Could not launch $_url';
+            },
             icon: const Icon(
               Icons.download,
               color: Colors.black54,
