@@ -29,8 +29,12 @@ class AgentCustomerDailyChart extends StatelessWidget {
                 },
                 measureLowerBoundFn: (_, __) => 0,
                 measureUpperBoundFn: (_, __) => 15,
-                labelAccessorFn: (ResponseTimes times, _) =>
-                    times.formattedString ?? "",
+                labelAccessorFn: (ResponseTimes times, _) {
+                  var minutes = ((times.seconds ?? 0) / 60).round();
+                  var seconds = ((times.seconds ?? 0) % 60).round();
+
+                  return "$minutes menit\n$seconds detik";
+                },
                 domainFn: (ResponseTimes times, index) =>
                     index?.toString() ?? "",
                 measureFn: (ResponseTimes times, index) =>

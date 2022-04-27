@@ -59,14 +59,31 @@ class _ChatListState extends State<ChatList> {
             children: [
               if (provider.chatLoading) const LinearProgressIndicator(),
               Expanded(
-                child: ListView.builder(
-                  controller: chatListController,
-                  itemBuilder: (context, index) {
-                    return ChatItem(message: messages[index]);
-                  },
-                  reverse: true,
-                  itemCount: messages.length,
-                ),
+                child: ListView.separated(
+                    itemBuilder: (context, index) =>
+                        ChatItem(message: messages[index]),
+                    separatorBuilder: (context, index) {
+                      var next = messages[index + 1];
+                      var current = messages[index];
+
+                      var currentDate = DateTime(current.createdAt!.year,
+                          current.createdAt!.month, current.createdAt!.day);
+                      var nextDate = DateTime(next.createdAt!.year,
+                          next.createdAt!.month, next.createdAt!.day);
+                      //compare date
+                      if (currentDate.compareTo(nextDate) == 1) {
+                        return Chip(
+                            label: Text(
+                                '${current.createdAt!.day}/${current.createdAt!.month}/${current.createdAt!.year}'));
+                      } else {
+                        return const SizedBox(
+                          width: 0,
+                        );
+                      }
+                    },
+                    itemCount: messages.length,
+                    reverse: true,
+                    controller: chatListController),
               ),
             ],
           );

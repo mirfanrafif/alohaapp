@@ -175,6 +175,7 @@ class SalesProvider with ChangeNotifier {
   Future<ApiResponse<StatisticsResponse?>> getStatistics() async {
     statisticsResponse = null;
     statistics = null;
+    _dailyReport = null;
     _selectedCustomerId = null;
     var response = await _salesService.getStatistics(
         agentId: _selectedAgent!.id,

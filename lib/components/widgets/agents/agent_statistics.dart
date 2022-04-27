@@ -1,5 +1,6 @@
 import 'package:aloha/components/widgets/agents/customer_daily_chart.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
+import 'package:aloha/data/response/statistics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -92,6 +93,54 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Rata-rata waktu respons",
+                                textAlign: TextAlign.center,
+                              ),
+                              getAverageResponseTimeSales(
+                                  provider.statisticsResponse)
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Jumlah pesan tidak/telat terjawab",
+                                textAlign: TextAlign.center,
+                              ),
+                              getUnreadMessageSales(provider.statisticsResponse)
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Jumlah pesan terjawab",
+                                textAlign: TextAlign.center,
+                              ),
+                              getReadMessageSales(provider.statisticsResponse)
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                        "Jumlah pesan tidak terjawab berdasarkan customer"),
+                    const SizedBox(height: 16),
+                    CustomerUnreadMessagesChart(
+                        response: provider.statisticsResponse!)
                   ],
                 ),
               ),
@@ -154,7 +203,7 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                     ?.toString() ??
                                 "",
                             style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -170,13 +219,12 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                             height: 8,
                           ),
                           Text(
-                            (provider.statistics?.averageAllResponseTime
-                                        ?.floor()
-                                        .toString() ??
-                                    "") +
-                                "\ndetik",
+                            getMinuteSecond(provider
+                                    .statistics?.averageAllResponseTime
+                                    ?.floor() ??
+                                0),
                             style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 20, fontWeight: FontWeight.bold),
                             textAlign: TextAlign.center,
                           )
                         ],
@@ -193,11 +241,13 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                             height: 8,
                           ),
                           Text(
-                            provider.statistics?.dailyReport?.length
+                            provider.statistics?.dailyReport
+                                    ?.map((e) => e.responseTimes!.length)
+                                    .reduce((value, element) => value + element)
                                     .toString() ??
                                 "",
                             style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           )
                         ],
                       ),
@@ -272,7 +322,7 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                           ?.toString() ??
                                       "",
                                   style: const TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -289,13 +339,12 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                   height: 8,
                                 ),
                                 Text(
-                                  (provider.dailyReport?.average
-                                              ?.floor()
-                                              .toString() ??
-                                          "") +
-                                      "\ndetik",
+                                  getMinuteSecond(provider.dailyReport?.average
+                                              ?.floor() ??
+                                          0) ??
+                                      "",
                                   style: const TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                   textAlign: TextAlign.center,
                                 )
@@ -317,7 +366,7 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                           ?.toString() ??
                                       "",
                                   style: const TextStyle(
-                                      fontSize: 24,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 )
                               ],
@@ -333,5 +382,70 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
         ],
       );
     });
+  }
+
+  Widget getAverageResponseTimeSales(StatisticsResponse? response) {
+    var responseTimes =
+        response?.statistics?.map((e) => e.averageAllResponseTime);
+
+    var avgResponseTime = responseTimes!.isNotEmpty
+        ? responseTimes.reduce((value, element) => value! + element!)! /
+            responseTimes.length
+        : 0;
+
+    return Text(
+      getMinuteSecond(avgResponseTime.round()),
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  getMinuteSecond(int time) {
+    var minutes = (time / 60).round();
+    var seconds = time % 60;
+
+    return "$minutes menit\n$seconds detik";
+  }
+
+  Widget getUnreadMessageSales(StatisticsResponse? response) {
+    var unreadMessages =
+        response?.statistics?.map((e) => e.allUnreadMessageCount);
+
+    var avgResponseTime =
+        unreadMessages!.reduce((value, element) => value! + element!)!;
+
+    return Text(
+      avgResponseTime.round().toString(),
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget getReadMessageSales(StatisticsResponse? response) {
+    List<ResponseTimes> responseTimes = [];
+    response?.statistics?.forEach(
+      (element) {
+        element.dailyReport?.forEach((element) {
+          if (element.responseTimes != null) {
+            responseTimes.addAll(element.responseTimes!);
+          }
+        });
+      },
+    );
+
+    return Text(
+      responseTimes.length.toString(),
+      style: const TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.bold,
+      ),
+      textAlign: TextAlign.center,
+    );
   }
 }
