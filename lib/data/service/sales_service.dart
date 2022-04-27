@@ -236,29 +236,32 @@ class SalesService {
 
   Future<ApiResponse<User?>> deleteUser(
       int salesId, int delegatedSalesId, String token) async {
-    var requestData = {
-      'salesId': salesId,
-      'delegatedSalesId': delegatedSalesId
-    };
-    var response = await delete(Uri.https(baseUrl, '/user/manage'),
-        body: jsonEncode(requestData),
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        });
-    if (response.statusCode < 400) {
-      var responseData = UpdateUserResponse.fromJson(jsonDecode(response.body));
-      return ApiResponse(
-          success: true,
-          data: responseData.data,
-          message: responseData.message);
-    } else {
-      var errorResponse = ApiErrorResponse.fromJson(jsonDecode(response.body));
-      return ApiResponse(
-          success: false, data: null, message: errorResponse.message);
-    }
-    try {} catch (e) {
+    try {
+      var requestData = {
+        'salesId': salesId,
+        'delegatedSalesId': delegatedSalesId
+      };
+      var response = await delete(Uri.https(baseUrl, '/user/manage'),
+          body: jsonEncode(requestData),
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
+      if (response.statusCode < 400) {
+        var responseData =
+            UpdateUserResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true,
+            data: responseData.data,
+            message: responseData.message);
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: null, message: errorResponse.message);
+      }
+    } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
