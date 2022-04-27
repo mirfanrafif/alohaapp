@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:aloha/components/pages/send_image_page.dart';
 import 'package:aloha/components/widgets/messages/chat_input.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/response/customer_categories.dart';

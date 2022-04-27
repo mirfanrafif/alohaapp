@@ -26,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
       builder: (context, value, child) => Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Card(
           child: Container(
             padding: const EdgeInsets.all(16),
@@ -136,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Ubah Password"),
+              title: const Text("Ubah Password"),
               content: SizedBox(
                 height: 300,
                 child: Column(

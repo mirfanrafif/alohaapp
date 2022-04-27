@@ -5,7 +5,6 @@ import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/customer_categories.dart';
 import 'package:aloha/data/response/message_template.dart';
-import 'package:aloha/data/response/start_conversation_response.dart';
 import 'package:aloha/data/service/broadcast_message_service.dart';
 import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/data/service/message_template_service.dart';

@@ -190,6 +190,35 @@ class _SalesEditFormState extends State<SalesEditForm> {
   showUserDeleteDialog() {
     showDialog(
       context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Hapus sales"),
+        content: const Text("Apakah anda yakin ingin menghapus sales"),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              showDelegateUserDialog();
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.red),
+              foregroundColor: MaterialStateProperty.all(Colors.white),
+            ),
+            child: const Text("Ya"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("Tidak"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  showDelegateUserDialog() {
+    showDialog(
+      context: context,
       builder: (context) {
         var availableAgent = [...provider.agents]..removeWhere(
             (element) => element.id == (provider.selectedAgent?.id ?? 0));
@@ -233,7 +262,7 @@ class _SalesEditFormState extends State<SalesEditForm> {
     showDialog(
         context: context,
         builder: (context) => AlertDialog(
-              title: Text("Ubah Password"),
+              title: const Text("Ubah Password"),
               content: SizedBox(
                 height: 300,
                 child: Column(
@@ -320,6 +349,19 @@ class _SalesJobDropdownState extends State<SalesJobDropdown> {
                           ],
                         ))
                     .toList(),
+                const SizedBox(
+                  height: 32,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    provider.deactivateUser(
+                        provider.selectedAgent?.id ?? 0, context);
+                  },
+                  child: const Text("Deaktivasi sales"),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                      foregroundColor: MaterialStateProperty.all(Colors.white)),
+                )
               ],
             ),
           ),

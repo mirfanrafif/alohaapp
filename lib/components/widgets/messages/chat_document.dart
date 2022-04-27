@@ -25,8 +25,12 @@ class ChatDocument extends StatelessWidget {
           IconButton(
             onPressed: () async {
               var _url = Uri.parse(message.file ?? "");
-              if (!await launchUrl(_url, mode: LaunchMode.externalApplication))
-                throw 'Could not launch $_url';
+              if (!await launchUrl(_url,
+                  mode: LaunchMode.externalApplication)) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(
+                        "Tidak dapat membuka link" + (message.file ?? ""))));
+              }
             },
             icon: const Icon(
               Icons.download,

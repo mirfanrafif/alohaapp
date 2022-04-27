@@ -265,4 +265,31 @@ class SalesService {
       return ApiResponse(success: false, data: null, message: e.toString());
     }
   }
+
+  Future<ApiResponse<User?>> deactivateUser(int salesId, String token) async {
+    try {
+      var response = await put(
+          Uri.https(baseUrl, '/user/manage/$salesId/deactivate'),
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          });
+      if (response.statusCode < 400) {
+        var responseData =
+            UpdateUserResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: true,
+            data: responseData.data,
+            message: responseData.message);
+      } else {
+        var errorResponse =
+            ApiErrorResponse.fromJson(jsonDecode(response.body));
+        return ApiResponse(
+            success: false, data: null, message: errorResponse.message);
+      }
+    } catch (e) {
+      return ApiResponse(success: false, data: null, message: e.toString());
+    }
+  }
 }

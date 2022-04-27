@@ -245,4 +245,20 @@ class SalesProvider with ChangeNotifier {
     notifyListeners();
     return response;
   }
+
+  Future<ApiResponse<User?>> deactivateUser(
+      int salesId, BuildContext context) async {
+    var response = await _salesService.deactivateUser(salesId, _token);
+
+    if (response.success) {
+      var _agentIndex = findAgentIndex(salesId);
+      _agents[_agentIndex].job = response.data!.job;
+      _selectedAgentJob = response.data!.job!.map((e) => e.job).toList();
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
+    }
+    notifyListeners();
+    return response;
+  }
 }

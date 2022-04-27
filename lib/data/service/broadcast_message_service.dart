@@ -6,7 +6,6 @@ import 'package:aloha/data/response/message.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:http/http.dart';
-import 'package:image_picker/image_picker.dart';
 
 class BroadcastMessageService {
   Future<ApiResponse<List<CustomerCategories>?>> getCustomerCategories(
