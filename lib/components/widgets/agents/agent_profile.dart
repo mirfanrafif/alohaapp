@@ -162,14 +162,68 @@ class _SalesEditFormState extends State<SalesEditForm> {
                 const SizedBox(
                   height: 32,
                 ),
-                OutlinedButton(
-                    onPressed: showEditPasswordDialog,
-                    child: const Text("Ubah Password sales"))
+                Row(
+                  children: [
+                    OutlinedButton(
+                        onPressed: showEditPasswordDialog,
+                        child: const Text("Ubah password sales")),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    OutlinedButton(
+                      onPressed: showUserDeleteDialog,
+                      child: const Text("Hapus sales"),
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all(Colors.red),
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  showUserDeleteDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        var availableAgent = [...provider.agents]..removeWhere(
+            (element) => element.id == (provider.selectedAgent?.id ?? 0));
+        return AlertDialog(
+          title: const Text("Pilih sales yang didelegasikan"),
+          content: SizedBox(
+            height: 300,
+            width: 300,
+            child: ListView.builder(
+              itemBuilder: (context, index) => ListTile(
+                title: Text(availableAgent[index].fullName),
+                subtitle: Text(availableAgent[index]
+                        .job
+                        ?.map((e) => e.job.name)
+                        .join(', ') ??
+                    ""),
+                onTap: () async {
+                  await provider.deleteUser(provider.selectedAgent?.id ?? 0,
+                      availableAgent[index].id, context);
+                },
+              ),
+              itemCount: availableAgent.length,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("Batal"),
+            )
+          ],
+        );
+      },
     );
   }
 
@@ -265,7 +319,7 @@ class _SalesJobDropdownState extends State<SalesJobDropdown> {
                             )
                           ],
                         ))
-                    .toList()
+                    .toList(),
               ],
             ),
           ),

@@ -228,4 +228,21 @@ class SalesProvider with ChangeNotifier {
   Future<ApiResponse<User?>> changePassword(int salesId, String newPassword) {
     return _salesService.changePassword(salesId, newPassword, _token);
   }
+
+  Future<ApiResponse<User?>> deleteUser(
+      int salesId, int delegatedSalesId, BuildContext context) async {
+    var response =
+        await _salesService.deleteUser(salesId, delegatedSalesId, _token);
+
+    if (response.success) {
+      _agents.removeWhere((element) => element.id == salesId);
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(response.message)));
+    }
+    notifyListeners();
+    return response;
+  }
 }
