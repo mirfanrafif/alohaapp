@@ -16,13 +16,13 @@ class MessageResponse {
   });
 
   bool success;
-  List<Message> data;
+  List<MessageEntity> data;
   String message;
 
   factory MessageResponse.fromJson(Map<String, dynamic> json) =>
       MessageResponse(
         success: json["success"],
-        data: List<Message>.from(json["data"].map((x) => Message.fromJson(x))),
+        data: List<MessageEntity>.from(json["data"].map((x) => MessageEntity.fromJson(x))),
         message: json["message"],
       );
 
@@ -33,12 +33,12 @@ class MessageResponse {
       };
 }
 
-Message messageFromJson(String str) => Message.fromJson(json.decode(str));
+MessageEntity messageFromJson(String str) => MessageEntity.fromJson(json.decode(str));
 
-String messageToJson(Message data) => json.encode(data.toJson());
+String messageToJson(MessageEntity data) => json.encode(data.toJson());
 
-class Message {
-  Message({
+class MessageEntity {
+  MessageEntity({
     required this.id,
     required this.customer,
     required this.fromMe,
@@ -66,7 +66,7 @@ class Message {
   DateTime? createdAt;
   DateTime? updatedAt;
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
+  factory MessageEntity.fromJson(Map<String, dynamic> json) => MessageEntity(
         id: json["id"],
         customer: Customer.fromJson(json["customer"]),
         fromMe: json["fromMe"],

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ChatDocument extends StatelessWidget {
-  final Message message;
+  final MessageEntity message;
   const ChatDocument({Key? key, required this.message}) : super(key: key);
 
   @override

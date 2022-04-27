@@ -4,7 +4,7 @@ import '../response/message.dart';
 class CustomerMessage {
   Customer customer;
 
-  List<Message> message;
+  List<MessageEntity> message;
 
   List<User> agents;
 

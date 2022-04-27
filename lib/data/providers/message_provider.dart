@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:aloha/components/pages/home_page.dart';
 import 'package:aloha/data/preferences/user_preferences.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/data/response/customer_categories.dart';
@@ -11,6 +12,7 @@ import 'package:aloha/data/service/message_template_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'package:socket_io_client/socket_io_client.dart';
@@ -37,7 +39,9 @@ class MessageProvider extends ChangeNotifier {
   bool initDone = false;
 
   int? _selectedCustomerId;
+
   int? get selectedCustomerId => _selectedCustomerId;
+
   set selectedCustomerId(int? newValue) {
     _selectedCustomerId = newValue;
     notifyListeners();
@@ -47,6 +51,9 @@ class MessageProvider extends ChangeNotifier {
     var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     return customerMessage[customerIndex];
   }
+
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> init(BuildContext context) async {
     initDone = true;
@@ -60,11 +67,28 @@ class MessageProvider extends ChangeNotifier {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(response.message)));
     }
+
+    // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const MacOSInitializationSettings initializationSettingsMacOS =
+        MacOSInitializationSettings();
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+            android: initializationSettingsAndroid,
+            macOS: initializationSettingsMacOS);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: (something) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const HomePage(),
+      ));
+    });
   }
 
   var _searchKeyword = "";
 
   String get searchKeyword => _searchKeyword;
+
   set searchKeyword(String newValue) {
     _searchKeyword = newValue;
     getAllContact();
@@ -77,7 +101,7 @@ class MessageProvider extends ChangeNotifier {
 
   var chatLoading = false;
 
-  List<Message> getMessageByCustomerId(int customerId) =>
+  List<MessageEntity> getMessageByCustomerId(int customerId) =>
       _customerMessage[findCustomerIndexById(customerId)].message;
 
   Future<ApiResponse<List<Contact>>> getAllContact() async {
@@ -156,7 +180,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   processIncomingMessage(String data) {
-    var incomingMessage = Message.fromJson(jsonDecode(data));
+    var incomingMessage = MessageEntity.fromJson(jsonDecode(data));
     var customerIndex = findCustomerIndexById(incomingMessage.customer.id);
     if (customerIndex == -1) {
       _customerMessage = [
@@ -184,6 +208,22 @@ class MessageProvider extends ChangeNotifier {
           customerMessage[customerIndex].unread = 0;
         } else {
           customerMessage[customerIndex].unread++;
+
+          //kirim notifikasi jika ada chat dari customer
+          const AndroidNotificationDetails androidPlatformChannelSpecifics =
+              AndroidNotificationDetails('MESSAGE', 'Message',
+                  channelDescription: 'Pesan masuk dari customer',
+                  importance: Importance.max,
+                  priority: Priority.high,
+                  ticker: 'ticker');
+          const NotificationDetails platformChannelSpecifics =
+              NotificationDetails(android: androidPlatformChannelSpecifics);
+          flutterLocalNotificationsPlugin.show(
+              incomingMessage.customer.id,
+              incomingMessage.senderName,
+              incomingMessage.message,
+              platformChannelSpecifics,
+              payload: 'item x');
         }
       } else {
         //bagian ini cuma buat update tracking
@@ -195,6 +235,20 @@ class MessageProvider extends ChangeNotifier {
 
     notifyListeners();
     return data;
+  }
+
+  void sendNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'plain title', 'plain body', platformChannelSpecifics,
+        payload: 'item x');
   }
 
   bool getIsFirstLoad() {
@@ -209,7 +263,7 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 
-  void addPreviousMessage(List<Message> messages) {
+  void addPreviousMessage(List<MessageEntity> messages) {
     var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     for (var item in messages) {
       var sameId = customerMessage[customerIndex]
@@ -261,7 +315,7 @@ class MessageProvider extends ChangeNotifier {
         file: file, customerNumber: customerNumber, token: _token);
   }
 
-  Future<ApiResponse<List<Message>?>> sendImage(
+  Future<ApiResponse<List<MessageEntity>?>> sendImage(
       {required XFile file,
       required String customerNumber,
       required String message,
@@ -326,6 +380,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   final List<MessageTemplate> _templates = [];
+
   List<MessageTemplate> get templates => List.unmodifiable(_templates);
 
   Future<ApiResponse<List<MessageTemplate>>> getTemplates(
@@ -354,7 +409,7 @@ class MessageProvider extends ChangeNotifier {
     var categoriesList = categories.map((e) => e.name ?? "").toList();
     var typesList = types.map((e) => e.name ?? "").toList();
     var interestList = interests.map((e) => e.name ?? "").toList();
-    late ApiResponse<List<Message>?> response;
+    late ApiResponse<List<MessageEntity>?> response;
     switch (broadcastType) {
       case "text":
         response = await _broadcastMessageService.sendBroadcastMessage(

@@ -44,7 +44,7 @@ class Contact {
   DateTime createdAt;
   int unread;
   List<User> agent;
-  Message? lastMessage;
+  MessageEntity? lastMessage;
   DateTime updatedAt;
 
   factory Contact.fromJson(Map<String, dynamic> json) => Contact(
@@ -54,7 +54,7 @@ class Contact {
         unread: json['unread'],
         agent: List<User>.from(json["agent"].map((x) => User.fromJson(x))),
         lastMessage: json["lastMessage"] != null
-            ? Message.fromJson(json["lastMessage"])
+            ? MessageEntity.fromJson(json["lastMessage"])
             : null,
         updatedAt: DateTime.parse(json["updated_at"]),
       );

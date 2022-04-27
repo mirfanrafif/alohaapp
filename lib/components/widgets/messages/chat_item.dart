@@ -9,7 +9,7 @@ import 'chat_image.dart';
 double chatMargin = 80;
 
 class ChatItem extends StatelessWidget {
-  final Message message;
+  final MessageEntity message;
   const ChatItem({Key? key, required this.message}) : super(key: key);
 
   @override

@@ -4,7 +4,7 @@ import '../../../data/response/message.dart';
 import '../../pages/image_page.dart';
 
 class ChatImage extends StatelessWidget {
-  final Message message;
+  final MessageEntity message;
   const ChatImage({Key? key, required this.message}) : super(key: key);
 
   @override

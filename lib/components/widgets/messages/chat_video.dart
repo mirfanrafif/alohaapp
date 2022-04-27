@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 class ChatVideo extends StatefulWidget {
-  final Message message;
+  final MessageEntity message;
   const ChatVideo({
     Key? key,
     required this.message,

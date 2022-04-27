@@ -4,7 +4,7 @@ import 'package:pinch_zoom/pinch_zoom.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ImagePage extends StatelessWidget {
-  final Message message;
+  final MessageEntity message;
   const ImagePage({Key? key, required this.message}) : super(key: key);
 
   @override
@@ -46,13 +46,11 @@ class ImagePage extends StatelessWidget {
         color: Colors.black,
         child: Stack(
           children: [
-            Expanded(
-              child: PinchZoom(
-                child: Image(
-                  image: NetworkImage(message.file ?? ""),
-                ),
-                maxScale: 2.5,
+            PinchZoom(
+              child: Image(
+                image: NetworkImage(message.file ?? ""),
               ),
+              maxScale: 2.5,
             ),
             Positioned(
               bottom: 0,

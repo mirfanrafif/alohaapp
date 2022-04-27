@@ -14,7 +14,7 @@ class ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Message? lastMessage = customerMessage.message.isNotEmpty
+    MessageEntity? lastMessage = customerMessage.message.isNotEmpty
         ? customerMessage.message.first
         : null;
     return ListTile(
@@ -59,7 +59,7 @@ class ContactItem extends StatelessWidget {
     );
   }
 
-  getLastMessage(Message? lastMessage) {
+  getLastMessage(MessageEntity? lastMessage) {
     if (lastMessage == null) {
       return const Text("");
     }
@@ -87,7 +87,7 @@ class ContactItem extends StatelessWidget {
     );
   }
 
-  Icon buildStatusIcon(Message message) {
+  Icon buildStatusIcon(MessageEntity message) {
     switch (message.status) {
       case "pending":
         return const Icon(

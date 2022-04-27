@@ -78,7 +78,7 @@ class BroadcastMessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendBroadcastMessage(
+  Future<ApiResponse<List<MessageEntity>?>> sendBroadcastMessage(
       {required List<String> categories,
       required List<String> types,
       required List<String> interests,
@@ -114,7 +114,7 @@ class BroadcastMessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendImage(
+  Future<ApiResponse<List<MessageEntity>?>> sendImage(
       {required File file,
       required String message,
       required List<String> categories,
@@ -157,7 +157,7 @@ class BroadcastMessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendDocument(
+  Future<ApiResponse<List<MessageEntity>?>> sendDocument(
       {required File file,
       required List<String> categories,
       required List<String> types,
@@ -196,7 +196,7 @@ class BroadcastMessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendVideo(
+  Future<ApiResponse<List<MessageEntity>?>> sendVideo(
       {required File file,
       required String message,
       required List<String> categories,

@@ -9,7 +9,7 @@ import '../response/contact.dart';
 import '../response/message.dart';
 
 class MessageService {
-  Future<List<Message>> getPastMessages({
+  Future<List<MessageEntity>> getPastMessages({
     required int customerId,
     int lastMessageId = 0,
     bool loadMore = false,
@@ -50,7 +50,7 @@ class MessageService {
     }
   }
 
-  Future<List<Message>> sendMessage({
+  Future<List<MessageEntity>> sendMessage({
     required String customerNumber,
     required String message,
     required String token,
@@ -70,7 +70,7 @@ class MessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendImage(
+  Future<ApiResponse<List<MessageEntity>?>> sendImage(
       {required XFile file,
       required String message,
       required String customerNumber,
@@ -109,7 +109,7 @@ class MessageService {
     }
   }
 
-  Future<ApiResponse<List<Message>?>> sendVideo(
+  Future<ApiResponse<List<MessageEntity>?>> sendVideo(
       {required XFile file,
       required String message,
       required String customerNumber,
@@ -167,7 +167,7 @@ class MessageService {
     }
   }
 
-  Future<List<Message>> sendDocument(
+  Future<List<MessageEntity>> sendDocument(
       {required File file,
       required String customerNumber,
       required String token}) async {
