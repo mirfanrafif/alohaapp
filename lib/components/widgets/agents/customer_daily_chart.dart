@@ -12,7 +12,7 @@ class AgentCustomerDailyChart extends StatelessWidget {
     return Consumer<SalesProvider>(
       builder: (context, provider, child) => SizedBox(
         width: 500,
-        height: provider.dailyReport!.responseTimes!.length * 25 + 50,
+        height: provider.dailyReport!.responseTimes!.length * 30 + 50,
         child: BarChart(
           [
             Series<ResponseTimes, String>(
@@ -33,7 +33,7 @@ class AgentCustomerDailyChart extends StatelessWidget {
                   var minutes = ((times.seconds ?? 0) / 60).round();
                   var seconds = ((times.seconds ?? 0) % 60).round();
 
-                  return "$minutes menit\n$seconds detik";
+                  return "$minutes menit $seconds detik";
                 },
                 domainFn: (ResponseTimes times, index) =>
                     index?.toString() ?? "",
@@ -43,6 +43,7 @@ class AgentCustomerDailyChart extends StatelessWidget {
           vertical: false,
           barRendererDecorator: BarLabelDecorator<String>(),
           domainAxis: const OrdinalAxisSpec(renderSpec: NoneRenderSpec()),
+          behaviors: [],
         ),
       ),
     );

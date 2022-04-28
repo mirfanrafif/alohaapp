@@ -140,7 +140,14 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                         "Jumlah pesan tidak terjawab berdasarkan customer"),
                     const SizedBox(height: 16),
                     CustomerUnreadMessagesChart(
-                        response: provider.statisticsResponse!)
+                        response: provider.statisticsResponse!),
+                    const SizedBox(height: 16),
+                    const Text("Customer yang belum dijawab:"),
+                    ...getUnreadCustomer(
+                        provider.statisticsResponse!.statistics!),
+                    CustomerResponseTimesChart(
+                      response: provider.statisticsResponse!,
+                    )
                   ],
                 ),
               ),
@@ -448,4 +455,11 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
       textAlign: TextAlign.center,
     );
   }
+}
+
+List<Widget> getUnreadCustomer(List<Statistics> statistics) {
+  var hello = [...statistics]
+    ..removeWhere((element) => element.allUnreadMessageCount! == 0);
+  var nameList = hello.map((e) => Text("- " + (e.name ?? ""))).toList();
+  return nameList;
 }
