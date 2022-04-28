@@ -14,31 +14,43 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 300,
-      child: BarChart(
-        BarChartData(
-          barGroups: makeGroups(response),
-          titlesData: FlTitlesData(
-            show: true,
-            rightTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            topTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: false,
+    return Column(
+      children: [
+        Text("Diagram Jumlah terjawab dan tidak terjawab"),
+        const SizedBox(
+          height: 16,
+        ),
+        SizedBox(
+          width: double.infinity,
+          height: 300,
+          child: BarChart(
+            BarChartData(
+              barGroups: makeGroups(response),
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                      showTitles: false,
+                      getTitlesWidget: (index, meta) {
+                        return Text(
+                            response.statistics?[index.toInt()].name ?? "");
+                      }),
+                ),
               ),
+              alignment: BarChartAlignment.spaceBetween,
+              gridData: FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              barTouchData: makeTouchData(),
             ),
           ),
-          gridData: FlGridData(show: false),
-          borderData: FlBorderData(show: false),
-          barTouchData: makeTouchData(),
         ),
-      ),
+      ],
     );
   }
 
@@ -51,9 +63,13 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
           x: key,
           barRods: [
             BarChartRodData(
-                toY: getReadMessagesCount(value), color: Colors.green),
+                toY: getReadMessagesCount(value),
+                color: Colors.lightBlue,
+                width: 10),
             BarChartRodData(
-                toY: value.allUnreadMessageCount!.toDouble(), color: Colors.red)
+                toY: value.allUnreadMessageCount!.toDouble(),
+                color: Colors.deepOrange,
+                width: 10)
           ],
         ),
       );
@@ -90,7 +106,7 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
                           .round()
                           .toString() +
                       "\n",
-                  style: const TextStyle(color: Colors.greenAccent),
+                  style: const TextStyle(color: Colors.lightBlue),
                 ),
                 TextSpan(
                   text: "Tidak dibaca: " +
@@ -98,7 +114,7 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
                               ?.round()
                               .toString() ??
                           ""),
-                  style: const TextStyle(color: Colors.redAccent),
+                  style: const TextStyle(color: Colors.deepOrange),
                 )
               ]);
         },
@@ -115,33 +131,40 @@ class CustomerResponseTimesChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: (response.statistics?.length ?? 0) * 120 + 60,
-      height: 300,
-      child: BarChart(
-        BarChartData(
-            barGroups: makeGroups(response),
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (index, meta) {
-                    return Text(response.statistics?[index.toInt()].name ?? "");
-                  }
+    return Column(
+      children: [
+        const Text("Waktu respons terhadap customer"),
+        const SizedBox(height: 24,),
+        SizedBox(
+          width: double.infinity,
+          height: 300,
+          child: BarChart(
+            BarChartData(
+              barGroups: makeGroups(response),
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                      showTitles: false,
+                      getTitlesWidget: (index, meta) {
+                        return Text(response.statistics?[index.toInt()].name ?? "");
+                      }),
                 ),
               ),
+              gridData: FlGridData(show: false),
+              borderData: FlBorderData(show: false),
+              barTouchData: makeTouchData(),
+              maxY: 16,
             ),
-            gridData: FlGridData(show: true, drawVerticalLine: false),
-            borderData: FlBorderData(show: false),
-            maxY: getMaxY()),
-      ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -154,8 +177,9 @@ class CustomerResponseTimesChart extends StatelessWidget {
           x: key,
           barRods: [
             BarChartRodData(
-              toY: getReadMessagesCount(value),
+              toY: limitY(getResponseTime(value)),
               color: Colors.green,
+              width: 10,
             ),
           ],
         ),
@@ -164,17 +188,7 @@ class CustomerResponseTimesChart extends StatelessWidget {
     return barData;
   }
 
-  double getMaxY() {
-    double maxY = 0;
-    response.statistics!.asMap().forEach((key, value) {
-      var currentReadMessage = getReadMessagesCount(value);
-      maxY = maxY < currentReadMessage ? currentReadMessage : maxY;
-    });
-
-    return maxY + 10;
-  }
-
-  double getReadMessagesCount(Statistics current) {
+  double getResponseTime(Statistics current) {
     List<ResponseTimes> responseTimes = [];
     current.dailyReport?.forEach((element) {
       if (element.responseTimes != null) {
@@ -183,12 +197,43 @@ class CustomerResponseTimesChart extends StatelessWidget {
     });
     return responseTimes.isNotEmpty
         ? responseTimes
-                .map((e) => e.seconds)
-                .reduce((value, element) => value! + element!)! /
-            responseTimes.length /
-            60
+        .map((e) => e.seconds)
+        .reduce((value, element) => value! + element!)! /
+        responseTimes.length /
+        60
         : 0;
   }
+
+  BarTouchData makeTouchData() {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.blueGrey,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          return BarTooltipItem(
+              (response.statistics?[groupIndex].name ?? "") + "\n",
+              const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "Waktu respon: " +
+                      getResponseTime(response.statistics![groupIndex])
+                          .round()
+                          .toString() +
+                      " menit",
+                  style: const TextStyle(color: Colors.greenAccent),
+                ),
+              ]);
+        },
+      ),
+    );
+  }
+}
+
+double limitY(double value) {
+  return value > 16 ? 16 : value;
 }
 
 class AgentStatisticsCustomerChart extends StatelessWidget {
@@ -206,25 +251,37 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
         ),
         SizedBox(
           width: double.infinity,
-          height: 200,
+          height: 300,
           child: BarChart(
             BarChartData(
-                barGroups: makeGroups(provider.statistics!),
-                titlesData: FlTitlesData(
-                  show: true,
-                  rightTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
+              barGroups: makeGroups(provider.statistics!),
+              titlesData: FlTitlesData(
+                show: true,
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (index, meta) => Text(
+                        provider.statistics!.dailyReport?[index.round()].date ??
+                            ""),
                   ),
                 ),
-                gridData: FlGridData(show: false),
-                borderData: FlBorderData(show: false),
-                barTouchData: makeTouchData(provider.statistics!)),
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(showTitles: true, interval: 2),
+                ),
+              ),
+              gridData: FlGridData(show: false),
+              maxY: 16,
+              borderData: FlBorderData(show: false),
+              barTouchData: makeTouchData(provider.statistics!),
+            ),
           ),
         ),
-
       ],
     );
   }
@@ -298,6 +355,7 @@ class AgentCustomerDailyChart extends StatelessWidget {
             ),
             gridData: FlGridData(show: false),
             borderData: FlBorderData(show: false),
+            maxY: 16,
             barTouchData: makeTouchData(provider.dailyReport!.responseTimes!),
           ),
         ),
@@ -353,7 +411,7 @@ class AgentCustomerDailyChart extends StatelessWidget {
           barRods: [
             BarChartRodData(
                 toY: (value.seconds ?? 0) / 60,
-                color: (value.seconds ?? 0) / 60 > 5
+                color: (value.seconds ?? 0) / 60 > 10
                     ? Colors.redAccent
                     : Colors.greenAccent),
           ],
