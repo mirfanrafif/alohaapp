@@ -65,8 +65,9 @@ class MessageProvider extends ChangeNotifier {
     _customerMessage.clear();
     var response = await getAllContact();
     if (!response.success) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
@@ -177,8 +178,8 @@ class MessageProvider extends ChangeNotifier {
         });
       });
     } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.toString())));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating, content: Text(e.toString())));
     }
   }
 
@@ -394,8 +395,9 @@ class MessageProvider extends ChangeNotifier {
       _templates.clear();
       _templates.addAll(response.data!);
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
     notifyListeners();
     return response;
@@ -450,8 +452,9 @@ class MessageProvider extends ChangeNotifier {
         break;
     }
     if (!response.success) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     } else {
       Navigator.pop(context);
     }
@@ -512,7 +515,9 @@ class MessageProvider extends ChangeNotifier {
     }
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(response.message)));
+      ..showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     notifyListeners();
   }
 
@@ -529,7 +534,9 @@ class MessageProvider extends ChangeNotifier {
     }
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(response.message)));
+      ..showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     notifyListeners();
   }
 }

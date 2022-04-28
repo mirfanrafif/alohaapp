@@ -67,7 +67,9 @@ class SalesProvider with ChangeNotifier {
       }
       ScaffoldMessenger.of(context)
         ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(response.message)));
+        ..showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(response.message)));
     } else {
       var response = await _salesService.unassignUserJob(
           _selectedAgent!.id, job.id, _token);
@@ -77,8 +79,9 @@ class SalesProvider with ChangeNotifier {
         var agentIndex = findAgentIndex(response.data!.id);
         _agents[agentIndex].job = response.data!.job;
       }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
     notifyListeners();
   }
@@ -95,8 +98,8 @@ class SalesProvider with ChangeNotifier {
     getAllJobs();
     getAllAgents().then((value) {
       if (!value.success) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(value.message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating, content: Text(value.message)));
       }
     });
   }
@@ -255,8 +258,9 @@ class SalesProvider with ChangeNotifier {
       Navigator.pop(context);
       Navigator.pop(context);
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
     notifyListeners();
     return response;
@@ -271,8 +275,9 @@ class SalesProvider with ChangeNotifier {
       _agents[_agentIndex].job = response.data!.job;
       _selectedAgentJob = response.data!.job!.map((e) => e.job).toList();
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
     notifyListeners();
     return response;

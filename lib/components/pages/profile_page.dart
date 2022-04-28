@@ -94,8 +94,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onPressed: () async {
                       var response =
                           await value.updateUser(_nameController.text);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(response.message)));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(response.message)));
                     },
                   ),
                 ),
@@ -185,8 +186,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> changePassword() async {
     if (_confirmNewPasswordController.text != _newPasswordController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Konfirmasi password tidak sama")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text("Konfirmasi password tidak sama")));
       return;
     }
     _provider
@@ -199,8 +201,8 @@ class _ProfilePageState extends State<ProfilePage> {
         _oldPasswordController.clear();
         _confirmNewPasswordController.clear();
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(value.message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating, content: Text(value.message)));
       }
     });
   }

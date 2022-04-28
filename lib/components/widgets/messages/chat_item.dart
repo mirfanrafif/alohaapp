@@ -50,7 +50,9 @@ class ChatItem extends StatelessWidget {
                       onLongPress: () {
                         Clipboard.setData(ClipboardData(text: message.message));
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Pesan disalin")));
+                            const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text("Pesan disalin")));
                       },
                       child: Text(
                         message.message,

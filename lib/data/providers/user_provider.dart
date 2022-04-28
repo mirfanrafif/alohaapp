@@ -78,8 +78,9 @@ class UserProvider with ChangeNotifier {
       //set preferences
       _preferences.setUser(_agentEntity);
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(response.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(response.message)));
     }
     notifyListeners();
   }

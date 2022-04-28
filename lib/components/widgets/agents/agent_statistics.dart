@@ -45,8 +45,8 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
         lastDate: DateTime.now());
     _provider.selectedDate = datetimeRange;
     _provider.getStatistics().then((value) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(value.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating, content: Text(value.message)));
     });
   }
 

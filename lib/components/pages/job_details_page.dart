@@ -86,7 +86,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                                 Navigator.pop(context);
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(response.message)));
+                                    SnackBar(
+                                        behavior: SnackBarBehavior.floating,
+                                        content: Text(response.message)));
                               }
                             },
                             child: const Text("Simpan"),
@@ -117,8 +119,9 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
                       Navigator.pop(context);
                       Navigator.pop(context);
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(response.message)));
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(response.message)));
                     }
                   },
                   child: const Text("Ya"),

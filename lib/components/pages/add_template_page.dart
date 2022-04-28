@@ -56,8 +56,9 @@ class _AddTemplatePageState extends State<AddTemplatePage> {
                             _templateController.text)
                         .then((value) {
                       if (!value.success) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(value.message)));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: Text(value.message)));
                       } else {
                         Navigator.pop(context);
                       }

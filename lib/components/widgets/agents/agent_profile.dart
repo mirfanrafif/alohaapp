@@ -148,11 +148,13 @@ class _SalesEditFormState extends State<SalesEditForm> {
                               _usernameController.text, _emailController.text)
                           .then((value) {
                         if (value.success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(value.message)));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(value.message)));
                         } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(value.message)));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text(value.message)));
                         }
                       });
                     },
@@ -297,8 +299,8 @@ class _SalesEditFormState extends State<SalesEditForm> {
         Navigator.pop(context);
         _newPasswordController.clear();
       }
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(value.message)));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          behavior: SnackBarBehavior.floating, content: Text(value.message)));
     });
   }
 }

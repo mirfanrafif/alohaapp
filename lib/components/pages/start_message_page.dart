@@ -88,8 +88,8 @@ class _StartMessagePageState extends State<StartMessagePage> {
 
   void startConversation(int customerId) async {
     var response = await _provider.startConversation(customerId);
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(response.message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        behavior: SnackBarBehavior.floating, content: Text(response.message)));
     if (response.success) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => ChatPage(contact: response.data!),

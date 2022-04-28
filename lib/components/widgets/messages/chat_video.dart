@@ -62,8 +62,9 @@ class _ChatVideoState extends State<ChatVideo> {
                   var _url = Uri.parse(widget.message.file ?? "");
                   if (!await launchUrl(_url,
                       mode: LaunchMode.externalApplication)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Could not launch $_url')));
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        content: Text('Could not launch $_url')));
                   }
                 },
                 icon: Icon(

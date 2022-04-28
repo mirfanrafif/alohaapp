@@ -38,7 +38,8 @@ class _LoginPageState extends State<LoginPage> {
     if (response.success) {
       goToHomePage();
     } else {
-      var snackBar = SnackBar(content: Text(response.message));
+      var snackBar = SnackBar(
+          behavior: SnackBarBehavior.floating, content: Text(response.message));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }

@@ -179,8 +179,9 @@ class _SendImagePageState extends State<SendImagePage> {
       if (response.success) {
         Navigator.pop(context);
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(response.message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(response.message)));
       }
     });
   }

@@ -24,8 +24,9 @@ class _DelegateCustomerPageState extends State<DelegateCustomerPage> {
           salesList = salesListResponse.data!;
         });
       } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text(salesListResponse.message)));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(salesListResponse.message)));
       }
     });
   }

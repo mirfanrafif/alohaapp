@@ -33,8 +33,10 @@ class _ChatListState extends State<ChatList> {
     if (chatListController.position.pixels ==
         chatListController.position.maxScrollExtent) {
       if (messageProvider.getIsAllLoaded(customer.id)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Sudah di pesan paling atas")));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Sudah di pesan paling atas"),
+          behavior: SnackBarBehavior.floating,
+        ));
         return;
       }
       messageProvider.getPastMessages(
