@@ -35,7 +35,6 @@ class MessageProvider extends ChangeNotifier {
 
   String _token = "";
   int _id = 0;
-  bool initDone = false;
 
   int? _selectedCustomerId;
 
@@ -54,13 +53,16 @@ class MessageProvider extends ChangeNotifier {
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  var contactLoading = false;
+
   Future<void> init(BuildContext context) async {
-    initDone = true;
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
     setupSocket(context);
     getTemplates(context);
+    contactLoading = true;
+    _customerMessage.clear();
     var response = await getAllContact();
     if (!response.success) {
       ScaffoldMessenger.of(context)
@@ -82,6 +84,9 @@ class MessageProvider extends ChangeNotifier {
         builder: (context) => const HomePage(),
       ));
     });
+
+    contactLoading = false;
+    notifyListeners();
   }
 
   var _searchKeyword = "";
@@ -145,7 +150,6 @@ class MessageProvider extends ChangeNotifier {
   void logout() {
     _customerMessage.clear();
     _preferences.logout();
-    initDone = false;
     socketClient.disconnect();
     notifyListeners();
   }

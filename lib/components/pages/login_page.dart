@@ -67,27 +67,31 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const Text(
                 "Login",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
               ),
               const SizedBox(
                 height: 24,
               ),
               TextField(
                 decoration: const InputDecoration(
-                    labelText: "Username", border: OutlineInputBorder()),
+                    labelText: "Username",
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8)),
                 controller: _usernameController,
               ),
               const SizedBox(
-                height: 8,
+                height: 16,
               ),
               TextField(
                 obscureText: true,
                 controller: _passwordController,
                 decoration: const InputDecoration(
-                    labelText: "Password", border: OutlineInputBorder()),
+                    labelText: "Password",
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(8)),
               ),
               const SizedBox(
-                height: 8,
+                height: 16,
               ),
               SizedBox(
                 width: double.infinity,
