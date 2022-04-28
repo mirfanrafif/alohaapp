@@ -26,8 +26,8 @@ class ChatImage extends StatelessWidget {
             // width: 300,
             height: 200,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Center(
-              child: Text("Tidak dapat memuat gambar"),
+            errorBuilder: (context, error, stackTrace) => Center(
+              child: Text("Tidak dapat memuat gambar " + (message.file ?? "")),
             ),
           ),
         ),

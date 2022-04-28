@@ -13,6 +13,7 @@ class SalesList extends StatefulWidget {
 
 class _SalesListState extends State<SalesList> {
   late SalesProvider _provider;
+  var searchController = TextEditingController();
 
   @override
   void initState() {
@@ -25,30 +26,49 @@ class _SalesListState extends State<SalesList> {
   Widget build(BuildContext context) {
     return Consumer<SalesProvider>(
       builder: (context, provider, child) {
-        return ListView.builder(
-          itemBuilder: (context, index) {
-            var agent = provider.agents[index];
-            return ListTile(
-              leading: ProfilePicture(profilePhoto: agent.profilePhoto),
-              title: Text(agent.fullName),
-              subtitle: agent.job != null
-                  ? Text(agent.job!.map((e) => e.job.name).join(','))
-                  : const Text(
-                      "Belum ada job",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.red),
-                    ),
-              onTap: () {
-                provider.selectedAgent = agent;
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AgentPage(
-                    agent: agent,
-                  ),
-                ));
-              },
-            );
-          },
-          itemCount: provider.agents.length,
+        searchController.addListener(() {
+          _provider.searchKeyword = searchController.text;
+        });
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: const InputDecoration(
+                    labelText: "Cari sales...",
+                    border: OutlineInputBorder(gapPadding: 8),
+                    contentPadding: EdgeInsets.all(8)),
+                controller: searchController,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  var agent = provider.agents[index];
+                  return ListTile(
+                    leading: ProfilePicture(profilePhoto: agent.profilePhoto),
+                    title: Text(agent.fullName),
+                    subtitle: agent.job != null
+                        ? Text(agent.job!.map((e) => e.job.name).join(','))
+                        : const Text(
+                            "Belum ada job",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.red),
+                          ),
+                    onTap: () {
+                      provider.selectedAgent = agent;
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AgentPage(
+                          agent: agent,
+                        ),
+                      ));
+                    },
+                  );
+                },
+                itemCount: provider.agents.length,
+              ),
+            ),
+          ],
         );
       },
     );

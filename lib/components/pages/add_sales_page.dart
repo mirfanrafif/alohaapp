@@ -44,43 +44,29 @@ class _AddSalesPageState extends State<AddSalesPage> {
                         "Data diri",
                         style: TextStyle(fontSize: 24),
                       ),
-                      const SizedBox(
-                        height: 16,
-                      ),
                       TextField(
                         controller: _nameController,
-                        decoration: const InputDecoration(
-                            labelText: "Nama", border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(
-                        height: 16,
+                        decoration: const InputDecoration(labelText: "Nama"),
                       ),
                       TextField(
                         controller: _usernameController,
                         decoration: const InputDecoration(
-                            labelText: "Username",
-                            border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(
-                        height: 16,
+                          labelText: "Username",
+                        ),
                       ),
                       TextField(
                         controller: _emailController,
-                        decoration: const InputDecoration(
-                            labelText: "Email", border: OutlineInputBorder()),
-                      ),
-                      const SizedBox(
-                        height: 16,
+                        decoration: const InputDecoration(labelText: "Email"),
                       ),
                       TextField(
                         controller: _passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
-                            labelText: "Password",
-                            border: OutlineInputBorder()),
+                          labelText: "Password",
+                        ),
                       ),
                       const SizedBox(
-                        height: 16,
+                        height: 8,
                       ),
                       const Text("Role"),
                       DropdownButton<String>(

@@ -46,10 +46,17 @@ class _DelegateCustomerPageState extends State<DelegateCustomerPage> {
                     salesList[index].job?.map((e) => e.job.name).join(', ') ??
                         ""),
                 trailing: getAsssignButton(
-                    salesList[index].id, provider.getSelectedCustomer().agents,
-                    () {
-                  provider.assignCustomerToSales(salesList[index].id, context);
-                }),
+                  idFromList: salesList[index].id,
+                  currentlyHandling: provider.getSelectedCustomer().agents,
+                  delegateCallback: () {
+                    provider.assignCustomerToSales(
+                        salesList[index].id, context);
+                  },
+                  undelegateCallback: () {
+                    provider.unassignCustomerToSales(
+                        salesList[index].id, context);
+                  },
+                ),
               ),
             ),
             itemCount: salesList.length,
@@ -60,17 +67,23 @@ class _DelegateCustomerPageState extends State<DelegateCustomerPage> {
   }
 
   Widget? getAsssignButton(
-      int idFromList, List<User> currentlyHandling, Function() callback) {
+      {required int idFromList,
+      required List<User> currentlyHandling,
+      required Function() delegateCallback,
+      required Function() undelegateCallback}) {
     var salesIndex =
         currentlyHandling.indexWhere((element) => element.id == idFromList);
 
     if (salesIndex == -1) {
       return IconButton(
-        onPressed: callback,
+        onPressed: delegateCallback,
         icon: const Icon(Icons.add),
       );
     } else {
-      return null;
+      return IconButton(
+        onPressed: undelegateCallback,
+        icon: const Icon(Icons.remove),
+      );
     }
   }
 }

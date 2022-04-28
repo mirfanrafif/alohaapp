@@ -505,11 +505,27 @@ class MessageProvider extends ChangeNotifier {
       var customerIndex =
           findCustomerIndexById(getSelectedCustomer().customer.id);
       customerMessage[customerIndex].agents.add(response.data!.data!.agent!);
-    } else {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(response.message)));
     }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(response.message)));
+    notifyListeners();
+  }
+
+  Future<void> unassignCustomerToSales(
+      int salesId, BuildContext context) async {
+    var response = await _messageService.unassignCustomerToSales(
+        getSelectedCustomer().customer.id, salesId, _token);
+
+    if (response.success) {
+      var customerIndex =
+          findCustomerIndexById(getSelectedCustomer().customer.id);
+      customerMessage[customerIndex].agents.removeWhere(
+          (element) => element.id == response.data!.data!.agent!.id);
+    }
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(response.message)));
     notifyListeners();
   }
 }

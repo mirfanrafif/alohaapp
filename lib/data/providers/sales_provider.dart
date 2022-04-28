@@ -16,7 +16,22 @@ class SalesProvider with ChangeNotifier {
   List<Job> get jobs => List.unmodifiable(_jobs);
 
   final List<User> _agents = [];
-  List<User> get agents => List.unmodifiable(_agents);
+  List<User> get agents {
+    if (_searchKeyword.isNotEmpty) {
+      return List.unmodifiable([..._agents].where((element) => element.fullName
+          .toLowerCase()
+          .contains(_searchKeyword.toLowerCase())));
+    } else {
+      return List.unmodifiable(_agents);
+    }
+  }
+
+  String _searchKeyword = '';
+
+  set searchKeyword(String newValue) {
+    _searchKeyword = newValue;
+    notifyListeners();
+  }
 
   User? _selectedAgent;
   User? get selectedAgent => _selectedAgent;
