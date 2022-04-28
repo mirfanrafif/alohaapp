@@ -2,6 +2,7 @@ import 'package:aloha/components/widgets/messages/chat_document.dart';
 import 'package:aloha/components/widgets/messages/chat_video.dart';
 import 'package:aloha/data/response/message.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'chat_image.dart';
@@ -45,8 +46,15 @@ class ChatItem extends StatelessWidget {
                   if (message.type == "document")
                     ChatDocument(message: message),
                   if (message.message.isNotEmpty)
-                    Text(
-                      message.message,
+                    GestureDetector(
+                      onLongPress: () {
+                        Clipboard.setData(ClipboardData(text: message.message));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("Pesan disalin")));
+                      },
+                      child: Text(
+                        message.message,
+                      ),
                     ),
                   const SizedBox(
                     height: 8,

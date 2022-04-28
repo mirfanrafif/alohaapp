@@ -73,6 +73,7 @@ class _ChatListState extends State<ChatList> {
                       //compare date
                       if (currentDate.compareTo(nextDate) == 1) {
                         return Chip(
+                            backgroundColor: Colors.amber.shade100,
                             label: Text(
                                 '${current.createdAt!.day}/${current.createdAt!.month}/${current.createdAt!.year}'));
                       } else {

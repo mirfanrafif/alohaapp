@@ -23,7 +23,7 @@ class ChatImage extends StatelessWidget {
           },
           child: Image.network(
             message.file ?? "",
-            // width: 300,
+            width: double.infinity,
             height: 200,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Center(
