@@ -38,6 +38,8 @@ class MessageProvider extends ChangeNotifier {
 
   int? _selectedCustomerId;
 
+  bool firstLoad = false;
+
   int? get selectedCustomerId => _selectedCustomerId;
 
   set selectedCustomerId(int? newValue) {
@@ -56,13 +58,13 @@ class MessageProvider extends ChangeNotifier {
   var contactLoading = false;
 
   Future<void> init(BuildContext context) async {
+    firstLoad = true;
     _token = _preferences.getToken();
     var user = _preferences.getUser();
     _id = user.id;
     setupSocket(context);
     getTemplates(context);
     contactLoading = true;
-    _customerMessage.clear();
     var response = await getAllContact();
     if (!response.success) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

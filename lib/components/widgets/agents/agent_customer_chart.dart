@@ -1,9 +1,195 @@
-import 'package:charts_flutter/flutter.dart' as charts;
+// import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../data/providers/sales_provider.dart';
 import '../../../data/response/statistics.dart';
+
+class CustomerUnreadMessagesChart extends StatelessWidget {
+  final StatisticsResponse response;
+
+  const CustomerUnreadMessagesChart({Key? key, required this.response})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 300,
+      child: BarChart(
+        BarChartData(
+          barGroups: makeGroups(response),
+          titlesData: FlTitlesData(
+            show: true,
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: false,
+              ),
+            ),
+          ),
+          gridData: FlGridData(show: false),
+          borderData: FlBorderData(show: false),
+          barTouchData: makeTouchData(),
+        ),
+      ),
+    );
+  }
+
+  makeGroups(StatisticsResponse response) {
+    List<BarChartGroupData> barData = [];
+
+    response.statistics!.asMap().forEach((key, value) {
+      barData.add(
+        BarChartGroupData(
+          x: key,
+          barRods: [
+            BarChartRodData(
+                toY: getReadMessagesCount(value), color: Colors.green),
+            BarChartRodData(
+                toY: value.allUnreadMessageCount!.toDouble(), color: Colors.red)
+          ],
+        ),
+      );
+    });
+    return barData;
+  }
+
+  double getReadMessagesCount(Statistics current) {
+    List<ResponseTimes> responseTimes = [];
+    current.dailyReport?.forEach((element) {
+      if (element.responseTimes != null) {
+        responseTimes.addAll(element.responseTimes!);
+      }
+    });
+    return responseTimes.length.toDouble();
+  }
+
+  BarTouchData makeTouchData() {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.blueGrey,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          return BarTooltipItem(
+              (response.statistics?[groupIndex].name ?? "") + "\n",
+              const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: "Dibaca: " +
+                      getReadMessagesCount(response.statistics![groupIndex])
+                          .round()
+                          .toString() +
+                      "\n",
+                  style: const TextStyle(color: Colors.greenAccent),
+                ),
+                TextSpan(
+                  text: "Tidak dibaca: " +
+                      (response.statistics![groupIndex].allUnreadMessageCount
+                              ?.round()
+                              .toString() ??
+                          ""),
+                  style: const TextStyle(color: Colors.redAccent),
+                )
+              ]);
+        },
+      ),
+    );
+  }
+}
+
+class CustomerResponseTimesChart extends StatelessWidget {
+  final StatisticsResponse response;
+
+  const CustomerResponseTimesChart({Key? key, required this.response})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: (response.statistics?.length ?? 0) * 120 + 60,
+      height: 300,
+      child: BarChart(
+        BarChartData(
+            barGroups: makeGroups(response),
+            titlesData: FlTitlesData(
+              show: true,
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (index, meta) {
+                    return Text(response.statistics?[index.toInt()].name ?? "");
+                  }
+                ),
+              ),
+            ),
+            gridData: FlGridData(show: true, drawVerticalLine: false),
+            borderData: FlBorderData(show: false),
+            maxY: getMaxY()),
+      ),
+    );
+  }
+
+  makeGroups(StatisticsResponse response) {
+    List<BarChartGroupData> barData = [];
+
+    response.statistics!.asMap().forEach((key, value) {
+      barData.add(
+        BarChartGroupData(
+          x: key,
+          barRods: [
+            BarChartRodData(
+              toY: getReadMessagesCount(value),
+              color: Colors.green,
+            ),
+          ],
+        ),
+      );
+    });
+    return barData;
+  }
+
+  double getMaxY() {
+    double maxY = 0;
+    response.statistics!.asMap().forEach((key, value) {
+      var currentReadMessage = getReadMessagesCount(value);
+      maxY = maxY < currentReadMessage ? currentReadMessage : maxY;
+    });
+
+    return maxY + 10;
+  }
+
+  double getReadMessagesCount(Statistics current) {
+    List<ResponseTimes> responseTimes = [];
+    current.dailyReport?.forEach((element) {
+      if (element.responseTimes != null) {
+        responseTimes.addAll(element.responseTimes!);
+      }
+    });
+    return responseTimes.isNotEmpty
+        ? responseTimes
+                .map((e) => e.seconds)
+                .reduce((value, element) => value! + element!)! /
+            responseTimes.length /
+            60
+        : 0;
+  }
+}
 
 class AgentStatisticsCustomerChart extends StatelessWidget {
   const AgentStatisticsCustomerChart({Key? key}) : super(key: key);
@@ -21,192 +207,159 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           height: 200,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: [
-              SizedBox(
-                width:
-                    (provider.statistics!.dailyReport?.length ?? 0) * 70 + 50,
-                height: 200,
-                child: charts.BarChart([
-                  charts.Series<DailyReport, String>(
-                    id: 'Agent to customer Report',
-                    colorFn: (DailyReport report, _) {
-                      var materialColor = Colors.cyan;
-                      return charts.Color(
-                          r: materialColor.red,
-                          g: materialColor.green,
-                          b: materialColor.blue);
-                    },
-                    data: provider.statistics!.dailyReport ?? [],
-                    measureLowerBoundFn: (_, __) => 0,
-                    measureUpperBoundFn: (_, __) => 15,
-                    domainFn: (DailyReport report, _) {
-                      return report.date ?? "";
-                    },
-                    labelAccessorFn: (DailyReport report, _) =>
-                        ((report.average ?? 0) / 60).round().toString() +
-                        " menit",
-                    measureFn: (DailyReport report, _) =>
-                        (report.average ?? 0) / 60,
+          child: BarChart(
+            BarChartData(
+                barGroups: makeGroups(provider.statistics!),
+                titlesData: FlTitlesData(
+                  show: true,
+                  rightTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
                   ),
-                ], barRendererDecorator: charts.BarLabelDecorator<String>()),
-              )
-            ],
+                  topTitles: AxisTitles(
+                    sideTitles: SideTitles(showTitles: false),
+                  ),
+                ),
+                gridData: FlGridData(show: false),
+                borderData: FlBorderData(show: false),
+                barTouchData: makeTouchData(provider.statistics!)),
           ),
-        )
+        ),
+
       ],
     );
   }
-}
 
-class CustomerUnreadMessagesChart extends StatelessWidget {
-  final StatisticsResponse response;
-  const CustomerUnreadMessagesChart({Key? key, required this.response})
-      : super(key: key);
+  makeGroups(Statistics statistics) {
+    List<BarChartGroupData> barData = [];
 
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 300,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          SizedBox(
-            width: (response.statistics?.length ?? 0) * 70 + 50,
-            height: 100,
-            child: charts.BarChart(
-              [
-                charts.Series<Statistics, String>(
-                  id: 'read_messages',
-                  data: response.statistics!,
-                  domainFn: (Statistics current, index) => current.name ?? "",
-                  displayName: 'Jumlah pesan terbaca',
-                  measureFn: (Statistics current, index) {
-                    List<ResponseTimes> responseTimes = [];
-                    current.dailyReport?.forEach((element) {
-                      if (element.responseTimes != null) {
-                        responseTimes.addAll(element.responseTimes!);
-                      }
-                    });
-                    return responseTimes.length;
-                  },
-                  labelAccessorFn: (Statistics current, _) {
-                    List<ResponseTimes> responseTimes = [];
-                    current.dailyReport?.forEach((element) {
-                      if (element.responseTimes != null) {
-                        responseTimes.addAll(element.responseTimes!);
-                      }
-                    });
-                    return responseTimes.length.toString();
-                  },
-                  colorFn: (Statistics current, _) {
-                    var materialColor = Colors.lightGreen;
-                    return charts.Color(
-                        r: materialColor.red,
-                        g: materialColor.green,
-                        b: materialColor.blue);
-                  },
-                ),
-                charts.Series<Statistics, String>(
-                    id: 'unread_messages',
-                    data: response.statistics!,
-                    domainFn: (Statistics current, index) => current.name ?? "",
-                    displayName: 'Jumlah pesan tidak terbaca',
-                    measureFn: (Statistics current, index) =>
-                        current.allUnreadMessageCount,
-                    colorFn: (Statistics current, _) {
-                      var materialColor = Colors.orange;
-                      return charts.Color(
-                          r: materialColor.red,
-                          g: materialColor.green,
-                          b: materialColor.blue);
-                    },
-                    labelAccessorFn: (Statistics current, index) =>
-                        current.allUnreadMessageCount.toString()),
-              ],
-              behaviors: [charts.SeriesLegend()],
-              barRendererDecorator: charts.BarLabelDecorator<String>(),
-            ),
-          )
+    statistics.dailyReport!.asMap().forEach((index, element) {
+      barData.add(BarChartGroupData(
+        x: index,
+        barRods: [
+          BarChartRodData(toY: (element.average ?? 0) / 60),
         ],
+      ));
+    });
+    return barData;
+  }
+
+  BarTouchData makeTouchData(Statistics statistics) {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.blueGrey,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          return BarTooltipItem(
+            ((statistics.dailyReport![groupIndex].average ?? 0) / 60)
+                    .floor()
+                    .toString() +
+                " menit\n" +
+                ((statistics.dailyReport![groupIndex].average ?? 0) % 60)
+                    .round()
+                    .toString() +
+                " detik\n",
+            const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class CustomerResponseTimesChart extends StatelessWidget {
-  final StatisticsResponse response;
-  const CustomerResponseTimesChart({Key? key, required this.response})
-      : super(key: key);
+class AgentCustomerDailyChart extends StatelessWidget {
+  const AgentCustomerDailyChart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 300,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          SizedBox(
-            width: (response.statistics?.length ?? 0) * 70 + 50,
-            height: 100,
-            child: charts.BarChart(
-              [
-                charts.Series<Statistics, String>(
-                  id: 'read_messages',
-                  data: response.statistics!,
-                  domainFn: (Statistics current, index) => current.name ?? "",
-                  displayName: 'Waktu respons (dalam menit)',
-                  measureFn: (Statistics current, index) {
-                    List<ResponseTimes> responseTimes = [];
-                    current.dailyReport?.forEach((element) {
-                      if (element.responseTimes != null) {
-                        responseTimes.addAll(element.responseTimes!);
-                      }
-                    });
-                    return responseTimes.isNotEmpty
-                        ? responseTimes
-                                .map((e) => e.seconds!)
-                                .reduce((value, element) => value + element) /
-                            responseTimes.length /
-                            60
-                        : 0;
-                  },
-                  labelAccessorFn: (Statistics current, _) {
-                    List<ResponseTimes> responseTimes = [];
-                    current.dailyReport?.forEach((element) {
-                      if (element.responseTimes != null) {
-                        responseTimes.addAll(element.responseTimes!);
-                      }
-                    });
-                    var avgResponseTime = responseTimes.isNotEmpty
-                        ? responseTimes
-                                .map((e) => e.seconds!)
-                                .reduce((value, element) => value + element) /
-                            responseTimes.length
-                        : 0;
-                    var minutes = (avgResponseTime / 60).round();
-                    var seconds = (avgResponseTime % 60).round();
-
-                    return "$minutes";
-                  },
-                  colorFn: (Statistics current, _) {
-                    var materialColor = Colors.lightBlue;
-                    return charts.Color(
-                        r: materialColor.red,
-                        g: materialColor.green,
-                        b: materialColor.blue);
-                  },
-                ),
-              ],
-              behaviors: [charts.SeriesLegend()],
-              barRendererDecorator: charts.BarLabelDecorator<String>(),
+    return Consumer<SalesProvider>(
+      builder: (context, provider, child) => SizedBox(
+        width: double.infinity,
+        height: 300,
+        child: BarChart(
+          BarChartData(
+            barGroups: makeGroups(provider.dailyReport!.responseTimes!),
+            titlesData: FlTitlesData(
+              show: true,
+              rightTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: true, interval: 2),
+              ),
             ),
-          )
-        ],
+            gridData: FlGridData(show: false),
+            borderData: FlBorderData(show: false),
+            barTouchData: makeTouchData(provider.dailyReport!.responseTimes!),
+          ),
+        ),
       ),
     );
+  }
+
+  BarTouchData makeTouchData(List<ResponseTimes> responseTimes) {
+    return BarTouchData(
+      touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.blueGrey,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          return BarTooltipItem(
+            // responseTimes.length > 20
+            //     ? (responseTimes[groupIndex].question ?? "").substring(0, 20)
+            //     : (responseTimes[groupIndex].question ?? "") + "\n",
+            (responseTimes[groupIndex].question ?? "") + "\n",
+            const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+            ),
+            children: <TextSpan>[
+              TextSpan(
+                text: ((responseTimes[groupIndex].seconds ?? 0) / 60)
+                        .floor()
+                        .toString() +
+                    " menit\n" +
+                    ((responseTimes[groupIndex].seconds ?? 0) % 60)
+                        .round()
+                        .toString() +
+                    " detik\n",
+                style: const TextStyle(
+                  color: Colors.yellow,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  makeGroups(List<ResponseTimes> responseTimes) {
+    List<BarChartGroupData> barData = [];
+
+    responseTimes.asMap().forEach((key, value) {
+      barData.add(
+        BarChartGroupData(
+          x: key,
+          barRods: [
+            BarChartRodData(
+                toY: (value.seconds ?? 0) / 60,
+                color: (value.seconds ?? 0) / 60 > 5
+                    ? Colors.redAccent
+                    : Colors.greenAccent),
+          ],
+        ),
+      );
+    });
+    return barData;
   }
 }
