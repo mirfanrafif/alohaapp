@@ -16,38 +16,57 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Diagram Jumlah terjawab dan tidak terjawab"),
+        const Text("Diagram Jumlah terjawab dan tidak terjawab"),
         const SizedBox(
           height: 16,
         ),
         SizedBox(
           width: double.infinity,
           height: 300,
-          child: BarChart(
-            BarChartData(
-              barGroups: makeGroups(response),
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                      showTitles: false,
-                      getTitlesWidget: (index, meta) {
-                        return Text(
-                            response.statistics?[index.toInt()].name ?? "");
-                      }),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              Container(
+                width: (response.statistics!.length * 40) + 50,
+                height: 300,
+                padding: EdgeInsets.only(top: 10),
+                child: BarChart(
+                  BarChartData(
+                    barGroups: makeGroups(response),
+                    titlesData: FlTitlesData(
+                        show: true,
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (index, meta) {
+                                return Text(
+                                    response.statistics?[index.toInt()].id.toString() ??
+                                        "");
+                              }),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                          ),
+                        )),
+                    alignment: BarChartAlignment.center,
+                    groupsSpace: 20,
+                    gridData: FlGridData(
+                        show: false,
+                        drawVerticalLine: true,
+                        verticalInterval: 6),
+                    borderData: FlBorderData(show: false),
+                    barTouchData: makeTouchData(),
+                  ),
                 ),
               ),
-              alignment: BarChartAlignment.spaceBetween,
-              gridData: FlGridData(show: false),
-              borderData: FlBorderData(show: false),
-              barTouchData: makeTouchData(),
-            ),
+            ],
           ),
         ),
       ],
@@ -60,21 +79,44 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
     response.statistics!.asMap().forEach((key, value) {
       barData.add(
         BarChartGroupData(
+          barsSpace: 5,
           x: key,
           barRods: [
             BarChartRodData(
-                toY: getReadMessagesCount(value),
-                color: Colors.lightBlue,
-                width: 10),
+              toY: getReadMessagesCount(value),
+              color: Colors.lightBlue,
+              backDrawRodData: BackgroundBarChartRodData(
+                  show: true,
+                  toY: getReadMessageMaxY(response.statistics!),
+                  color: Colors.black12),
+            ),
             BarChartRodData(
-                toY: value.allUnreadMessageCount!.toDouble(),
-                color: Colors.deepOrange,
-                width: 10)
+              toY: value.allUnreadMessageCount!.toDouble(),
+              color: Colors.deepOrange,
+              backDrawRodData: BackgroundBarChartRodData(
+                  show: true,
+                  toY: getReadMessageMaxY(response.statistics!),
+                  color: Colors.black12),
+            )
           ],
         ),
       );
     });
     return barData;
+  }
+
+  double getReadMessageMaxY(List<Statistics> statistics) {
+    double maxY = 0;
+    for (var element in statistics) {
+      if (element.allUnreadMessageCount!.toDouble() > maxY) {
+        maxY = element.allUnreadMessageCount!.toDouble();
+      }
+
+      if (getReadMessagesCount(element) > maxY) {
+        maxY = getReadMessagesCount(element);
+      }
+    }
+    return maxY;
   }
 
   double getReadMessagesCount(Statistics current) {
@@ -134,7 +176,9 @@ class CustomerResponseTimesChart extends StatelessWidget {
     return Column(
       children: [
         const Text("Waktu respons terhadap customer"),
-        const SizedBox(height: 24,),
+        const SizedBox(
+          height: 24,
+        ),
         SizedBox(
           width: double.infinity,
           height: 300,
@@ -151,13 +195,14 @@ class CustomerResponseTimesChart extends StatelessWidget {
                 ),
                 bottomTitles: AxisTitles(
                   sideTitles: SideTitles(
-                      showTitles: false,
+                      showTitles: true,
                       getTitlesWidget: (index, meta) {
-                        return Text(response.statistics?[index.toInt()].name ?? "");
+                        return Text(
+                            response.statistics?[index.toInt()].id.toString() ?? "");
                       }),
                 ),
               ),
-              gridData: FlGridData(show: false),
+              gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
               borderData: FlBorderData(show: false),
               barTouchData: makeTouchData(),
               maxY: 16,
@@ -177,10 +222,10 @@ class CustomerResponseTimesChart extends StatelessWidget {
           x: key,
           barRods: [
             BarChartRodData(
-              toY: limitY(getResponseTime(value)),
-              color: Colors.green,
-              width: 10,
-            ),
+                toY: limitY(getResponseTime(value) / 60),
+                color: Colors.green,
+                backDrawRodData: BackgroundBarChartRodData(
+                    show: true, color: Colors.black12, toY: 16)),
           ],
         ),
       );
@@ -197,10 +242,9 @@ class CustomerResponseTimesChart extends StatelessWidget {
     });
     return responseTimes.isNotEmpty
         ? responseTimes
-        .map((e) => e.seconds)
-        .reduce((value, element) => value! + element!)! /
-        responseTimes.length /
-        60
+                .map((e) => e.seconds)
+                .reduce((value, element) => value! + element!)! /
+            responseTimes.length
         : 0;
   }
 
@@ -218,11 +262,21 @@ class CustomerResponseTimesChart extends StatelessWidget {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: "Waktu respon: " +
-                      getResponseTime(response.statistics![groupIndex])
+                  // text: "Waktu respon: " +
+                  //     getResponseTime(response.statistics![groupIndex])
+                  //         .round()
+                  //         .toString() +
+                  //     " menit",
+                  text: (getResponseTime(response.statistics![groupIndex]) / 60)
+                          .floor()
+                          .toString() +
+                      " menit\n" +
+                      ((getResponseTime(response.statistics![groupIndex]) ??
+                                  0) %
+                              60)
                           .round()
                           .toString() +
-                      " menit",
+                      " detik",
                   style: const TextStyle(color: Colors.greenAccent),
                 ),
               ]);
@@ -236,8 +290,8 @@ double limitY(double value) {
   return value > 16 ? 16 : value;
 }
 
-class AgentStatisticsCustomerChart extends StatelessWidget {
-  const AgentStatisticsCustomerChart({Key? key}) : super(key: key);
+class DailyResponseTimeCustomerChart extends StatelessWidget {
+  const DailyResponseTimeCustomerChart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -272,10 +326,10 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
                   ),
                 ),
                 leftTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: true, interval: 2),
+                  sideTitles: SideTitles(showTitles: true, interval: 5),
                 ),
               ),
-              gridData: FlGridData(show: false),
+                gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
               maxY: 16,
               borderData: FlBorderData(show: false),
               barTouchData: makeTouchData(provider.statistics!),
@@ -290,10 +344,18 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
     List<BarChartGroupData> barData = [];
 
     statistics.dailyReport!.asMap().forEach((index, element) {
+      print(element.average);
       barData.add(BarChartGroupData(
         x: index,
         barRods: [
-          BarChartRodData(toY: (element.average ?? 0) / 60),
+          BarChartRodData(
+            toY: limitY((element.average ?? 0) / 60),
+            backDrawRodData: BackgroundBarChartRodData(
+              toY: 16,
+              show: true,
+              color: Colors.black12,
+            ),
+          ),
         ],
       ));
     });
@@ -306,14 +368,14 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
         tooltipBgColor: Colors.blueGrey,
         getTooltipItem: (group, groupIndex, rod, rodIndex) {
           return BarTooltipItem(
-            ((statistics.dailyReport![groupIndex].average ?? 0) / 60)
+            ((statistics.dailyReport?[groupIndex].average ?? 0) / 60)
                     .floor()
                     .toString() +
                 " menit\n" +
-                ((statistics.dailyReport![groupIndex].average ?? 0) % 60)
+                ((statistics.dailyReport?[groupIndex].average ?? 0) % 60)
                     .round()
                     .toString() +
-                " detik\n",
+                " detik",
             const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -326,8 +388,8 @@ class AgentStatisticsCustomerChart extends StatelessWidget {
   }
 }
 
-class AgentCustomerDailyChart extends StatelessWidget {
-  const AgentCustomerDailyChart({Key? key}) : super(key: key);
+class ResponseTimePerQuestionChart extends StatelessWidget {
+  const ResponseTimePerQuestionChart({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -350,10 +412,10 @@ class AgentCustomerDailyChart extends StatelessWidget {
                 sideTitles: SideTitles(showTitles: false),
               ),
               leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, interval: 2),
+                sideTitles: SideTitles(showTitles: true, interval: 5),
               ),
             ),
-            gridData: FlGridData(show: false),
+              gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
             borderData: FlBorderData(show: false),
             maxY: 16,
             barTouchData: makeTouchData(provider.dailyReport!.responseTimes!),
@@ -410,10 +472,16 @@ class AgentCustomerDailyChart extends StatelessWidget {
           x: key,
           barRods: [
             BarChartRodData(
-                toY: (value.seconds ?? 0) / 60,
-                color: (value.seconds ?? 0) / 60 > 10
-                    ? Colors.redAccent
-                    : Colors.greenAccent),
+              toY: limitY((value.seconds ?? 0) / 60),
+              color: (value.seconds ?? 0) / 60 > 10
+                  ? Colors.redAccent
+                  : Colors.greenAccent,
+              backDrawRodData: BackgroundBarChartRodData(
+                color: Colors.black12,
+                show: true,
+                toY: 16,
+              ),
+            ),
           ],
         ),
       );

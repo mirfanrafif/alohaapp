@@ -266,12 +266,12 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Card(
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  child: const AgentStatisticsCustomerChart(),
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: DailyResponseTimeCustomerChart(),
                 ),
               ),
             ),
@@ -395,7 +395,8 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                             )
                           ],
                         ),
-                        const AgentCustomerDailyChart(),
+                        const SizedBox(height: 16,),
+                        const ResponseTimePerQuestionChart(),
                         const SizedBox(
                           height: 12,
                         ),
@@ -429,7 +430,7 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
   }
 
   getMinuteSecond(int time) {
-    var minutes = (time / 60).round();
+    var minutes = (time / 60).floor();
     var seconds = time % 60;
 
     return "$minutes menit\n$seconds detik";
