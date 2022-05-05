@@ -1,4 +1,3 @@
-import 'package:aloha/components/widgets/agents/customer_daily_chart.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:aloha/data/response/statistics.dart';
 import 'package:flutter/material.dart';
@@ -11,9 +10,7 @@ class AgentStatistics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: const AgentStatisticsContent(),
-    );
+    return const AgentStatisticsContent();
   }
 }
 
@@ -115,7 +112,8 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                   "Jumlah pesan tidak/telat terjawab",
                                   textAlign: TextAlign.center,
                                 ),
-                                getUnreadMessageSales(provider.statisticsResponse)
+                                getUnreadMessageSales(
+                                    provider.statisticsResponse)
                               ],
                             ),
                           ),
@@ -137,7 +135,9 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                           response: provider.statisticsResponse!),
                       const SizedBox(height: 24),
                       const Text("Customer yang belum dijawab:"),
-                      const SizedBox(height: 16,),
+                      const SizedBox(
+                        height: 16,
+                      ),
                       ...getUnreadCustomer(
                           provider.statisticsResponse!.statistics!),
                       const SizedBox(height: 16),
@@ -252,7 +252,8 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                             Text(
                               provider.statistics?.dailyReport
                                       ?.map((e) => e.responseTimes!.length)
-                                      .reduce((value, element) => value + element)
+                                      .reduce(
+                                          (value, element) => value + element)
                                       .toString() ??
                                   "",
                               style: const TextStyle(
@@ -360,7 +361,8 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                                     height: 8,
                                   ),
                                   Text(
-                                    getMinuteSecond(provider.dailyReport?.average
+                                    getMinuteSecond(provider
+                                                .dailyReport?.average
                                                 ?.floor() ??
                                             0) ??
                                         "",
@@ -395,7 +397,9 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                             )
                           ],
                         ),
-                        const SizedBox(height: 16,),
+                        const SizedBox(
+                          height: 16,
+                        ),
                         const ResponseTimePerQuestionChart(),
                         const SizedBox(
                           height: 12,

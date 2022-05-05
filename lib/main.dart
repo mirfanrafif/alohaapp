@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         title: 'Aloha',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
+          primarySwatch: Colors.orange,
           textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
         ),
         home: Consumer<UserProvider>(

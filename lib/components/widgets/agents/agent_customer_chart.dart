@@ -29,7 +29,7 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
               Container(
                 width: (response.statistics!.length * 40) + 50,
                 height: 300,
-                padding: EdgeInsets.only(top: 10),
+                padding: const EdgeInsets.only(top: 10),
                 child: BarChart(
                   BarChartData(
                     barGroups: makeGroups(response),
@@ -45,9 +45,10 @@ class CustomerUnreadMessagesChart extends StatelessWidget {
                           sideTitles: SideTitles(
                               showTitles: true,
                               getTitlesWidget: (index, meta) {
-                                return Text(
-                                    response.statistics?[index.toInt()].id.toString() ??
-                                        "");
+                                return Text(response
+                                        .statistics?[index.toInt()].id
+                                        .toString() ??
+                                    "");
                               }),
                         ),
                         leftTitles: AxisTitles(
@@ -198,11 +199,13 @@ class CustomerResponseTimesChart extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (index, meta) {
                         return Text(
-                            response.statistics?[index.toInt()].id.toString() ?? "");
+                            response.statistics?[index.toInt()].id.toString() ??
+                                "");
                       }),
                 ),
               ),
-              gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
+              gridData: FlGridData(
+                  show: true, drawVerticalLine: false, horizontalInterval: 5),
               borderData: FlBorderData(show: false),
               barTouchData: makeTouchData(),
               maxY: 16,
@@ -271,9 +274,7 @@ class CustomerResponseTimesChart extends StatelessWidget {
                           .floor()
                           .toString() +
                       " menit\n" +
-                      ((getResponseTime(response.statistics![groupIndex]) ??
-                                  0) %
-                              60)
+                      ((getResponseTime(response.statistics![groupIndex])) % 60)
                           .round()
                           .toString() +
                       " detik",
@@ -329,7 +330,8 @@ class DailyResponseTimeCustomerChart extends StatelessWidget {
                   sideTitles: SideTitles(showTitles: true, interval: 5),
                 ),
               ),
-                gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
+              gridData: FlGridData(
+                  show: true, drawVerticalLine: false, horizontalInterval: 5),
               maxY: 16,
               borderData: FlBorderData(show: false),
               barTouchData: makeTouchData(provider.statistics!),
@@ -344,7 +346,6 @@ class DailyResponseTimeCustomerChart extends StatelessWidget {
     List<BarChartGroupData> barData = [];
 
     statistics.dailyReport!.asMap().forEach((index, element) {
-      print(element.average);
       barData.add(BarChartGroupData(
         x: index,
         barRods: [
@@ -415,7 +416,8 @@ class ResponseTimePerQuestionChart extends StatelessWidget {
                 sideTitles: SideTitles(showTitles: true, interval: 5),
               ),
             ),
-              gridData: FlGridData(show: true, drawVerticalLine: false, horizontalInterval: 5),
+            gridData: FlGridData(
+                show: true, drawVerticalLine: false, horizontalInterval: 5),
             borderData: FlBorderData(show: false),
             maxY: 16,
             barTouchData: makeTouchData(provider.dailyReport!.responseTimes!),

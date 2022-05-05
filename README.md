@@ -1,6 +1,11 @@
-# aloha
+# Aloha
 
-A new Flutter project.
+Aplikasi chat untuk menjembatani antara sales dengan customer. Dibuat menggunakan Flutter dan beberapa dependensi pendukung seperti:
+
+- Socket.IO (Untuk menerima chat secara realtime)
+- Pinch Zoom (Untuk memperbesar foto jika dijepit)
+- Url Launch (Untuk membuka link file ke browser)
+- Http (Untuk mengonsumsi REST API)
 
 ## Getting Started
 
