@@ -127,12 +127,16 @@ class MessageProvider extends ChangeNotifier {
 
   void mapContactToCustomerMessage(List<Contact> contactList) {
     for (var contact in contactList) {
-      _customerMessage.add(CustomerMessage(
-        agents: contact.agent,
-        customer: contact.customer,
-        message: contact.lastMessage != null ? [contact.lastMessage!] : [],
-        unread: contact.unread,
-      ));
+      if (_customerMessage.indexWhere(
+              (element) => element.customer.id == contact.customer.id) ==
+          -1) {
+        _customerMessage.add(CustomerMessage(
+          agents: contact.agent,
+          customer: contact.customer,
+          message: contact.lastMessage != null ? [contact.lastMessage!] : [],
+          unread: contact.unread,
+        ));
+      }
     }
     sorting();
     notifyListeners();
