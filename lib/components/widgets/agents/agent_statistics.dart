@@ -434,10 +434,9 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
   }
 
   getMinuteSecond(int time) {
-    var minutes = (time / 60).floor();
-    var seconds = time % 60;
+    var minutes = (time / 60).round();
 
-    return "$minutes menit\n$seconds detik";
+    return "$minutes menit";
   }
 
   Widget getUnreadMessageSales(StatisticsResponse? response) {

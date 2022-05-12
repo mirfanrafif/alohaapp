@@ -265,11 +265,6 @@ class CustomerResponseTimesChart extends StatelessWidget {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  // text: "Waktu respon: " +
-                  //     getResponseTime(response.statistics![groupIndex])
-                  //         .round()
-                  //         .toString() +
-                  //     " menit",
                   text: (getResponseTime(response.statistics![groupIndex]) / 60)
                           .floor()
                           .toString() +

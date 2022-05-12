@@ -67,8 +67,8 @@ class _ChatVideoState extends State<ChatVideo> {
                         content: Text('Could not launch $_url')));
                   }
                 },
-                icon: Icon(
-                  _controller.value.isPlaying ? Icons.pause : Icons.download,
+                icon: const Icon(
+                  Icons.download,
                   color: Colors.white,
                 ),
               ))
