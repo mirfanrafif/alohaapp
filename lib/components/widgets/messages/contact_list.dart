@@ -53,7 +53,6 @@ class _ContactListState extends State<ContactList> {
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(
       builder: (context, provider, child) {
-        var customerMessage = provider.getCustomerMessage();
         return Column(
           children: [
             Padding(
@@ -69,12 +68,12 @@ class _ContactListState extends State<ContactList> {
               ),
             ),
             Expanded(
-              child: customerMessage.isNotEmpty
+              child: provider.customerMessage.isNotEmpty
                   ? ListView.builder(
                       itemBuilder: (context, index) => ContactItem(
-                        customerMessage: customerMessage[index],
+                        customerMessage: provider.customerMessage[index],
                       ),
-                      itemCount: customerMessage.length,
+                      itemCount: provider.customerMessage.length,
                     )
                   : const Center(
                       child: CircularProgressIndicator(),
