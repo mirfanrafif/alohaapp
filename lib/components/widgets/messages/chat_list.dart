@@ -68,16 +68,20 @@ class _ChatListState extends State<ChatList> {
                       var next = messages[index + 1];
                       var current = messages[index];
 
-                      var currentDate = DateTime(current.createdAt!.year,
-                          current.createdAt!.month, current.createdAt!.day);
-                      var nextDate = DateTime(next.createdAt!.year,
-                          next.createdAt!.month, next.createdAt!.day);
+                      var currentDate = DateTime(
+                          current.createdAt!.toLocal().year,
+                          current.createdAt!.toLocal().month,
+                          current.createdAt!.toLocal().day);
+                      var nextDate = DateTime(
+                          next.createdAt!.toLocal().year,
+                          next.createdAt!.toLocal().month,
+                          next.createdAt!.toLocal().day);
                       //compare date
                       if (currentDate.compareTo(nextDate) == 1) {
                         return Chip(
                             backgroundColor: Colors.amber.shade100,
                             label: Text(
-                                '${current.createdAt!.day}/${current.createdAt!.month}/${current.createdAt!.year}'));
+                                '${currentDate.day}/${currentDate.month}/${currentDate.year}'));
                       } else {
                         return const SizedBox(
                           width: 0,

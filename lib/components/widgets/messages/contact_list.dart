@@ -6,7 +6,8 @@ import '../../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
 class ContactList extends StatefulWidget {
-  const ContactList({Key? key}) : super(key: key);
+  Function(String) setTitle;
+  ContactList({Key? key, required this.setTitle}) : super(key: key);
 
   @override
   State<ContactList> createState() => _ContactListState();
@@ -52,6 +53,7 @@ class _ContactListState extends State<ContactList> {
   Widget build(BuildContext context) {
     return Consumer<MessageProvider>(
       builder: (context, provider, child) {
+        var customerMessage = provider.getCustomerMessage();
         return Column(
           children: [
             Padding(
@@ -67,12 +69,12 @@ class _ContactListState extends State<ContactList> {
               ),
             ),
             Expanded(
-              child: provider.customerMessage.isNotEmpty
+              child: customerMessage.isNotEmpty
                   ? ListView.builder(
                       itemBuilder: (context, index) => ContactItem(
-                        customerMessage: provider.customerMessage[index],
+                        customerMessage: customerMessage[index],
                       ),
-                      itemCount: provider.customerMessage.length,
+                      itemCount: customerMessage.length,
                     )
                   : const Center(
                       child: CircularProgressIndicator(),

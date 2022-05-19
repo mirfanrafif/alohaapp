@@ -66,7 +66,8 @@ class ChatItem extends StatelessWidget {
                     children: [
                       Text(
                         message.createdAt != null
-                            ? DateFormat("Hm").format(message.createdAt!)
+                            ? DateFormat("Hm")
+                                .format(message.createdAt!.toLocal())
                             : "",
                         style: const TextStyle(
                             fontSize: 12, color: Colors.black54),

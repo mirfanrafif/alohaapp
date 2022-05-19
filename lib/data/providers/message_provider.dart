@@ -30,8 +30,23 @@ class MessageProvider extends ChangeNotifier {
       MessageTemplateService();
   late Socket socketClient;
 
-  List<CustomerMessage> get customerMessage =>
-      List.unmodifiable(_customerMessage);
+  bool _showUnreadOnly = false;
+
+  set showUnreadOnly(bool newValue) {
+    _showUnreadOnly = newValue;
+    notifyListeners();
+  }
+
+  bool get showUnreadOnly => _showUnreadOnly;
+
+  List<CustomerMessage> getCustomerMessage() {
+    var unreadMessagesOnlyContact = [..._customerMessage]
+      ..removeWhere((element) => element.unread == 0);
+    List<CustomerMessage> customerMessage = _showUnreadOnly
+        ? List.unmodifiable(unreadMessagesOnlyContact)
+        : List.unmodifiable(_customerMessage);
+    return customerMessage;
+  }
 
   String _token = "";
   int _id = 0;
@@ -49,7 +64,7 @@ class MessageProvider extends ChangeNotifier {
 
   CustomerMessage getSelectedCustomer() {
     var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
-    return customerMessage[customerIndex];
+    return _customerMessage[customerIndex];
   }
 
   late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -122,7 +137,7 @@ class MessageProvider extends ChangeNotifier {
 
   bool getIsAllLoaded(int customerId) {
     var index = findCustomerIndexById(customerId);
-    return customerMessage[index].allLoaded;
+    return _customerMessage[index].allLoaded;
   }
 
   void mapContactToCustomerMessage(List<Contact> contactList) {
@@ -203,21 +218,21 @@ class MessageProvider extends ChangeNotifier {
       ];
     } else {
       //mencari index pesan
-      var messageIndex = customerMessage[customerIndex]
+      var messageIndex = _customerMessage[customerIndex]
           .message
           .indexWhere((element) => element.id == incomingMessage.id);
       if (messageIndex == -1) {
         //menerima pesan baru
-        customerMessage[customerIndex].message = [
+        _customerMessage[customerIndex].message = [
           incomingMessage,
-          ...customerMessage[customerIndex].message
+          ..._customerMessage[customerIndex].message
         ];
 
         //update unread nya
         if (incomingMessage.fromMe) {
-          customerMessage[customerIndex].unread = 0;
+          _customerMessage[customerIndex].unread = 0;
         } else {
-          customerMessage[customerIndex].unread++;
+          _customerMessage[customerIndex].unread++;
 
           //kirim notifikasi jika ada chat dari customer
           const AndroidNotificationDetails androidPlatformChannelSpecifics =
@@ -237,7 +252,7 @@ class MessageProvider extends ChangeNotifier {
         }
       } else {
         //bagian ini cuma buat update tracking
-        customerMessage[customerIndex].message[messageIndex].status =
+        _customerMessage[customerIndex].message[messageIndex].status =
             incomingMessage.status;
       }
     }
@@ -276,19 +291,19 @@ class MessageProvider extends ChangeNotifier {
   void addPreviousMessage(List<MessageEntity> messages) {
     var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
     for (var item in messages) {
-      var sameId = customerMessage[customerIndex]
+      var sameId = _customerMessage[customerIndex]
           .message
           .indexWhere((element) => element.id == item.id);
       if (sameId == -1) {
-        customerMessage[customerIndex].message.add(item);
+        _customerMessage[customerIndex].message.add(item);
       }
     }
   }
 
   void getPastMessages({bool loadMore = false}) async {
     var customerIndex = findCustomerIndexById(_selectedCustomerId ?? 0);
-    var messages = customerMessage[customerIndex].message;
-    if (customerMessage[customerIndex].allLoaded) {
+    var messages = _customerMessage[customerIndex].message;
+    if (_customerMessage[customerIndex].allLoaded) {
       return;
     }
     if (messages.isNotEmpty) {
@@ -303,7 +318,7 @@ class MessageProvider extends ChangeNotifier {
       if (response.isNotEmpty) {
         addPreviousMessage(response);
       } else {
-        customerMessage[customerIndex].allLoaded = true;
+        _customerMessage[customerIndex].allLoaded = true;
       }
       chatLoading = false;
       notifyListeners();
@@ -517,7 +532,7 @@ class MessageProvider extends ChangeNotifier {
     if (response.success) {
       var customerIndex =
           findCustomerIndexById(getSelectedCustomer().customer.id);
-      customerMessage[customerIndex].agents.add(response.data!.data!.agent!);
+      _customerMessage[customerIndex].agents.add(response.data!.data!.agent!);
     }
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
@@ -535,7 +550,7 @@ class MessageProvider extends ChangeNotifier {
     if (response.success) {
       var customerIndex =
           findCustomerIndexById(getSelectedCustomer().customer.id);
-      customerMessage[customerIndex].agents.removeWhere(
+      _customerMessage[customerIndex].agents.removeWhere(
           (element) => element.id == response.data!.data!.agent!.id);
     }
     ScaffoldMessenger.of(context)

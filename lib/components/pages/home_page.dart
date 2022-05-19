@@ -40,6 +40,12 @@ class _HomePageState extends State<HomePage> {
     _provider = Provider.of<UserProvider>(context, listen: false);
   }
 
+  setTitle(String newTitle) {
+    setState(() {
+      _title = newTitle;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
@@ -209,7 +215,9 @@ class _HomePageState extends State<HomePage> {
   Widget getBody() {
     switch (_selectedIndex) {
       case _pesanLabel:
-        return const ContactList();
+        return ContactList(
+          setTitle: setTitle,
+        );
       case _salesLabel:
         return const SalesList();
       case _jobLabel:
