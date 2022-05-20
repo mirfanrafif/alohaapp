@@ -101,8 +101,7 @@ class MessageService {
             data: data.data,
             message: 'Success sending video to customer');
       } else {
-        var data = ApiErrorResponse.fromJson(jsonDecode(response));
-        return ApiResponse(success: false, data: null, message: data.message);
+        return ApiResponse(success: false, data: null, message: response);
       }
     } catch (e) {
       return ApiResponse(success: false, data: null, message: e.toString());
@@ -167,7 +166,7 @@ class MessageService {
     }
   }
 
-  Future<List<MessageEntity>> sendDocument(
+  Future<ApiResponse<List<MessageEntity>>> sendDocument(
       {required File file,
       required String customerNumber,
       required String token}) async {
@@ -189,12 +188,19 @@ class MessageService {
       var response = utf8.decode(responseBytes.toList());
       if (streamedResponse.statusCode < 400) {
         var data = messageResponseFromJson(response);
-        return data.data;
+        return ApiResponse(
+            success: true, data: data.data, message: 'Sukses mengirim dokumen');
       } else {
-        return [];
+        return ApiResponse(
+            success: false,
+            data: [],
+            message: 'Gagal mengirim pesan: ' + response);
       }
     } catch (e) {
-      return [];
+      return ApiResponse(
+          success: false,
+          data: [],
+          message: 'Gagal mengirim pesan: ' + e.toString());
     }
   }
 

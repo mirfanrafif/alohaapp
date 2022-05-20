@@ -332,13 +332,29 @@ class MessageProvider extends ChangeNotifier {
         .indexWhere((element) => element.customer.id == customerId);
   }
 
-  void sendMessage({required String customerNumber, required String message}) {
-    _messageService.sendMessage(
+  Future<void> sendMessage(
+      {required String customerNumber, required String message}) async {
+    var response = await _messageService.sendMessage(
         customerNumber: customerNumber, message: message, token: _token);
+
+    if (response.isNotEmpty) {
+      var currentIndex = findCustomerIndexById(response.first.customer.id);
+      var messageIndex = customerMessage[currentIndex]
+          .message
+          .indexWhere((element) => element.id == response.first.id);
+      if (messageIndex == -1) {
+        _customerMessage[currentIndex].message = [
+          response.first,
+          ..._customerMessage[currentIndex].message
+        ];
+      }
+    }
+    notifyListeners();
   }
 
-  void sendDocument({required File file, required String customerNumber}) {
-    _messageService.sendDocument(
+  Future<ApiResponse<List<MessageEntity>>> sendDocument(
+      {required File file, required String customerNumber}) async {
+    return await _messageService.sendDocument(
         file: file, customerNumber: customerNumber, token: _token);
   }
 

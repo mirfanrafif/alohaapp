@@ -82,12 +82,12 @@ class _ChatInputState extends State<ChatInput> {
                 width: 8,
               ),
               Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
                     Radius.circular(32),
                   ),
-                  color: Colors.green,
-                  boxShadow: [
+                  color: canSend ? Colors.green : Colors.grey,
+                  boxShadow: const [
                     BoxShadow(color: Colors.black12, blurRadius: 4),
                   ],
                 ),
@@ -105,6 +105,8 @@ class _ChatInputState extends State<ChatInput> {
       ),
     );
   }
+
+  bool canSend = true;
 
   InputBorder inputBorder = const OutlineInputBorder(
     borderSide: BorderSide(width: 3, color: Colors.black12),
@@ -233,17 +235,39 @@ class _ChatInputState extends State<ChatInput> {
       File file = File(result.files.single.path ?? "");
       //tutup bottom sheet
       Navigator.pop(context);
+      setState(() {
+        canSend = false;
+      });
 
-      provider.sendDocument(file: file, customerNumber: customer.phoneNumber);
+      provider
+          .sendDocument(file: file, customerNumber: customer.phoneNumber)
+          .then((value) {
+        if (!value.success) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(value.message),
+          ));
+        }
+        setState(() {
+          canSend = true;
+        });
+      });
     } else {
       // User canceled the picker
     }
   }
 
-  void sendMessage() {
-    Provider.of<MessageProvider>(context, listen: false).sendMessage(
-        customerNumber: customer.phoneNumber, message: chatController.text);
-    chatController.clear();
+  void sendMessage() async {
+    if (chatController.text.isNotEmpty && canSend) {
+      setState(() {
+        canSend = false;
+      });
+      await provider.sendMessage(
+          customerNumber: customer.phoneNumber, message: chatController.text);
+      chatController.clear();
+      setState(() {
+        canSend = true;
+      });
+    }
   }
 }
 

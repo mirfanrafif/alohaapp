@@ -31,6 +31,8 @@ class _SendImagePageState extends State<SendImagePage> {
 
   late VideoPlayerController _videoPlayerController;
 
+  bool isUploading = false;
+
   @override
   void initState() {
     super.initState();
@@ -78,45 +80,54 @@ class _SendImagePageState extends State<SendImagePage> {
         child: Column(
           children: [
             Expanded(
-              //jika file adalah video
-              child: widget.type == "video"
-                  //jika controller sudah di inisialisasi
-                  ? _videoPlayerController.value.isInitialized
-                      ? Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            AspectRatio(
-                              aspectRatio:
-                                  _videoPlayerController.value.aspectRatio,
-                              child: VideoPlayer(_videoPlayerController),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  _videoPlayerController.value.isPlaying
-                                      ? _videoPlayerController.pause()
-                                      : _videoPlayerController.play();
-                                });
-                              },
-                              icon: Icon(
-                                _videoPlayerController.value.isPlaying
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        )
-                      //jika belum maka return container
-                      : Container()
+                //jika file adalah video
+                child: Stack(
+              children: [
+                Center(
+                  child: widget.type == "video"
+                      //jika controller sudah di inisialisasi
+                      ? _videoPlayerController.value.isInitialized
+                          ? Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                AspectRatio(
+                                  aspectRatio:
+                                      _videoPlayerController.value.aspectRatio,
+                                  child: VideoPlayer(_videoPlayerController),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _videoPlayerController.value.isPlaying
+                                          ? _videoPlayerController.pause()
+                                          : _videoPlayerController.play();
+                                    });
+                                  },
+                                  icon: Icon(
+                                    _videoPlayerController.value.isPlaying
+                                        ? Icons.pause
+                                        : Icons.play_arrow,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            )
+                          //jika belum maka return container
+                          : Container()
 
-                  //jika file adalah gambar
-                  : Image(
-                      image: FileImage(
-                        File(widget.file.path),
-                      ),
-                    ),
-            ),
+                      //jika file adalah gambar
+                      : Image(
+                          image: FileImage(
+                            File(widget.file.path),
+                          ),
+                        ),
+                ),
+                if (isUploading)
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  )
+              ],
+            )),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(8),
@@ -168,6 +179,9 @@ class _SendImagePageState extends State<SendImagePage> {
   }
 
   void sendMessage() {
+    setState(() {
+      isUploading = true;
+    });
     provider
         .sendImage(
       file: widget.file,
@@ -176,6 +190,9 @@ class _SendImagePageState extends State<SendImagePage> {
       type: widget.type,
     )
         .then((response) {
+      setState(() {
+        isUploading = false;
+      });
       if (response.success) {
         Navigator.pop(context);
       } else {
