@@ -147,11 +147,28 @@ class MessageProvider extends ChangeNotifier {
     customerMessageWithEmptyChat
         .removeWhere((element) => element.message.isNotEmpty);
 
-    _customerMessage
+    List<CustomerMessage> customerMessageWithUnreadMessages = [
+      ..._customerMessage
+    ]
+      ..removeWhere((element) => element.unread == 0)
       ..removeWhere((element) => element.message.isEmpty)
-      ..sort(((a, b) => (b.message.first.createdAt?.millisecondsSinceEpoch ?? 0)
-          .compareTo((a.message.first.createdAt?.millisecondsSinceEpoch ?? 0))))
-      ..addAll(customerMessageWithEmptyChat);
+      ..sort((a, b) => b.message.first.createdAt!.millisecondsSinceEpoch
+          .compareTo(a.message.first.createdAt!.millisecondsSinceEpoch));
+
+    List<CustomerMessage> customerMessageNoUnreadMessages = [
+      ..._customerMessage
+    ]
+      ..removeWhere((element) => element.message.isEmpty)
+      ..removeWhere((element) => element.unread > 0)
+      ..sort((a, b) => b.message.first.createdAt!.millisecondsSinceEpoch
+          .compareTo(a.message.first.createdAt!.millisecondsSinceEpoch));
+
+    List<CustomerMessage> result = [];
+    result.addAll(customerMessageWithUnreadMessages);
+    result.addAll(customerMessageNoUnreadMessages);
+    result.addAll(customerMessageWithEmptyChat);
+
+    _customerMessage = result;
   }
 
   void logout() {

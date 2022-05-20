@@ -183,33 +183,45 @@ class CustomerResponseTimesChart extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           height: 300,
-          child: BarChart(
-            BarChartData(
-              barGroups: makeGroups(response),
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              SizedBox(
+                width: (response.statistics!.length * 25) + 50,
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    barGroups: makeGroups(response),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (index, meta) {
+                              return Text(response.statistics?[index.toInt()].id
+                                      .toString() ??
+                                  "");
+                            }),
+                      ),
+                    ),
+                    gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: 5),
+                    borderData: FlBorderData(show: false),
+                    barTouchData: makeTouchData(),
+                    maxY: 16,
+                    alignment: BarChartAlignment.center,
+                  ),
                 ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                      showTitles: true,
-                      getTitlesWidget: (index, meta) {
-                        return Text(
-                            response.statistics?[index.toInt()].id.toString() ??
-                                "");
-                      }),
-                ),
-              ),
-              gridData: FlGridData(
-                  show: true, drawVerticalLine: false, horizontalInterval: 5),
-              borderData: FlBorderData(show: false),
-              barTouchData: makeTouchData(),
-              maxY: 16,
-            ),
+              )
+            ],
           ),
         ),
       ],
@@ -302,35 +314,49 @@ class DailyResponseTimeCustomerChart extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           height: 300,
-          child: BarChart(
-            BarChartData(
-              barGroups: makeGroups(provider.statistics!),
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                topTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: false),
-                ),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (index, meta) => Text(
-                        provider.statistics!.dailyReport?[index.round()].date ??
-                            ""),
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              SizedBox(
+                width: (provider.statistics!.dailyReport!.length * 25) + 50,
+                height: 300,
+                child: BarChart(
+                  BarChartData(
+                    barGroups: makeGroups(provider.statistics!),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (index, meta) => Text(provider
+                                  .statistics!
+                                  .dailyReport?[index.round()]
+                                  .date ??
+                              ""),
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: true, interval: 5),
+                      ),
+                    ),
+                    gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: 5),
+                    maxY: 16,
+                    borderData: FlBorderData(show: false),
+                    barTouchData: makeTouchData(provider.statistics!),
+                    alignment: BarChartAlignment.center,
                   ),
                 ),
-                leftTitles: AxisTitles(
-                  sideTitles: SideTitles(showTitles: true, interval: 5),
-                ),
-              ),
-              gridData: FlGridData(
-                  show: true, drawVerticalLine: false, horizontalInterval: 5),
-              maxY: 16,
-              borderData: FlBorderData(show: false),
-              barTouchData: makeTouchData(provider.statistics!),
-            ),
+              )
+            ],
           ),
         ),
       ],
@@ -393,30 +419,42 @@ class ResponseTimePerQuestionChart extends StatelessWidget {
       builder: (context, provider, child) => SizedBox(
         width: double.infinity,
         height: 300,
-        child: BarChart(
-          BarChartData(
-            barGroups: makeGroups(provider.dailyReport!.responseTimes!),
-            titlesData: FlTitlesData(
-              show: true,
-              rightTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              topTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(showTitles: true, interval: 5),
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: [
+            SizedBox(
+              width: (provider.dailyReport!.responseTimes!.length * 25) + 50,
+              height: 300,
+              child: BarChart(
+                BarChartData(
+                  barGroups: makeGroups(provider.dailyReport!.responseTimes!),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: true, interval: 5),
+                    ),
+                  ),
+                  gridData: FlGridData(
+                      show: true,
+                      drawVerticalLine: false,
+                      horizontalInterval: 5),
+                  borderData: FlBorderData(show: false),
+                  maxY: 16,
+                  barTouchData:
+                      makeTouchData(provider.dailyReport!.responseTimes!),
+                ),
               ),
             ),
-            gridData: FlGridData(
-                show: true, drawVerticalLine: false, horizontalInterval: 5),
-            borderData: FlBorderData(show: false),
-            maxY: 16,
-            barTouchData: makeTouchData(provider.dailyReport!.responseTimes!),
-          ),
+          ],
         ),
       ),
     );
