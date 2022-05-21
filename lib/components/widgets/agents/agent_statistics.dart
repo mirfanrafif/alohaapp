@@ -42,6 +42,16 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
     });
   }
 
+  List<Widget> getNewCustomers(StatisticsResponse statisticsResponse) {
+    if (statisticsResponse.newCustomers!.isNotEmpty) {
+      return statisticsResponse.newCustomers!
+          .map((e) => Text("- " + e.name!))
+          .toList();
+    } else {
+      return [const Text("Tidak ada")];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<SalesProvider>(builder: (context, provider, child) {
@@ -136,14 +146,21 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                       const SizedBox(
                         height: 16,
                       ),
-                      const Text("Customer baru"),
-                      ...provider.statisticsResponse!.newCustomers!
-                          .map((e) => Text("- " + e.name!))
-                          .toList(),
+                      const Text(
+                        "Customer baru",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      ...getNewCustomers(provider.statisticsResponse!),
                       const SizedBox(height: 24),
-                      const Text("Customer yang belum dijawab:"),
-                      const SizedBox(
-                        height: 16,
+                      const Text(
+                        "Customer yang belum dijawab:",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       ...getUnreadCustomer(
                           provider.statisticsResponse!.statistics!),
