@@ -467,8 +467,9 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
     var unreadMessages =
         response?.statistics?.map((e) => e.allUnreadMessageCount);
 
-    var avgResponseTime =
-        unreadMessages!.reduce((value, element) => value! + element!)!;
+    var avgResponseTime = unreadMessages!.isNotEmpty
+        ? unreadMessages.reduce((value, element) => value! + element!)!
+        : 0;
 
     return Text(
       avgResponseTime.round().toString(),
