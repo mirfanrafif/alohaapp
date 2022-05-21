@@ -7,16 +7,19 @@ class StatisticsResponse {
   String? createdAt;
   String? updatedAt;
   List<Statistics>? statistics;
+  List<NewCustomer>? newCustomers;
 
-  StatisticsResponse(
-      {this.id,
-      this.fullName,
-      this.username,
-      this.email,
-      this.role,
-      this.createdAt,
-      this.updatedAt,
-      this.statistics});
+  StatisticsResponse({
+    this.id,
+    this.fullName,
+    this.username,
+    this.email,
+    this.role,
+    this.createdAt,
+    this.updatedAt,
+    this.statistics,
+    this.newCustomers,
+  });
 
   StatisticsResponse.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,6 +33,12 @@ class StatisticsResponse {
       statistics = <Statistics>[];
       json['statistics'].forEach((v) {
         statistics!.add(Statistics.fromJson(v));
+      });
+    }
+    if (json['newCustomers'] != null) {
+      newCustomers = [];
+      json['newCustomers'].forEach((customer) {
+        newCustomers!.add(NewCustomer.fromJson(customer));
       });
     }
   }
@@ -46,6 +55,35 @@ class StatisticsResponse {
     if (statistics != null) {
       data['statistics'] = statistics!.map((v) => v.toJson()).toList();
     }
+    return data;
+  }
+}
+
+class NewCustomer {
+  int? id;
+  String? name;
+  String? phoneNumber;
+  String? createdAt;
+  String? updatedAt;
+
+  NewCustomer(
+      {this.id, this.name, this.phoneNumber, this.createdAt, this.updatedAt});
+
+  NewCustomer.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    phoneNumber = json['phoneNumber'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    data['id'] = id;
+    data['name'] = name;
+    data['phoneNumber'] = phoneNumber;
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

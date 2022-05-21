@@ -133,6 +133,13 @@ class _AgentStatisticsContentState extends State<AgentStatisticsContent> {
                       const SizedBox(height: 16),
                       CustomerUnreadMessagesChart(
                           response: provider.statisticsResponse!),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      const Text("Customer baru"),
+                      ...provider.statisticsResponse!.newCustomers!
+                          .map((e) => Text("- " + e.name!))
+                          .toList(),
                       const SizedBox(height: 24),
                       const Text("Customer yang belum dijawab:"),
                       const SizedBox(
