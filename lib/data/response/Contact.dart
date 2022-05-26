@@ -47,17 +47,28 @@ class Contact {
   MessageEntity? lastMessage;
   DateTime updatedAt;
 
-  factory Contact.fromJson(Map<String, dynamic> json) => Contact(
-        id: json["id"],
-        customer: Customer.fromJson(json["customer"]),
-        createdAt: DateTime.parse(json["created_at"]),
-        unread: json['unread'],
-        agent: List<User>.from(json["agent"].map((x) => User.fromJson(x))),
-        lastMessage: json["lastMessage"] != null
-            ? MessageEntity.fromJson(json["lastMessage"])
-            : null,
-        updatedAt: DateTime.parse(json["updated_at"]),
-      );
+  factory Contact.fromJson(Map<String, dynamic> json) {
+    List<User> agentList = [];
+    List<dynamic> agents = List.from(json['agent']);
+
+    for (var element in agents) {
+      if (element != null) {
+        agentList.add(User.fromJson(element));
+      }
+    }
+
+    return Contact(
+      id: json["id"],
+      customer: Customer.fromJson(json["customer"]),
+      createdAt: DateTime.parse(json["created_at"]),
+      unread: json['unread'],
+      agent: agentList,
+      lastMessage: json["lastMessage"] != null
+          ? MessageEntity.fromJson(json["lastMessage"])
+          : null,
+      updatedAt: DateTime.parse(json["updated_at"]),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "id": id,

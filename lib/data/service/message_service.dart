@@ -33,20 +33,14 @@ class MessageService {
 
   Future<ApiResponse<List<Contact>>> getAllContact(
       String token, String search) async {
-    try {
-      var response = await get(
-          Uri.https(baseUrl, "/message", {'search': search}),
-          headers: {'Authorization': 'Bearer $token'});
-      if (response.statusCode < 400) {
-        var data = ContactResponse.fromJson(jsonDecode(response.body));
-        return ApiResponse(
-            success: true, data: data.data, message: data.message);
-      } else {
-        var data = ApiErrorResponse.fromJson(jsonDecode(response.body));
-        return ApiResponse(success: false, data: [], message: data.message);
-      }
-    } catch (e) {
-      return ApiResponse(success: false, data: [], message: e.toString());
+    var response = await get(Uri.https(baseUrl, "/message", {'search': search}),
+        headers: {'Authorization': 'Bearer $token'});
+    if (response.statusCode < 400) {
+      var data = ContactResponse.fromJson(jsonDecode(response.body));
+      return ApiResponse(success: true, data: data.data, message: data.message);
+    } else {
+      var data = ApiErrorResponse.fromJson(jsonDecode(response.body));
+      return ApiResponse(success: false, data: [], message: data.message);
     }
   }
 
