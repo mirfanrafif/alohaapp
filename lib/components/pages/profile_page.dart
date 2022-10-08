@@ -1,5 +1,7 @@
+import 'package:aloha/components/widgets/button.dart';
 import 'package:aloha/components/widgets/profile_picture.dart';
 import 'package:aloha/data/providers/user_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -79,27 +81,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   height: 24,
                 ),
                 TextField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Nama",
-                    ),
+                    decoration: alohaInputDecoration("Nama"),
                     controller: _nameController),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    child: const Text("Simpan"),
-                    onPressed: () async {
-                      var response =
-                          await value.updateUser(_nameController.text);
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          content: Text(response.message)));
-                    },
-                  ),
-                ),
+                height16,
+                alohaButton("Simpan", () async {
+                  var response = await value.updateUser(_nameController.text);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      content: Text(response.message)));
+                }),
                 const SizedBox(
                   height: 60,
                 ),

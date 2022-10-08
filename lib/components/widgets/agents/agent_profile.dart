@@ -1,3 +1,5 @@
+import 'package:aloha/components/widgets/button.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -13,17 +15,15 @@ class AgentProfile extends StatefulWidget {
 class _AgentProfileState extends State<AgentProfile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      child: ListView(
-        children: const [
-          SalesEditForm(),
-          SizedBox(
-            height: 16,
-          ),
-          SalesJobDropdown()
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: const [
+        SalesEditForm(),
+        SizedBox(
+          height: 16,
+        ),
+        SalesJobDropdown()
+      ],
     );
   }
 }
@@ -63,7 +63,9 @@ class _SalesEditFormState extends State<SalesEditForm> {
   @override
   Widget build(BuildContext context) {
     return Consumer<SalesProvider>(
-      builder: (context, value, child) => Card(
+      builder: (context, providerValue, child) => Container(
+        decoration:
+            const BoxDecoration(color: Colors.white, borderRadius: alohaRadius),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: SizedBox(
@@ -76,91 +78,87 @@ class _SalesEditFormState extends State<SalesEditForm> {
                   style: TextStyle(fontSize: 24),
                 ),
                 const SizedBox(
-                  height: 16,
+                  height: 24,
                 ),
                 TextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: "Nama"),
+                  decoration: alohaInputDecoration("Nama"),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                height16,
                 TextField(
                   controller: _usernameController,
-                  decoration: const InputDecoration(labelText: "Username"),
+                  decoration: alohaInputDecoration("Username"),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
+                height16,
                 TextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
+                  decoration: alohaInputDecoration("Email"),
                 ),
-                const SizedBox(
-                  height: 8,
-                ),
-                DropdownButton<String>(
-                    isExpanded: true,
-                    value: provider.selectedAgent?.role,
-                    items: const [
-                      DropdownMenuItem(
-                        child: Text('Admin'),
-                        value: 'admin',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Sales'),
-                        value: 'agent',
-                      ),
-                    ],
-                    onChanged: (newValue) {
-                      if (newValue != null) {
-                        showDialog(
+                height16,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    color: alohaInputColor,
+                  ),
+                  child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: provider.selectedAgent?.role,
+                      underline: const SizedBox(),
+                      borderRadius: BorderRadius.circular(16),
+                      items: const [
+                        DropdownMenuItem(
+                          child: Text('Admin'),
+                          value: 'admin',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Sales'),
+                          value: 'agent',
+                        ),
+                      ],
+                      onChanged: (newValue) {
+                        if (newValue != null) {
+                          showDialog(
                             context: context,
                             builder: (context) => AlertDialog(
-                                  content: const Text(
-                                      'Apakah anda yakin ingin mengubah role?'),
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          provider
-                                              .setSelectedAgentRole(newValue);
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Ya')),
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Batal')),
-                                  ],
-                                ));
-                      }
-                    }),
-                const SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      value
-                          .updateAgents(_nameController.text,
-                              _usernameController.text, _emailController.text)
-                          .then((value) {
-                        if (value.success) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(value.message)));
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              content: Text(value.message)));
+                              content: const Text(
+                                  'Apakah anda yakin ingin mengubah role?'),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      provider.setSelectedAgentRole(newValue);
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Ya')),
+                                TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Text('Batal')),
+                              ],
+                            ),
+                          );
                         }
-                      });
-                    },
-                    child: const Text('Simpan'),
-                  ),
+                      }),
                 ),
+                height16,
+                alohaButton("Simpan", () {
+                  providerValue
+                      .updateAgents(_nameController.text,
+                          _usernameController.text, _emailController.text)
+                      .then((value) {
+                    if (value.success) {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(value.message)));
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          content: Text(value.message)));
+                    }
+                  });
+                }),
                 const SizedBox(
                   height: 32,
                 ),
@@ -319,7 +317,9 @@ class _SalesJobDropdownState extends State<SalesJobDropdown> {
       builder: (context, provider, child) {
         var jobs = provider.selectedAgentJob;
 
-        return Card(
+        return Container(
+          decoration: const BoxDecoration(
+              color: Colors.white, borderRadius: alohaRadius),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

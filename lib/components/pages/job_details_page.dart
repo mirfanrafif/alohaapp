@@ -1,5 +1,7 @@
+import 'package:aloha/components/widgets/button.dart';
 import 'package:aloha/data/providers/job_provider.dart';
 import 'package:aloha/data/response/job.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,67 +37,58 @@ class _JobDetailsPageState extends State<JobDetailsPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Card(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    width: double.infinity,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Job Form",
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w500),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: "Nama",
-                            contentPadding: EdgeInsets.all(8),
-                          ),
-                          controller: _namaController,
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        TextField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              contentPadding: EdgeInsets.all(8),
-                              labelText: "Deskripsi"),
-                          minLines: 1,
-                          maxLines: 3,
-                          controller: _descController,
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              var response = await value.saveJob(
-                                  _namaController.text,
-                                  _descController.text,
-                                  widget.job?.id);
-                              if (response.success) {
-                                Navigator.pop(context);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        behavior: SnackBarBehavior.floating,
-                                        content: Text(response.message)));
-                              }
-                            },
-                            child: const Text("Simpan"),
-                          ),
-                        )
-                      ],
-                    ),
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: alohaRadius,
+                  ),
+                  padding: const EdgeInsets.all(16),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Job Form",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w500),
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        decoration: alohaInputDecoration("Nama Job"),
+                        controller: _namaController,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      TextField(
+                        decoration: alohaInputDecoration("Deskripsi"),
+                        minLines: 1,
+                        maxLines: 3,
+                        controller: _descController,
+                      ),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: alohaButton("Simpan", () async {
+                          var response = await value.saveJob(
+                              _namaController.text,
+                              _descController.text,
+                              widget.job?.id);
+                          if (response.success) {
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                content: Text(response.message)));
+                          }
+                        }),
+                      )
+                    ],
                   ),
                 ),
               ],

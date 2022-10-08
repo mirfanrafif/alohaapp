@@ -1,4 +1,6 @@
+import 'package:aloha/components/widgets/button.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +34,9 @@ class _AddSalesPageState extends State<AddSalesPage> {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Card(
+            child: Container(
+              decoration: const BoxDecoration(
+                  color: Colors.white, borderRadius: alohaRadius),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: SizedBox(
@@ -44,34 +48,45 @@ class _AddSalesPageState extends State<AddSalesPage> {
                         "Data diri",
                         style: TextStyle(fontSize: 24),
                       ),
+                      const SizedBox(
+                        height: 24,
+                      ),
                       TextField(
                         controller: _nameController,
-                        decoration: const InputDecoration(labelText: "Nama"),
+                        decoration: alohaInputDecoration("Nama"),
                       ),
+                      height16,
                       TextField(
                         controller: _usernameController,
-                        decoration: const InputDecoration(
-                          labelText: "Username",
-                        ),
+                        decoration: alohaInputDecoration("Username"),
                       ),
+                      height16,
                       TextField(
                         controller: _emailController,
-                        decoration: const InputDecoration(labelText: "Email"),
+                        decoration: alohaInputDecoration("Email"),
                       ),
+                      height16,
                       TextField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(
-                          labelText: "Password",
-                        ),
+                        decoration: alohaInputDecoration("Password"),
                       ),
+                      height16,
+                      const Text("Role"),
                       const SizedBox(
                         height: 8,
                       ),
-                      const Text("Role"),
-                      DropdownButton<String>(
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 4),
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                          color: alohaInputColor,
+                        ),
+                        child: DropdownButton<String>(
                           isExpanded: true,
                           value: _selectedRole,
+                          underline: const SizedBox(),
                           items: const [
                             DropdownMenuItem(
                               child: Text('Admin'),
@@ -85,54 +100,52 @@ class _AddSalesPageState extends State<AddSalesPage> {
                           onChanged: (newValue) {
                             if (newValue != null) {
                               showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                        content: const Text(
-                                            'Apakah anda yakin ingin mengubah role?'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  _selectedRole = newValue;
-                                                });
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Ya')),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: const Text('Batal')),
-                                        ],
-                                      ));
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  content: const Text(
+                                      'Apakah anda yakin ingin mengubah role?'),
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _selectedRole = newValue;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Ya')),
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Batal')),
+                                  ],
+                                ),
+                              );
                             }
-                          }),
+                          },
+                        ),
+                      ),
                       const SizedBox(
                         height: 8,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            provider
-                                .addAgent(
-                                    _nameController.text,
-                                    _usernameController.text,
-                                    _emailController.text,
-                                    _selectedRole,
-                                    _passwordController.text)
-                                .then((value) {
-                              if (value.success) {
-                                Navigator.pop(context);
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(value.message)));
-                              }
-                            });
-                          },
-                          child: const Text('Simpan'),
-                        ),
-                      ),
+                      height16,
+                      alohaButton("Simpan", () {
+                        provider
+                            .addAgent(
+                                _nameController.text,
+                                _usernameController.text,
+                                _emailController.text,
+                                _selectedRole,
+                                _passwordController.text)
+                            .then((value) {
+                          if (value.success) {
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(value.message)));
+                          }
+                        });
+                      })
                     ],
                   ),
                 ),

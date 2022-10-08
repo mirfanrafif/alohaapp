@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:aloha/components/pages/send_image_page.dart';
 import 'package:aloha/data/providers/message_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -65,15 +66,19 @@ class _ChatInputState extends State<ChatInput> {
                 child: TextField(
                   controller: chatController,
                   decoration: InputDecoration(
-                      hintText: "Tulis pesan disini...",
-                      contentPadding: const EdgeInsets.all(8),
-                      prefixIcon: IconButton(
-                        onPressed: showDialog,
-                        icon: const Icon(Icons.attachment),
-                      ),
-                      enabledBorder: inputBorder,
-                      focusedBorder: inputBorder,
-                      fillColor: Colors.white),
+                    hintText: "Tulis pesan disini...",
+                    filled: true,
+                    contentPadding: const EdgeInsets.all(8),
+                    prefixIcon: IconButton(
+                      onPressed: showDialog,
+                      icon: const Icon(Icons.attachment),
+                    ),
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: alohaRadius,
+                    ),
+                    fillColor: Colors.white,
+                  ),
                   minLines: 1,
                   maxLines: 5,
                 ),

@@ -1,35 +1,26 @@
 import 'dart:async';
 
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../data/providers/message_provider.dart';
 import 'contact_item.dart';
 
 class ContactList extends StatefulWidget {
-  Function(String) setTitle;
-  ContactList({Key? key, required this.setTitle}) : super(key: key);
+  final Function(String) setTitle;
+  const ContactList({Key? key, required this.setTitle}) : super(key: key);
 
   @override
   State<ContactList> createState() => _ContactListState();
 }
 
 class _ContactListState extends State<ContactList> {
-  final _controller = TextEditingController();
   late MessageProvider _provider;
   @override
   void initState() {
     super.initState();
     _provider = Provider.of<MessageProvider>(context, listen: false);
     _provider.init(context);
-    _controller.addListener(_onSearchChange);
-  }
-
-  void _onSearchChange() {
-    debouncing(
-      fn: () {
-        _provider.searchKeyword = _controller.text;
-      },
-    );
   }
 
   Timer? _debounceTimer;
@@ -38,7 +29,6 @@ class _ContactListState extends State<ContactList> {
   void dispose() {
     super.dispose();
     _debounceTimer?.cancel();
-    _controller.dispose();
   }
 
   void debouncing({required Function() fn, int waitForMs = 500}) {
@@ -56,15 +46,14 @@ class _ContactListState extends State<ContactList> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16),
               child: TextField(
-                controller: _controller,
-                decoration: const InputDecoration(
-                  labelText: "Cari kontak...",
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.all(8),
-                  suffixIcon: Icon(Icons.search),
-                ),
+                onChanged: (newValue) {
+                  debouncing(fn: () {
+                    provider.searchKeyword = newValue;
+                  });
+                },
+                decoration: alohaInputDecoration("Cari Kontak..."),
               ),
             ),
             Expanded(

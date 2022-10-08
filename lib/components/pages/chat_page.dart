@@ -3,6 +3,7 @@ import 'package:aloha/components/widgets/messages/chat_list.dart';
 import 'package:aloha/data/models/customer_message.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,11 +23,15 @@ class ChatPage extends StatelessWidget {
           title: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(provider.getSelectedCustomer().customer.name),
+              Text(
+                provider.getSelectedCustomer().customer.name,
+              ),
               Text(
                 provider.getSelectedCustomer().customer.phoneNumber,
                 style: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.normal),
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
             ],
           ),
@@ -39,14 +44,22 @@ class ChatPage extends StatelessWidget {
                     value: showCustomer,
                   ),
                 ],
+                shape: const RoundedRectangleBorder(borderRadius: alohaRadius),
                 onSelected: (result) {
                   if (result != null) {
                     if (result == showCustomer) {
                       showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return const CustomerDetails();
-                          });
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                        ),
+                        builder: (context) {
+                          return const CustomerDetails();
+                        },
+                      );
                     }
                   }
                 },

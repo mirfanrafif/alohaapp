@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.orange,
-          textTheme: GoogleFonts.latoTextTheme(Theme.of(context).textTheme),
+          textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
         ),
         home: Consumer<UserProvider>(
           builder: (context, provider, child) =>

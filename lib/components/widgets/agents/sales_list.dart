@@ -1,6 +1,7 @@
 import 'package:aloha/components/pages/agent_page.dart';
 import 'package:aloha/components/widgets/profile_picture.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,12 +33,9 @@ class _SalesListState extends State<SalesList> {
         return Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(16),
               child: TextField(
-                decoration: const InputDecoration(
-                    labelText: "Cari sales...",
-                    border: OutlineInputBorder(gapPadding: 8),
-                    contentPadding: EdgeInsets.all(8)),
+                decoration: alohaInputDecoration("Cari Sales..."),
                 controller: searchController,
               ),
             ),

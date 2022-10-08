@@ -1,5 +1,7 @@
+import 'package:aloha/components/widgets/button.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/response/message_template.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -32,16 +34,14 @@ class _AddTemplatePageState extends State<AddTemplatePage> {
           child: Column(
             children: [
               TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Nama"),
+                decoration: alohaInputDecoration("Nama"),
                 controller: _nameController,
               ),
               const SizedBox(
                 height: 16,
               ),
               TextField(
-                decoration: const InputDecoration(
-                    border: OutlineInputBorder(), labelText: "Template"),
+                decoration: alohaInputDecoration("Template"),
                 controller: _templateController,
                 minLines: 1,
                 maxLines: 8,
@@ -49,22 +49,20 @@ class _AddTemplatePageState extends State<AddTemplatePage> {
               const SizedBox(
                 height: 16,
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    provider
-                        .saveTemplate(widget.template?.id, _nameController.text,
-                            _templateController.text)
-                        .then((value) {
-                      if (!value.success) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text(value.message)));
-                      } else {
-                        Navigator.pop(context);
-                      }
-                    });
-                  },
-                  child: const Text("Simpan Template"))
+              alohaButton("Simpan Template", () {
+                provider
+                    .saveTemplate(widget.template?.id, _nameController.text,
+                        _templateController.text)
+                    .then((value) {
+                  if (!value.success) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        content: Text(value.message)));
+                  } else {
+                    Navigator.pop(context);
+                  }
+                });
+              })
             ],
           ),
         );

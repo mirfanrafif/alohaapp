@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:aloha/components/pages/chat_page.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/response/contact.dart';
 import 'package:aloha/utils/api_response.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +19,20 @@ class _StartMessagePageState extends State<StartMessagePage> {
   String keyword = "";
   late MessageProvider _provider;
 
+  Timer? _debounceTimer;
+
   @override
   void initState() {
     super.initState();
     _provider = Provider.of<MessageProvider>(context, listen: false);
+  }
+
+  void debouncing({required Function() fn, int waitForMs = 500}) {
+    // if this function is called before 500ms [waitForMs] expired
+    //cancel the previous call
+    _debounceTimer?.cancel();
+    // set a 500ms [waitForMs] timer for the [fn] to be called
+    _debounceTimer = Timer(Duration(milliseconds: waitForMs), fn);
   }
 
   @override
@@ -33,17 +46,14 @@ class _StartMessagePageState extends State<StartMessagePage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
-                  onSubmitted: (value) {
+                  onChanged: (value) {
                     setState(() {
-                      keyword = value;
+                      debouncing(fn: () {
+                        keyword = value;
+                      });
                     });
                   },
-                  decoration: const InputDecoration(
-                    labelText: "Cari kontak...",
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(8),
-                    suffixIcon: Icon(Icons.search),
-                  ),
+                  decoration: alohaInputDecoration("Cari Kontak..."),
                 ),
               ),
               if (keyword.isNotEmpty)

@@ -1,5 +1,7 @@
 import 'package:aloha/components/pages/home_page.dart';
+import 'package:aloha/components/widgets/button.dart';
 import 'package:aloha/data/providers/user_provider.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,53 +58,46 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-          padding: const EdgeInsets.all(30),
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(32),
-                child: Image.asset(
-                  "assets\\image\\aloha_logo.png",
-                ),
-              ),
-              const Text(
-                "Login",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              TextField(
-                decoration: const InputDecoration(
-                    labelText: "Username",
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(8)),
-                controller: _usernameController,
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              TextField(
-                obscureText: true,
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.all(8)),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: login,
-                  child: const Text("Login"),
-                ),
-              )
-            ],
-          )),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Image.asset(
+                      "assets\\image\\aloha_logo.png",
+                    ),
+                  ),
+                  const Text(
+                    "Selamat Datang",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  TextField(
+                    decoration: alohaInputDecoration("Username"),
+                    controller: _usernameController,
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    controller: _passwordController,
+                    decoration: alohaInputDecoration("Password"),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  alohaButton("Login", login)
+                ],
+              )),
+        ),
+      ),
     );
   }
 }

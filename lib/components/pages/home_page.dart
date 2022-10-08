@@ -12,6 +12,7 @@ import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
 import 'package:aloha/utils/constants.dart';
+import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -148,6 +149,7 @@ class _HomePageState extends State<HomePage> {
       case _pesanLabel:
         return [
           PopupMenuButton(
+            shape: const RoundedRectangleBorder(borderRadius: alohaRadius),
             itemBuilder: (context) => [
               if (_provider.user.role == "admin")
                 const PopupMenuItem(
