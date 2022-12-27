@@ -16,3 +16,9 @@ jobs:
           flutter-version: '2.10.5'
           architecture: x64
       - run: flutter pub get
+      - run: echo $UPLOAD_KEY | base64 --decode > android/app/upload-keystore.jks
+      - run: echo "storeFile=upload-keystore.jks" >> android/key.properties
+      - run: echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> android/key.properties
+      - run: echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> android/key.properties
+      - run: echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> android/key.properties
+      - run: flutter build apk --release
