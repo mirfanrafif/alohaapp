@@ -1,9 +1,12 @@
 name: Aloha App CI
 
 on:
-  push:
-    tags: 
-      - release-**
+  push: 
+    branches: 
+      master
+#   push:
+#     tags: 
+#       - release-**
       
 jobs:
   build:
