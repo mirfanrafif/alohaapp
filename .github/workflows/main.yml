@@ -18,6 +18,8 @@ jobs:
         with:
           flutter-version: '2.10.5'
           architecture: x64
+      - run: flutter doctor
+      - run: flutter --version
       - run: flutter pub get
       - run: echo $UPLOAD_KEY | base64 --decode > android/app/upload-keystore.jks
       - run: echo "storeFile=upload-keystore.jks" >> android/key.properties
