@@ -26,6 +26,7 @@ jobs:
       - run: flutter pub get
       - run: pwd
       - run: chmod 777 ./*
+      - run: echo $UPLOAD_KEY | base64 --decode
       - run: echo $UPLOAD_KEY | base64 --decode > android/app/upload-keystore.jks
       - run: echo "storeFile=upload-keystore.jks" >> android/key.properties
       - run: echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> android/key.properties
