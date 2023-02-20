@@ -67,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Image.asset(
-                      "assets\\image\\aloha_logo.png",
+                      "assets/image/aloha_logo.png",
                     ),
                   ),
                   const Text(

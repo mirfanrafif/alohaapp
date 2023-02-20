@@ -5,6 +5,7 @@ import 'package:aloha/data/providers/job_provider.dart';
 import 'package:aloha/data/providers/sales_provider.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/data/providers/user_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await BasePreferences.init();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

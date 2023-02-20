@@ -10,6 +10,7 @@ import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/data/service/message_template_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
@@ -77,10 +78,16 @@ class MessageProvider extends ChangeNotifier {
         AndroidInitializationSettings('@mipmap/ic_launcher');
     const MacOSInitializationSettings initializationSettingsMacOS =
         MacOSInitializationSettings();
-    const InitializationSettings initializationSettings =
-        InitializationSettings(
-            android: initializationSettingsAndroid,
-            macOS: initializationSettingsMacOS);
+    IOSInitializationSettings initializationSettingsIOS =
+        IOSInitializationSettings(
+            onDidReceiveLocalNotification: ((id, title, body, payload) {
+      onDidReceiveLocalNotification(context, id, title, body, payload);
+    }));
+
+    InitializationSettings initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        macOS: initializationSettingsMacOS,
+        iOS: initializationSettingsIOS);
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: (something) {
       Navigator.of(context).push(MaterialPageRoute(
@@ -90,6 +97,25 @@ class MessageProvider extends ChangeNotifier {
 
     contactLoading = false;
     notifyListeners();
+  }
+
+  void onDidReceiveLocalNotification(BuildContext context, int id,
+      String? title, String? body, String? payload) async {
+    // display a dialog with the notification details, tap ok to go to another page
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(title ?? ""),
+        content: Text(body ?? ""),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('Ok'),
+            onPressed: () async {},
+          )
+        ],
+      ),
+    );
   }
 
   var _searchKeyword = "";
