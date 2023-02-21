@@ -10,6 +10,7 @@ import 'package:aloha/data/service/message_service.dart';
 import 'package:aloha/data/service/message_template_service.dart';
 import 'package:aloha/utils/api_response.dart';
 import 'package:aloha/utils/constants.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -358,7 +359,7 @@ class MessageProvider extends ChangeNotifier {
         .indexWhere((element) => element.customer.id == customerId);
   }
 
-  Future<void> sendMessage(
+  void sendMessage(
       {required String customerNumber, required String message}) async {
     var response = await _messageService.sendMessage(
         customerNumber: customerNumber, message: message, token: _token);
@@ -374,6 +375,8 @@ class MessageProvider extends ChangeNotifier {
           ..._customerMessage[currentIndex].message
         ];
       }
+
+      await FirebaseAnalytics.instance.logEvent(name: 'text_message_sent');
     }
     notifyListeners();
   }

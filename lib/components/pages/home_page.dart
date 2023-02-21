@@ -6,6 +6,7 @@ import 'package:aloha/components/pages/login_page.dart';
 import 'package:aloha/components/pages/profile_page.dart';
 import 'package:aloha/components/pages/start_message_page.dart';
 import 'package:aloha/components/pages/template_page.dart';
+import 'package:aloha/components/widgets/drawer.dart';
 import 'package:aloha/components/widgets/messages/contact_list.dart';
 import 'package:aloha/components/widgets/agents/sales_list.dart';
 import 'package:aloha/data/providers/message_provider.dart';
@@ -14,7 +15,9 @@ import 'package:aloha/data/providers/user_provider.dart';
 import 'package:aloha/utils/constants.dart';
 import 'package:aloha/utils/style.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:aloha/utils/constants.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,22 +26,18 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-const String _pesanLabel = "Pesan";
-const String _salesLabel = "Sales";
-const String _jobLabel = "Job";
-const String _profilLabel = "Profil";
-const String _openBroadcastPage = "openBroadcast";
-const String _openTemplatePage = "openTemplate";
-
 class _HomePageState extends State<HomePage> {
-  String _selectedIndex = _pesanLabel;
-  String _title = _pesanLabel;
+  String _selectedIndex = pesanLabel;
+  String _title = pesanLabel;
   late UserProvider _provider;
+
+  String _version = "";
 
   @override
   void initState() {
     super.initState();
     _provider = Provider.of<UserProvider>(context, listen: false);
+    PackageInfo.fromPlatform().then((value) => {_version = value.version});
   }
 
   setTitle(String newTitle) {
@@ -55,53 +54,13 @@ class _HomePageState extends State<HomePage> {
           title: Text(_title),
           actions: getAppBarActions(),
         ),
-        drawer: Drawer(
-          child: Column(
-            children: [
-              UserAccountsDrawerHeader(
-                accountName: Text(provider.user.fullName),
-                accountEmail: Text(provider.user.email),
-                currentAccountPicture:
-                    renderProfilePicture(provider.user.profilePhoto),
-              ),
-              ListTile(
-                leading: const Icon(Icons.message),
-                title: const Text(_pesanLabel),
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = _pesanLabel;
-                    _title = _pesanLabel;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              const Divider(),
-              if (provider.user.role == "admin") ...getAdminMenus(),
-              ListTile(
-                leading: const Icon(Icons.account_circle),
-                title: const Text(_profilLabel),
-                onTap: () {
-                  setState(() {
-                    _selectedIndex = _profilLabel;
-                    _title = _profilLabel;
-                  });
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text("Logout"),
-                onTap: () {
-                  Provider.of<MessageProvider>(context, listen: false).logout();
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ));
-                },
-              ),
-            ],
-          ),
+        drawer: AlohaDrawer(
+          updateSelectedPage: (newSelectedIndex, newTitle) {
+            setState(() {
+              _selectedIndex = newSelectedIndex;
+              _title = newTitle;
+            });
+          },
         ),
         body: getBody(),
         floatingActionButton: getFab(),
@@ -111,7 +70,7 @@ class _HomePageState extends State<HomePage> {
 
   FloatingActionButton? getFab() {
     switch (_selectedIndex) {
-      case _pesanLabel:
+      case pesanLabel:
         return FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(
@@ -119,7 +78,7 @@ class _HomePageState extends State<HomePage> {
           },
           child: const Icon(Icons.message),
         );
-      case _jobLabel:
+      case jobLabel:
         return FloatingActionButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
@@ -128,7 +87,7 @@ class _HomePageState extends State<HomePage> {
           },
           child: const Icon(Icons.add),
         );
-      case _salesLabel:
+      case salesLabel:
         return FloatingActionButton(
           onPressed: () {
             var provider = Provider.of<SalesProvider>(context, listen: false);
@@ -146,7 +105,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget>? getAppBarActions() {
     switch (_selectedIndex) {
-      case _pesanLabel:
+      case pesanLabel:
         return [
           PopupMenuButton(
             shape: const RoundedRectangleBorder(borderRadius: alohaRadius),
@@ -154,22 +113,22 @@ class _HomePageState extends State<HomePage> {
               if (_provider.user.role == "admin")
                 const PopupMenuItem(
                   child: Text("Broadcast Message"),
-                  value: _openBroadcastPage,
+                  value: openBroadcastPage,
                 ),
               const PopupMenuItem(
                 child: Text("Template Pesan"),
-                value: _openTemplatePage,
+                value: openTemplatePage,
               ),
             ],
             onSelected: (result) {
               if (result != null) {
                 switch (result) {
-                  case _openBroadcastPage:
+                  case openBroadcastPage:
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const BroadcastPage(),
                     ));
                     break;
-                  case _openTemplatePage:
+                  case openTemplatePage:
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => const TemplatePage(),
                     ));
@@ -186,45 +145,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  List<Widget> getAdminMenus() {
-    return [
-      ListTile(
-        leading: const Icon(Icons.people),
-        title: const Text(_salesLabel),
-        onTap: () {
-          setState(() {
-            _selectedIndex = _salesLabel;
-            _title = _salesLabel;
-          });
-          Navigator.pop(context);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.work),
-        title: const Text(_jobLabel),
-        onTap: () {
-          setState(() {
-            _selectedIndex = _jobLabel;
-            _title = _jobLabel;
-          });
-          Navigator.pop(context);
-        },
-      ),
-      const Divider(),
-    ];
-  }
-
   Widget getBody() {
     switch (_selectedIndex) {
-      case _pesanLabel:
+      case pesanLabel:
         return ContactList(
           setTitle: setTitle,
         );
-      case _salesLabel:
+      case salesLabel:
         return const SalesList();
-      case _jobLabel:
+      case jobLabel:
         return const JobPage();
-      case _profilLabel:
+      case profilLabel:
         return const ProfilePage();
       default:
         return Container(
@@ -254,29 +185,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         );
-    }
-  }
-
-  Widget renderProfilePicture(String? profilePhoto) {
-    if (profilePhoto != null && profilePhoto.isNotEmpty) {
-      var imageUrl =
-          "https://" + baseUrl + "/user/profile_image/" + profilePhoto;
-      return ClipOval(
-        child: Image(
-            fit: BoxFit.cover,
-            image: NetworkImage(imageUrl),
-            errorBuilder: (context, object, e) {
-              return const CircleAvatar(
-                foregroundImage: AssetImage('assets/image/user.png'),
-                backgroundColor: Colors.black12,
-              );
-            }),
-      );
-    } else {
-      return const CircleAvatar(
-        foregroundImage: AssetImage('assets/image/user.png'),
-        backgroundColor: Colors.black12,
-      );
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:aloha/components/pages/send_image_page.dart';
 import 'package:aloha/data/providers/message_provider.dart';
 import 'package:aloha/utils/style.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -266,7 +267,7 @@ class _ChatInputState extends State<ChatInput> {
       setState(() {
         canSend = false;
       });
-      await provider.sendMessage(
+      provider.sendMessage(
           customerNumber: customer.phoneNumber, message: chatController.text);
       chatController.clear();
       setState(() {
