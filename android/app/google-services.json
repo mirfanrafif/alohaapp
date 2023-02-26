@@ -40,6 +40,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:411168884456:android:044da6124306b1b44d2b5d",
+        "android_client_info": {
+          "package_name": "com.rajadinar.alohav2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411168884456-i01riv13l6tabmm92kt6amsfh635nsfc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPdaiPblr7xSYdN2KnIns0OVDP9mjxXxI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411168884456-i01riv13l6tabmm92kt6amsfh635nsfc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411168884456-nk8go6sv0uc56d6anr9g3t79pgu4t436.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.aloha"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
