@@ -32,6 +32,7 @@ jobs:
       - run: echo "keyPassword=${{secrets.KEYSTORE_KEY_PASSWORD}}" >> android/key.properties
       - run: flutter build apk --release
       - run: flutter build appbundle --release
+      - run: ls ./build/app/outputs
       - run: mkdir artifacts
       - run: cp build/app/outputs/flutter-apk/app-release.apk artifacts/app.apk
       - run: cp build/app/outputs/bundle/release/app.aab artifacts/app.aab
