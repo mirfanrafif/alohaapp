@@ -35,7 +35,7 @@ jobs:
       - run: ls ./build/app/outputs/bundle
       - run: mkdir artifacts
       - run: cp build/app/outputs/flutter-apk/app-release.apk artifacts/app.apk
-      - run: cp build/app/outputs/bundle/release/app.aab artifacts/app.aab
+      - run: cp build/app/outputs/bundle/release/app-release.aab artifacts/app.aab
       
       - name: Artifact upload
         uses: actions/upload-artifact@v3
