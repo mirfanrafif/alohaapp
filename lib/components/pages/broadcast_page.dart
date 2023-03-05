@@ -22,6 +22,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   final List<CustomerInterests> _selectedInterests = [];
   final List<CustomerTypes> _selectedTypes = [];
   late MessageProvider _provider;
+  String status = "Kontak";
   final _messageController = TextEditingController();
   File? file;
   String type = "text";
@@ -47,7 +48,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
             children: [
               Row(
                 children: [
-                  const Expanded(child: Text("Kategori Customer")),
+                  const Expanded(child: Text("Kategori Pelanggan")),
                   TextButton(
                       onPressed: () {
                         showModalBottomSheet(
@@ -91,7 +92,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
               //customer interests
               Row(
                 children: [
-                  const Expanded(child: Text("Minat Customer")),
+                  const Expanded(child: Text("Minat Pelanggan")),
                   TextButton(
                       onPressed: () {
                         showModalBottomSheet(
@@ -135,7 +136,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
               //customer interests
               Row(
                 children: [
-                  const Expanded(child: Text("Tipe Customer")),
+                  const Expanded(child: Text("Tipe Pelanggan")),
                   TextButton(
                       onPressed: () {
                         showModalBottomSheet(
@@ -174,6 +175,33 @@ class _BroadcastPageState extends State<BroadcastPage> {
                 height: 16,
               ),
 
+              const Text(
+                "Status Pelanggan",
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SizedBox(
+                child: DropdownButton<String>(
+                    isExpanded: true,
+                    items: ["Kontak", "Prospek Kontak", "Blacklist Kontak"]
+                        .map((e) => DropdownMenuItem<String>(
+                              child: Text(e),
+                              value: e,
+                            ))
+                        .toList(),
+                    value: status,
+                    onChanged: (selected) {
+                      setState(() {
+                        status = selected ?? "Kontak";
+                      });
+                    }),
+                width: double.infinity,
+              ),
+
+              const SizedBox(
+                height: 16,
+              ),
               //Text
               TextField(
                 controller: _messageController,
@@ -199,6 +227,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
                         _selectedCategories,
                         _selectedInterests,
                         _selectedTypes,
+                        status,
                         _messageController.text,
                         type,
                         file,

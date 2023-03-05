@@ -81,6 +81,7 @@ class BroadcastMessageService {
       {required List<String> categories,
       required List<String> types,
       required List<String> interests,
+      required String status,
       required String message,
       required String token}) async {
     try {
@@ -88,7 +89,8 @@ class BroadcastMessageService {
         'message': message,
         'categories': categories,
         'interests': interests,
-        'types': types
+        'types': types,
+        'status': status
       });
 
       var response = await post(Uri.https(baseUrl, "/message/broadcast"),
@@ -119,6 +121,7 @@ class BroadcastMessageService {
       required List<String> categories,
       required List<String> types,
       required List<String> interests,
+      required String status,
       required String token}) async {
     try {
       var request = MultipartRequest(
@@ -134,6 +137,7 @@ class BroadcastMessageService {
       request.fields['categories'] = jsonEncode(categories);
       request.fields['interests'] = jsonEncode(interests);
       request.fields['types'] = jsonEncode(types);
+      request.fields['status'] = jsonEncode(status);
 
       //add message to request
       request.fields['message'] = message;
@@ -161,6 +165,7 @@ class BroadcastMessageService {
       required List<String> categories,
       required List<String> types,
       required List<String> interests,
+      required String status,
       required String token}) async {
     try {
       var request = MultipartRequest(
@@ -176,6 +181,7 @@ class BroadcastMessageService {
       request.fields['categories'] = jsonEncode(categories);
       request.fields['interests'] = jsonEncode(interests);
       request.fields['types'] = jsonEncode(types);
+      request.fields['status'] = jsonEncode(status);
 
       var streamedResponse = await request.send();
       var responseBytes = await streamedResponse.stream.toBytes();
@@ -201,6 +207,7 @@ class BroadcastMessageService {
       required List<String> categories,
       required List<String> types,
       required List<String> interests,
+      required String status,
       required String token}) async {
     try {
       var request = MultipartRequest(
@@ -216,6 +223,7 @@ class BroadcastMessageService {
       request.fields['categories'] = jsonEncode(categories);
       request.fields['interests'] = jsonEncode(interests);
       request.fields['types'] = jsonEncode(types);
+      request.fields['status'] = jsonEncode(status);
 
       //add message to request
       request.fields['message'] = message;

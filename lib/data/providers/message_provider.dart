@@ -475,6 +475,7 @@ class MessageProvider extends ChangeNotifier {
       List<CustomerCategories> categories,
       List<CustomerInterests> interests,
       List<CustomerTypes> types,
+      String status,
       String message,
       String broadcastType,
       File? file,
@@ -489,6 +490,7 @@ class MessageProvider extends ChangeNotifier {
             categories: categoriesList,
             types: typesList,
             interests: interestList,
+            status: status,
             message: message,
             token: _token);
         break;
@@ -498,6 +500,7 @@ class MessageProvider extends ChangeNotifier {
             types: typesList,
             interests: interestList,
             message: message,
+            status: status,
             file: file!,
             token: _token);
         break;
@@ -507,6 +510,7 @@ class MessageProvider extends ChangeNotifier {
             types: typesList,
             interests: interestList,
             file: file!,
+            status: status,
             token: _token);
         break;
       case "video":
@@ -515,6 +519,7 @@ class MessageProvider extends ChangeNotifier {
             types: typesList,
             interests: interestList,
             file: file!,
+            status: status,
             message: message,
             token: _token);
         break;
